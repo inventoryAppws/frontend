@@ -360,11 +360,11 @@ function VendorReturns() {
           <div className="asset-card-footer-stats">
             <div className="asset-stat-item">
               <span className="stat-name">Pending Actions:</span>
-              <strong className="stat-val text-amber-300">{metrics.requested} claims</strong>
+              <strong className="stat-val">{metrics.requested} claims</strong>
             </div>
             <div className="asset-stat-item">
               <span className="stat-name">In Transit:</span>
-              <strong className="stat-val text-blue-300">{metrics.inTransit} courier pick</strong>
+              <strong className="stat-val">{metrics.inTransit} courier pick</strong>
             </div>
           </div>
         </div>
