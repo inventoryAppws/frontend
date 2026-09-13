@@ -27302,84 +27302,82 @@ tr:last-child td {
   display: block !important;
 }
 
-/* Vibrant Colorful Asset Card (Theme-adapted Blue/Indigo/Violet gradient) */
+/* White Asset Card (Theme-matched to all vendor cards with subtle, blended text colors) */
 .returns-featured-asset-card {
-  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 45%, #7c3aed 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
-  border-radius: 16px !important;
-  padding: 20px 22px !important;
-  color: #ffffff !important;
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 14px !important;
+  padding: 18px 20px !important;
+  color: #0f172a !important;
   display: flex !important;
   flex-direction: column !important;
   justify-content: space-between !important;
-  box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.3) !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
   position: relative !important;
-  overflow: hidden !important;
+  box-sizing: border-box !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.returns-featured-asset-card:hover {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06) !important;
 }
 
 .returns-featured-asset-card::before {
-  content: "" !important;
-  position: absolute !important;
-  top: -40px !important;
-  right: -40px !important;
-  width: 140px !important;
-  height: 140px !important;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 70%) !important;
-  border-radius: 50% !important;
-  pointer-events: none !important;
+  display: none !important;
 }
 
 .asset-card-tag {
   font-size: 10.5px !important;
   font-weight: 700 !important;
-  letter-spacing: 0.8px !important;
+  letter-spacing: 0.6px !important;
   text-transform: uppercase !important;
-  color: #ffffff !important;
-  background: rgba(255, 255, 255, 0.2) !important;
+  color: #2563eb !important;
+  background: #eff6ff !important;
+  border: 1px solid #bfdbfe !important;
   display: inline-block !important;
-  padding: 3px 10px !important;
+  padding: 3px 8px !important;
   border-radius: 6px !important;
   margin-bottom: 6px !important;
   align-self: flex-start !important;
 }
 
 .asset-card-title {
-  font-size: 16px !important;
+  font-size: 15px !important;
   font-weight: 700 !important;
-  color: #ffffff !important;
+  color: #1e293b !important;
   margin: 0 0 4px 0 !important;
 }
 
 .asset-card-val {
   font-size: 2.2rem !important;
-  font-weight: 900 !important;
-  color: #ffffff !important;
+  font-weight: 800 !important;
+  color: #2563eb !important;
   line-height: 1.1 !important;
   letter-spacing: -0.5px !important;
   margin-bottom: 6px !important;
 }
 
 .asset-card-subtext {
-  font-size: 12.5px !important;
-  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 12px !important;
+  color: #64748b !important;
   line-height: 1.45 !important;
   margin: 0 0 12px 0 !important;
 }
 
 .asset-card-subtext strong {
-  color: #ffffff !important;
-  font-weight: 700 !important;
+  color: #0f172a !important;
+  font-weight: 600 !important;
 }
 
 .asset-card-footer-stats {
   display: flex !important;
-  gap: 12px !important;
-  background: rgba(255, 255, 255, 0.16) !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  gap: 14px !important;
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
   padding: 8px 12px !important;
-  border-radius: 10px !important;
+  border-radius: 8px !important;
   font-size: 12px !important;
-  backdrop-filter: blur(8px) !important;
 }
 
 .asset-stat-item {
@@ -27389,12 +27387,42 @@ tr:last-child td {
 }
 
 .asset-stat-item .stat-name {
-  color: rgba(255, 255, 255, 0.85) !important;
+  color: #64748b !important;
 }
 
 .asset-stat-item .stat-val {
   font-weight: 700 !important;
-  color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.asset-stat-item .stat-val.pending {
+  color: #d97706 !important;
+}
+
+.asset-stat-item .stat-val.transit {
+  color: #2563eb !important;
+}
+
+/* Modal Dossier Footer with neat alignment */
+.vendor-claim-modal-footer {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 16px 24px !important;
+  background: #f8fafc !important;
+  border-top: 1px solid #e2e8f0 !important;
+  border-bottom-left-radius: 16px !important;
+  border-bottom-right-radius: 16px !important;
+  box-sizing: border-box !important;
+}
+
+.vendor-claim-modal-footer .btn {
+  padding: 8px 20px !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
 }
 
 /* Returns Toolbar & Tabs */
