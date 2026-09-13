@@ -1,13 +1,14 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { ShoppingCart, Trash2, ArrowRight, PackageOpen } from "lucide-react";
+import { ShoppingCart, Trash2, ArrowRight, PackageOpen, Heart } from "lucide-react";
 
 import {
   getCart,
   updateCartItem,
   removeCartItem,
 } from "../../services/cartService";
+import { addToWishlist } from "../../services/wishlistService";
 
 import Loader from "../../components/Loader";
 import ErrorMessage from "../../components/ErrorMessage";
@@ -17,7 +18,7 @@ import { getErrorMessage } from "../../utils/errorHandler";
 
 function Cart() {
   const navigate = useNavigate();
-  const { setCartCount } = useOutletContext() || {};
+  const { setCartCount, setWishlistCount, reloadAccount } = useOutletContext() || {};
 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,6 +27,7 @@ function Cart() {
 
   const [updatingItemId, setUpdatingItemId] = useState(null);
   const [removingItemId, setRemovingItemId] = useState(null);
+  const [movingToWishlist, setMovingToWishlist] = useState(false);
   const [itemToRemove, setItemToRemove] = useState(null);
 
 
@@ -141,6 +143,35 @@ function Cart() {
       toast.error(getErrorMessage(error));
     } finally {
       setRemovingItemId(null);
+    }
+  };
+
+
+  // =========================================================
+  // MOVE ITEM TO WISHLIST
+  // =========================================================
+
+  const handleMoveToWishlist = async () => {
+    if (!itemToRemove) return;
+    setMovingToWishlist(true);
+
+    try {
+      const prodId = itemToRemove.productId || itemToRemove.id;
+      await addToWishlist(prodId);
+      await removeCartItem(itemToRemove.id);
+      toast.success(`"${itemToRemove.name}" moved to your wishlist!`);
+      setItemToRemove(null);
+      await loadCart();
+      if (typeof reloadAccount === "function") {
+        reloadAccount();
+      }
+      if (typeof setWishlistCount === "function") {
+        setWishlistCount((prev) => (Number(prev) || 0) + 1);
+      }
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    } finally {
+      setMovingToWishlist(false);
     }
   };
 
@@ -502,6 +533,7 @@ function Cart() {
                             onClick={() =>
                               setItemToRemove({
                                 id: itemId,
+                                productId: item.productId || item.product?._id || item.product || itemId,
                                 name: item.name || "this product",
                               })
                             }
@@ -575,13 +607,35 @@ function Cart() {
       <ConfirmModal
         isOpen={Boolean(itemToRemove)}
         title="Remove from Cart?"
-        message={`Remove "${itemToRemove?.name || ""}" from your cart?`}
-        confirmText="Remove Item"
+        message={`Instead of removing "${itemToRemove?.name || "this item"}" from your cart, you can add it to your wishlist and return to buy whenever you change your mind!`}
+        confirmText="Remove from Cart"
+        cancelText="Cancel"
+        secondaryAction={{
+          text: "Add to Wishlist",
+          icon: <Heart size={16} fill="#f43f5e" color="#f43f5e" />,
+          onClick: handleMoveToWishlist,
+          loading: movingToWishlist,
+          loadingText: "Saving to Wishlist...",
+          style: {
+            background: "#fff1f2",
+            border: "1.5px solid #fecdd3",
+            color: "#e11d48",
+            borderRadius: "8px",
+            padding: "8px 16px",
+            fontSize: "13px",
+            fontWeight: 600,
+          },
+        }}
         onConfirm={async () => {
+          if (!itemToRemove) return;
           await handleRemove(itemToRemove.id);
           setItemToRemove(null);
         }}
-        onCancel={() => setItemToRemove(null)}
+        onCancel={() => {
+          if (!movingToWishlist && removingItemId === null) {
+            setItemToRemove(null);
+          }
+        }}
         loading={removingItemId !== null}
       />
 

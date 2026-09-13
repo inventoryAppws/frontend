@@ -8,8 +8,7 @@ import {
   XCircle,
   IndianRupee,
   ArrowUpDown,
-  Home,
-  ChevronRight,
+  UserX,
   Copy,
   Check,
   MapPin,
@@ -280,15 +279,9 @@ function VendorReturns() {
 
   return (
     <div className="vendor-returns-container">
-      {/* 1. BREADCRUMB & HEADER */}
+      {/* 1. HEADER (Consistent with vendor app) */}
       <div className="vendor-returns-header">
         <div className="vendor-returns-title-block">
-          <div className="vendor-breadcrumb">
-            <Home size={13} />
-            <span>Returns &amp; Refunds</span>
-            <ChevronRight size={13} />
-            <span className="current">Logistics &amp; Claims Console</span>
-          </div>
           <h2>Returns &amp; Refunds Console</h2>
           <p className="vendor-page-subtext">
             Track customer return claims, reverse courier dispatch, inspection, and automated wallet settlements.
@@ -308,7 +301,7 @@ function VendorReturns() {
         </div>
       </div>
 
-      {/* 2. TOP RETURNS KPI CARDS GRID (5 Uniform Theme-Matched Cards) */}
+      {/* 2. TOP RETURNS KPI CARDS GRID (6 Uniform Theme-Matched Cards) */}
       <div className="vendor-returns-kpi-grid">
         <div className="returns-kpi-card">
           <div className="kpi-icon-box amber">
@@ -355,15 +348,24 @@ function VendorReturns() {
         </div>
 
         <div className="returns-kpi-card">
+          <div className="kpi-icon-box orange">
+            <UserX size={18} />
+          </div>
+          <div className="kpi-content">
+            <span className="kpi-label">Cancelled by Customer</span>
+            <strong className="kpi-value">{metrics.cancelled}</strong>
+            <span className="kpi-subtext">Withdrawn by customer</span>
+          </div>
+        </div>
+
+        <div className="returns-kpi-card">
           <div className="kpi-icon-box rose">
             <XCircle size={18} />
           </div>
           <div className="kpi-content">
-            <span className="kpi-label">Cancelled / Declined</span>
-            <strong className="kpi-value">{metrics.cancelled + metrics.rejected}</strong>
-            <span className="kpi-subtext">
-              {metrics.cancelled} by customer • {metrics.rejected} rejected
-            </span>
+            <span className="kpi-label">Declined Claims</span>
+            <strong className="kpi-value">{metrics.rejected}</strong>
+            <span className="kpi-subtext">Rejected upon review</span>
           </div>
         </div>
       </div>

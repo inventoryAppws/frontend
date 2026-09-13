@@ -13,6 +13,8 @@ function ConfirmModal({
   onCancel,
   danger = true,
   loading = false,
+  secondaryAction = null,
+  children = null,
 }) {
   if (!isOpen) {
     return null;
@@ -22,19 +24,22 @@ function ConfirmModal({
     <div
       className="modal-overlay"
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget) {
+        if (event.target === event.currentTarget && !loading && !secondaryAction?.loading) {
           onCancel();
         }
       }}
     >
 
-      <div className="confirm-modal">
+      <div
+        className="confirm-modal"
+        style={secondaryAction ? { maxWidth: "480px" } : undefined}
+      >
 
         <button
           type="button"
           className="modal-close confirm-close"
           onClick={onCancel}
-          disabled={loading}
+          disabled={loading || secondaryAction?.loading}
         >
           <X size={19} />
         </button>
@@ -60,6 +65,8 @@ function ConfirmModal({
           {message}
         </p>
 
+        {children}
+
 
         <div className="confirm-actions">
 
@@ -67,11 +74,36 @@ function ConfirmModal({
             type="button"
             className="btn btn-secondary"
             onClick={onCancel}
-            disabled={loading}
+            disabled={loading || secondaryAction?.loading}
           >
             {cancelText}
           </button>
 
+          {secondaryAction && (
+            <button
+              type="button"
+              className={secondaryAction.className || "btn btn-outline"}
+              onClick={secondaryAction.onClick}
+              disabled={loading || secondaryAction?.loading}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+                fontWeight: 600,
+                cursor:
+                  loading || secondaryAction?.loading
+                    ? "not-allowed"
+                    : "pointer",
+                ...secondaryAction.style,
+              }}
+            >
+              {secondaryAction.icon}
+              {secondaryAction.loading
+                ? secondaryAction.loadingText || "Saving..."
+                : secondaryAction.text}
+            </button>
+          )}
 
           <button
             type="button"
@@ -81,7 +113,7 @@ function ConfirmModal({
                 : "btn btn-primary"
             }
             onClick={onConfirm}
-            disabled={loading}
+            disabled={loading || secondaryAction?.loading}
           >
             {loading
               ? "Processing..."
