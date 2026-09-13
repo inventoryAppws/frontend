@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 190" role="img" aria-label="Order cancellation and instant wallet refund journey">
+  <defs>
+    <linearGradient id="skyCancel" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#fff1f2"/>
+      <stop offset=".65" stop-color="#f8fafc"/>
+      <stop offset="1" stop-color="#eff6ff"/>
+    </linearGradient>
+    <linearGradient id="roadCancel" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#94a3b8"/>
+      <stop offset=".18" stop-color="#cbd5e1"/>
+      <stop offset=".2" stop-color="#64748b"/>
+      <stop offset="1" stop-color="#475569"/>
+    </linearGradient>
+    <linearGradient id="cancelShieldGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#ef4444"/>
+      <stop offset="1" stop-color="#b91c1c"/>
+    </linearGradient>
+    <linearGradient id="walletShieldGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#2563eb"/>
+      <stop offset="1" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="goldCoinCancel" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#fcd34d"/>
+      <stop offset="1" stop-color="#f59e0b"/>
+    </linearGradient>
+    <filter id="shadowCancel" x="-20%" y="-30%" width="140%" height="180%">
+      <feDropShadow dx="0" dy="3" stdDeviation="2.5" flood-color="#0f172a" flood-opacity=".18"/>
+    </filter>
+  </defs>
+
+  <!-- Sky Background -->
+  <rect width="1200" height="190" fill="url(#skyCancel)"/>
+
+  <!-- Clouds -->
+  <g fill="#ffffff" opacity=".85">
+    <path d="M140 26c8-16 30-13 34 0 17-8 30 3 31 14H118c1-10 10-16 22-14z"/>
+    <path d="M520 18c7-14 27-12 32 0 16-7 29 4 29 13h-82c1-9 10-15 21-13z"/>
+    <path d="M880 30c7-15 28-13 34 0 16-8 30 4 30 14h-86c2-10 10-16 22-14z"/>
+  </g>
+
+  <!-- Distant Architectural Skyline -->
+  <g opacity=".32" fill="#94a3b8">
+    <path d="M238 123V70h27v53zm35 0V49h38v74zm48 0V79h22v44zm32 0V58h43v65zm53 0V89h25v34zm35 0V43h36v80zm46 0V65h28v58zm39 0V80h44v43zm55 0V53h30v70zm40 0V73h51v50zm63 0V46h42v77zm52 0V84h29v39zm39 0V60h47v63zm57 0V76h26v47z"/>
+    <g fill="#cbd5e1">
+      <path d="M238 76h27v4h-27zm35-21h38v5h-38zm80 9h43v5h-43zm88-15h36v5h-36zm105 10h30v5h-30zm103-7h42v5h-42zm91 13h47v5h-47z"/>
+    </g>
+  </g>
+
+  <!-- Ground Borders -->
+  <path d="M0 129h1200v18H0z" fill="#fed7aa"/>
+  <path d="M0 142h1200v8H0z" fill="#fdba74"/>
+
+  <!-- Main Scene Elements -->
+  <g filter="url(#shadowCancel)">
+    
+    <!-- LEFT: Warehouse with Order Cancelled / Stock Restored -->
+    <g transform="translate(75 70)">
+      <path d="M2 61V18h132v43z" fill="#ffffff" stroke="#e2e8f0"/>
+      <path d="M-8 18h148L126 6H6z" fill="#ef4444"/>
+      <path d="M-4 14h140l-6-6H4z" fill="#dc2626"/>
+      <rect x="20" y="27" width="28" height="30" rx="2" fill="#fee2e2"/>
+      <rect x="84" y="27" width="28" height="30" rx="2" fill="#fee2e2"/>
+      <rect x="52" y="24" width="22" height="37" fill="#991b1b"/>
+      <!-- Restock Badge Banner -->
+      <rect x="24" y="29" width="84" height="9.5" rx="1.5" fill="#ffffff"/>
+      <text x="28" y="36.5" font-family="Arial,sans-serif" font-size="6.5" font-weight="800" fill="#dc2626">DISPATCH HALTED</text>
+      <!-- Ban / Stop Icon Badge -->
+      <circle cx="124" cy="12" r="11" fill="url(#cancelShieldGrad)"/>
+      <circle cx="124" cy="12" r="8" fill="none" stroke="#ffffff" stroke-width="2"/>
+      <line x1="118.5" y1="6.5" x2="129.5" y2="17.5" stroke="#ffffff" stroke-width="2"/>
+      <text x="110" y="3" font-family="Arial,sans-serif" font-size="5.5" font-weight="700" fill="#991b1b">RESTOCKED</text>
+    </g>
+
+    <!-- Restocked Packages Safely Staged -->
+    <g transform="translate(235 120)">
+      <rect x="0" y="-14" width="26" height="18" rx="2" fill="#94a3b8"/>
+      <rect x="30" y="-20" width="26" height="24" rx="2" fill="#64748b"/>
+      <rect x="60" y="-10" width="22" height="14" rx="2" fill="#94a3b8"/>
+      <path d="M13 -14v18M43 -20v24M71 -10v14" stroke="#ffffff" opacity=".7" stroke-width="2"/>
+      <!-- Restock Checkmark Badge -->
+      <circle cx="43" cy="-8" r="6" fill="#10b981"/>
+      <path d="M40.5 -8l2 2 3.5-3.5" stroke="#ffffff" stroke-width="1.3" fill="none"/>
+    </g>
+
+    <!-- MIDDLE: Digital Refund Gateway / 24h Processing Hub -->
+    <g transform="translate(490 68)">
+      <!-- Security Shield Core -->
+      <path d="M90 10l50 16v38c0 30-50 48-50 48s-50-18-50-48V26z" fill="url(#walletShieldGrad)"/>
+      <circle cx="90" cy="54" r="24" fill="#ffffff" opacity=".95"/>
+      <text x="82.5" y="63" font-family="Arial,sans-serif" font-size="26" font-weight="bold" fill="#1d4ed8">₹</text>
+      <!-- Verified Checkmark in Shield -->
+      <circle cx="122" cy="28" r="10" fill="#10b981"/>
+      <path d="M117.5 28l3.5 3.5 6-6" stroke="#ffffff" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      <rect x="46" y="118" width="88" height="16" rx="3" fill="#1e293b"/>
+      <text x="52" y="129.5" font-family="Arial,sans-serif" font-size="8" font-weight="800" fill="#38bdf8">24H INSTANT REFUND</text>
+    </g>
+
+    <!-- Golden Refund Coins flying towards Customer Account -->
+    <g transform="translate(730 86)">
+      <circle cx="16" cy="18" r="14" fill="url(#goldCoinCancel)" stroke="#d97706" stroke-width="1.5"/>
+      <text x="11" y="24" font-family="Arial,sans-serif" font-size="16" font-weight="bold" fill="#78350f">₹</text>
+      <circle cx="50" cy="8" r="11" fill="url(#goldCoinCancel)" stroke="#d97706" stroke-width="1.2"/>
+      <text x="45.5" y="13" font-family="Arial,sans-serif" font-size="12" font-weight="bold" fill="#78350f">₹</text>
+      <path d="M0 24q26 -16 56 0" fill="none" stroke="#10b981" stroke-width="2.5" stroke-dasharray="4 3"/>
+    </g>
+
+    <!-- RIGHT: Customer Account & Instant Wallet Device -->
+    <g transform="translate(980 62)">
+      <!-- Modern Mobile / Wallet Station -->
+      <rect x="20" y="6" width="68" height="102" rx="10" fill="#1e293b" stroke="#334155" stroke-width="2.5"/>
+      <rect x="25" y="14" width="58" height="82" rx="5" fill="#ffffff"/>
+      <!-- Wallet Screen Content -->
+      <rect x="29" y="20" width="50" height="22" rx="3" fill="#eff6ff"/>
+      <text x="33" y="30" font-family="Arial,sans-serif" font-size="6" font-weight="800" fill="#2563eb">WALLET REFUND</text>
+      <text x="33" y="38" font-family="Arial,sans-serif" font-size="7.5" font-weight="bold" fill="#0f172a">+ 100% REFUND</text>
+      <!-- Success Indicator -->
+      <circle cx="54" cy="64" r="14" fill="#dcfce7"/>
+      <path d="M48 64l4 4 8-8" stroke="#16a34a" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+      <text x="33" y="86" font-family="Arial,sans-serif" font-size="7" font-weight="800" fill="#16a34a">AUTO-CREDITED</text>
+      <circle cx="54" cy="102" r="3" fill="#64748b"/>
+    </g>
+
+  </g>
+
+  <!-- Roadside Greenery Trees -->
+  <g fill="#10b981" filter="url(#shadowCancel)">
+    <g transform="translate(24 102)"><rect x="13" y="31" width="6" height="20" fill="#78350f"/><circle cx="16" cy="17" r="17"/><circle cx="4" cy="26" r="11"/><circle cx="27" cy="28" r="12"/></g>
+    <g transform="translate(380 110)"><rect x="13" y="29" width="6" height="14" fill="#78350f"/><circle cx="16" cy="17" r="15"/><circle cx="4" cy="26" r="10"/><circle cx="27" cy="28" r="10"/></g>
+    <g transform="translate(860 106)"><rect x="13" y="29" width="6" height="17" fill="#78350f"/><circle cx="16" cy="17" r="16"/><circle cx="4" cy="27" r="11"/><circle cx="28" cy="28" r="11"/></g>
+    <g transform="translate(1140 104)"><rect x="13" y="29" width="6" height="18" fill="#78350f"/><circle cx="16" cy="17" r="16"/><circle cx="4" cy="27" r="11"/><circle cx="28" cy="28" r="11"/></g>
+  </g>
+
+  <!-- Asphalt Road -->
+  <path d="M0 150h1200v40H0z" fill="url(#roadCancel)"/>
+  <path d="M0 169h1200" stroke="#ffffff" stroke-width="3" stroke-dasharray="32 24" opacity=".95"/>
+</svg>
