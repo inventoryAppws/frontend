@@ -229,6 +229,12 @@ function App() {
               element={<VendorOrders />}
             />
 
+            {/* Vendor Returns & Refunds */}
+            <Route
+              path="returns"
+              element={<VendorOrders defaultFilter="returned" />}
+            />
+
             {/* Vendor Analytics */}
             <Route
               path="analytics"

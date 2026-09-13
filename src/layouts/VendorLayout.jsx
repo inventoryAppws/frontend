@@ -18,7 +18,8 @@ import {
   Boxes,
   HelpCircle,
   Menu,
-  X
+  X,
+  RotateCcw
 } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
@@ -164,6 +165,7 @@ function VendorLayout() {
     const path = location.pathname;
     if (path === "/vendor" || path === "/vendor/") return "Vendor Dashboard";
     if (path.includes("/vendor/products")) return "Inventory & Products";
+    if (path.includes("/vendor/returns") || location.search.includes("tab=returned")) return "Returns & Refunds Management";
     if (path.includes("/vendor/orders")) return "Orders & Fulfillment";
     if (path.includes("/vendor/analytics")) return "Sales Analytics & Reports";
     if (path.includes("/vendor/settings")) return "Vendor Store Settings";
@@ -245,11 +247,21 @@ function VendorLayout() {
           <NavLink
             to="/vendor/orders"
             className={({ isActive }) =>
-              `vendor-nav-link ${isActive ? "active" : ""}`
+              `vendor-nav-link ${isActive && !location.pathname.includes("/vendor/returns") && !location.search.includes("tab=returned") ? "active" : ""}`
             }
           >
             <ShoppingCart className="vendor-nav-icon" size={18} />
             <span>Orders &amp; Invoices</span>
+          </NavLink>
+
+          <NavLink
+            to="/vendor/returns"
+            className={({ isActive }) =>
+              `vendor-nav-link ${isActive || location.pathname.includes("/vendor/returns") || location.search.includes("tab=returned") ? "active" : ""}`
+            }
+          >
+            <RotateCcw className="vendor-nav-icon" size={18} />
+            <span>Returns &amp; Refunds</span>
           </NavLink>
 
           <div className="vendor-nav-label">BUSINESS INTELLIGENCE</div>

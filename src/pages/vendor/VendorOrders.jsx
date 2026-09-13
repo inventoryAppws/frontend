@@ -1,5 +1,5 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useSearchParams } from "react-router-dom";
 import {
   ShoppingCart,
   Search,
@@ -187,7 +187,7 @@ function getItemImage(item) {
   return "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400&auto=format&fit=crop&q=80";
 }
 
-function VendorOrders() {
+function VendorOrders({ defaultFilter = null }) {
   const sentinelRef = useRef(null);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -196,11 +196,42 @@ function VendorOrders() {
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
 
+  // Router Location & Search Params
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const isReturnsRoute = defaultFilter === "returned" || location.pathname.includes("/vendor/returns");
+
   // Filters & Sorting
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 300);
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState(() => {
+    if (isReturnsRoute) return "returned";
+    return searchParams.get("tab") || "all";
+  });
   const [sortBy, setSortBy] = useState("date_desc");
+
+  // Sync status filter when route or query changes
+  useEffect(() => {
+    if (isReturnsRoute) {
+      setStatusFilter("returned");
+    } else {
+      const tabParam = searchParams.get("tab");
+      if (tabParam) {
+        setStatusFilter(tabParam);
+      }
+    }
+  }, [isReturnsRoute, location.search, searchParams]);
+
+  const handleTabChange = (newFilter) => {
+    setStatusFilter(newFilter);
+    const nextParams = new URLSearchParams(searchParams);
+    if (newFilter === "all") {
+      nextParams.delete("tab");
+    } else {
+      nextParams.set("tab", newFilter);
+    }
+    setSearchParams(nextParams, { replace: true });
+  };
 
   // Updating status state
   const [updatingId, setUpdatingId] = useState(null);
@@ -503,13 +534,15 @@ function VendorOrders() {
         <div className="vendor-orders-title-block">
           <div className="vendor-breadcrumb">
             <Home size={13} />
-            <span>Orders &amp; Invoices</span>
+            <span>{isReturnsRoute || statusFilter === "returned" ? "Returns & Refunds" : "Orders & Invoices"}</span>
             <ChevronRight size={13} />
-            <span className="current">Orders</span>
+            <span className="current">{isReturnsRoute || statusFilter === "returned" ? "Logistics & Claims" : "Orders"}</span>
           </div>
-          <h2>Customer Orders &amp; Invoices</h2>
+          <h2>{isReturnsRoute || statusFilter === "returned" ? "Returns & Refunds Management" : "Customer Orders & Invoices"}</h2>
           <p className="vendor-page-subtext">
-            Manage customer orders, track deliveries, and generate invoices.
+            {isReturnsRoute || statusFilter === "returned"
+              ? "Track reverse logistics, inspect returned items, and process wallet refunds for customers."
+              : "Manage customer orders, track deliveries, and generate invoices."}
           </p>
         </div>
       </div>
@@ -655,49 +688,49 @@ function VendorOrders() {
           <button
             type="button"
             className={`orders-tab-btn ${statusFilter === "all" ? "active" : ""}`}
-            onClick={() => setStatusFilter("all")}
+            onClick={() => handleTabChange("all")}
           >
             All ({orders.length})
           </button>
           <button
             type="button"
             className={`orders-tab-btn ${statusFilter === "placed" ? "active" : ""}`}
-            onClick={() => setStatusFilter("placed")}
+            onClick={() => handleTabChange("placed")}
           >
             Placed ({statusCounts.placed || 0})
           </button>
           <button
             type="button"
             className={`orders-tab-btn ${statusFilter === "packed" ? "active" : ""}`}
-            onClick={() => setStatusFilter("packed")}
+            onClick={() => handleTabChange("packed")}
           >
             Packed ({statusCounts.packed || 0})
           </button>
           <button
             type="button"
             className={`orders-tab-btn ${statusFilter === "shipped" ? "active" : ""}`}
-            onClick={() => setStatusFilter("shipped")}
+            onClick={() => handleTabChange("shipped")}
           >
             Shipped ({(statusCounts.shipped || 0) + (statusCounts.out_for_delivery || 0)})
           </button>
           <button
             type="button"
             className={`orders-tab-btn ${statusFilter === "delivered" ? "active" : ""}`}
-            onClick={() => setStatusFilter("delivered")}
+            onClick={() => handleTabChange("delivered")}
           >
             Delivered ({statusCounts.delivered || 0})
           </button>
           <button
             type="button"
             className={`orders-tab-btn ${statusFilter === "returned" ? "active" : ""}`}
-            onClick={() => setStatusFilter("returned")}
+            onClick={() => handleTabChange("returned")}
           >
             Returns &amp; Refunds ({returnOrdersCount})
           </button>
           <button
             type="button"
             className={`orders-tab-btn ${statusFilter === "cancelled" ? "active" : ""}`}
-            onClick={() => setStatusFilter("cancelled")}
+            onClick={() => handleTabChange("cancelled")}
           >
             Cancelled ({statusCounts.cancelled || 0})
           </button>
