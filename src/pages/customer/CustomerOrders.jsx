@@ -57,11 +57,17 @@ function getStatusMeta(statusKey, returnStatusKey) {
     if (ret === "requested") {
       return { label: "RETURN REQUESTED", badgeClass: "order-pill-return-requested" };
     }
-    if (ret === "approved") {
-      return { label: "RETURN APPROVED", badgeClass: "order-pill-return-approved" };
+    if (ret === "approved" || ret === "pickup_confirmed" || ret === "pickup_scheduled") {
+      return { label: "PICKUP SCHEDULED", badgeClass: "order-pill-return-approved" };
+    }
+    if (ret === "item_received" || ret === "picked_up") {
+      return { label: "ITEM RECEIVED AT HUB", badgeClass: "order-pill-return-approved" };
+    }
+    if (ret === "quality_passed") {
+      return { label: "QUALITY PASSED", badgeClass: "order-pill-return-approved" };
     }
     if (ret === "returned" || ret === "completed" || ret === "refund_credited") {
-      return { label: "RETURNED", badgeClass: "order-pill-cancelled" };
+      return { label: "RETURNED & REFUNDED", badgeClass: "order-pill-cancelled" };
     }
     if (ret === "rejected") {
       return { label: "RETURN REJECTED", badgeClass: "order-pill-cancelled" };

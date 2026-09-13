@@ -167,7 +167,7 @@ function TrackOrder() {
     }
 
     // Match status directly if server provides exact status string
-    const serverStatus = String(returnRecord?.status || order?.status || "").toLowerCase();
+    const serverStatus = String(returnRecord?.status || order?.returnStatus || order?.status || "").toLowerCase();
     const serverIdx = activeStages.findIndex(([id]) => id === serverStatus);
     if (serverIdx > currentIndex) {
       currentIndex = serverIdx;
