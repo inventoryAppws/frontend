@@ -3,12 +3,10 @@ import {
   RotateCcw,
   Search,
   X,
-  Package,
   Truck,
   CheckCircle2,
   XCircle,
   IndianRupee,
-  Clock,
   ArrowUpDown,
   Home,
   ChevronRight,
@@ -17,20 +15,15 @@ import {
   MapPin,
   Phone,
   User,
-  ExternalLink,
-  ShieldCheck,
   Boxes,
   Warehouse,
-  AlertCircle,
-  FileText,
-  HelpCircle,
-  ArrowRight
+  FileText
 } from "lucide-react";
 import { getReturns, updateReturnStatus } from "../../services/returnService";
 import Loader from "../../components/Loader";
 import ErrorMessage from "../../components/ErrorMessage";
 import CustomSelect from "../../components/CustomSelect";
-import { formatDate, formatDateTime } from "../../utils/dateFormatter";
+import { formatDateTime } from "../../utils/dateFormatter";
 import { getErrorMessage } from "../../utils/errorHandler";
 import { toast } from "../../components/Toast";
 import useDebounce from "../../hooks/useDebounce";
@@ -111,8 +104,28 @@ function VendorReturns() {
   }, []);
 
   useEffect(() => {
-    loadReturnsData();
-  }, [loadReturnsData]);
+    let isMounted = true;
+    getReturns()
+      .then((res) => {
+        if (isMounted) {
+          const list = Array.isArray(res?.items) ? res.items : [];
+          setReturns(list);
+        }
+      })
+      .catch((err) => {
+        if (isMounted) {
+          setError(getErrorMessage(err) || "Failed to load returns");
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setLoading(false);
+        }
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Handle Vendor Action on Return Claim
   const handleClaimAction = async (claim, action) => {
@@ -295,76 +308,169 @@ function VendorReturns() {
         </div>
       </div>
 
-      {/* 2. TOP METRICS STRIP WITH HERO ASSETS BANNER (Adapted from app themes / Image 1) */}
-      <div className="vendor-returns-top-section">
+      {/* 2. TOP METRICS STRIP WITH HERO ASSETS BANNER */}
+      <div className="vendor-returns-top-section" style={{ display: "grid", gridTemplateColumns: "1fr 380px", gap: "16px", alignItems: "stretch", marginBottom: "4px" }}>
         {/* 4 Core Returns KPI Cards */}
-        <div className="vendor-returns-kpi-grid">
-          <div className="returns-kpi-card">
-            <div className="kpi-icon-box amber">
+        <div className="vendor-returns-kpi-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "12px" }}>
+          <div className="returns-kpi-card" style={{ background: "#ffffff", border: "1.5px solid #e2e8f0", borderRadius: "14px", padding: "14px 18px", display: "flex", alignItems: "center", gap: "14px", minHeight: "86px", boxSizing: "border-box" }}>
+            <div className="kpi-icon-box amber" style={{ width: "44px", height: "44px", borderRadius: "12px", background: "#fffbeb", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <RotateCcw size={18} />
             </div>
-            <div className="kpi-content">
-              <span className="kpi-label">Active Claims</span>
-              <strong className="kpi-value">{metrics.activeClaims}</strong>
-              <span className="kpi-subtext">Awaiting inspection / pickup</span>
+            <div className="kpi-content" style={{ display: "flex", flexDirection: "column", gap: "2px", minWidth: 0, flex: 1 }}>
+              <span className="kpi-label" style={{ fontSize: "11px", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.6px", lineHeight: 1.2, display: "block" }}>
+                Active Claims
+              </span>
+              <strong className="kpi-value" style={{ fontSize: "24px", fontWeight: 800, color: "#0f172a", lineHeight: 1.15, letterSpacing: "-0.5px", display: "block", margin: "1px 0" }}>
+                {metrics.activeClaims}
+              </strong>
+              <span className="kpi-subtext" style={{ fontSize: "11.5px", color: "#64748b", lineHeight: 1.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", display: "block" }}>
+                Awaiting inspection / pickup
+              </span>
             </div>
           </div>
 
-          <div className="returns-kpi-card">
-            <div className="kpi-icon-box blue">
+          <div className="returns-kpi-card" style={{ background: "#ffffff", border: "1.5px solid #e2e8f0", borderRadius: "14px", padding: "14px 18px", display: "flex", alignItems: "center", gap: "14px", minHeight: "86px", boxSizing: "border-box" }}>
+            <div className="kpi-icon-box blue" style={{ width: "44px", height: "44px", borderRadius: "12px", background: "#eff6ff", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <Warehouse size={18} />
             </div>
-            <div className="kpi-content">
-              <span className="kpi-label">At Inspection Hub</span>
-              <strong className="kpi-value">{metrics.inHub}</strong>
-              <span className="kpi-subtext">Arrived for quality verification</span>
+            <div className="kpi-content" style={{ display: "flex", flexDirection: "column", gap: "2px", minWidth: 0, flex: 1 }}>
+              <span className="kpi-label" style={{ fontSize: "11px", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.6px", lineHeight: 1.2, display: "block" }}>
+                At Inspection Hub
+              </span>
+              <strong className="kpi-value" style={{ fontSize: "24px", fontWeight: 800, color: "#0f172a", lineHeight: 1.15, letterSpacing: "-0.5px", display: "block", margin: "1px 0" }}>
+                {metrics.inHub}
+              </strong>
+              <span className="kpi-subtext" style={{ fontSize: "11.5px", color: "#64748b", lineHeight: 1.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", display: "block" }}>
+                Arrived for quality verification
+              </span>
             </div>
           </div>
 
-          <div className="returns-kpi-card">
-            <div className="kpi-icon-box emerald">
+          <div className="returns-kpi-card" style={{ background: "#ffffff", border: "1.5px solid #e2e8f0", borderRadius: "14px", padding: "14px 18px", display: "flex", alignItems: "center", gap: "14px", minHeight: "86px", boxSizing: "border-box" }}>
+            <div className="kpi-icon-box emerald" style={{ width: "44px", height: "44px", borderRadius: "12px", background: "#ecfdf5", color: "#059669", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <Boxes size={18} />
             </div>
-            <div className="kpi-content">
-              <span className="kpi-label">Restocked into Catalog</span>
-              <strong className="kpi-value">{metrics.passed + metrics.credited}</strong>
-              <span className="kpi-subtext">Quality passed &amp; inventory replenished</span>
+            <div className="kpi-content" style={{ display: "flex", flexDirection: "column", gap: "2px", minWidth: 0, flex: 1 }}>
+              <span className="kpi-label" style={{ fontSize: "11px", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.6px", lineHeight: 1.2, display: "block" }}>
+                Restocked into Catalog
+              </span>
+              <strong className="kpi-value" style={{ fontSize: "24px", fontWeight: 800, color: "#0f172a", lineHeight: 1.15, letterSpacing: "-0.5px", display: "block", margin: "1px 0" }}>
+                {metrics.passed + metrics.credited}
+              </strong>
+              <span className="kpi-subtext" style={{ fontSize: "11.5px", color: "#64748b", lineHeight: 1.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", display: "block" }}>
+                Quality passed &amp; inventory replenished
+              </span>
             </div>
           </div>
 
-          <div className="returns-kpi-card">
-            <div className="kpi-icon-box rose">
+          <div className="returns-kpi-card" style={{ background: "#ffffff", border: "1.5px solid #e2e8f0", borderRadius: "14px", padding: "14px 18px", display: "flex", alignItems: "center", gap: "14px", minHeight: "86px", boxSizing: "border-box" }}>
+            <div className="kpi-icon-box rose" style={{ width: "44px", height: "44px", borderRadius: "12px", background: "#fff1f2", color: "#e11d48", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <XCircle size={18} />
             </div>
-            <div className="kpi-content">
-              <span className="kpi-label">Cancelled / Declined</span>
-              <strong className="kpi-value">{metrics.cancelled + metrics.rejected}</strong>
-              <span className="kpi-subtext">
+            <div className="kpi-content" style={{ display: "flex", flexDirection: "column", gap: "2px", minWidth: 0, flex: 1 }}>
+              <span className="kpi-label" style={{ fontSize: "11px", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.6px", lineHeight: 1.2, display: "block" }}>
+                Cancelled / Declined
+              </span>
+              <strong className="kpi-value" style={{ fontSize: "24px", fontWeight: 800, color: "#0f172a", lineHeight: 1.15, letterSpacing: "-0.5px", display: "block", margin: "1px 0" }}>
+                {metrics.cancelled + metrics.rejected}
+              </strong>
+              <span className="kpi-subtext" style={{ fontSize: "11.5px", color: "#64748b", lineHeight: 1.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", display: "block" }}>
                 {metrics.cancelled} by customer • {metrics.rejected} rejected
               </span>
             </div>
           </div>
         </div>
 
-        {/* FEATURED DARK BANNER CARD (Faithfully adapted from user reference image) */}
-        <div className="returns-featured-asset-card">
-          <div className="asset-card-tag">SETTLEMENT &amp; RECOVERED ASSETS</div>
-          <h3 className="asset-card-title">Total Refunds Issued</h3>
-          <div className="asset-card-val">
+        {/* FEATURED WHITE ASSET CARD */}
+        <div
+          className="returns-featured-asset-card"
+          style={{
+            background: "#ffffff",
+            border: "1.5px solid #e2e8f0",
+            borderRadius: "14px",
+            padding: "18px 20px",
+            color: "#0f172a",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            boxShadow: "0 1px 3px rgba(15, 23, 42, 0.04)",
+            boxSizing: "border-box"
+          }}
+        >
+          <div
+            className="asset-card-tag"
+            style={{
+              fontSize: "10.5px",
+              fontWeight: 700,
+              letterSpacing: "0.6px",
+              textTransform: "uppercase",
+              color: "#2563eb",
+              background: "#eff6ff",
+              border: "1px solid #bfdbfe",
+              display: "inline-block",
+              padding: "3px 8px",
+              borderRadius: "6px",
+              marginBottom: "6px",
+              alignSelf: "flex-start"
+            }}
+          >
+            SETTLEMENT &amp; RECOVERED ASSETS
+          </div>
+          <h3
+            className="asset-card-title"
+            style={{
+              fontSize: "15px",
+              fontWeight: 700,
+              color: "#1e293b",
+              margin: "0 0 4px 0"
+            }}
+          >
+            Total Refunds Issued
+          </h3>
+          <div
+            className="asset-card-val"
+            style={{
+              fontSize: "2.2rem",
+              fontWeight: 800,
+              color: "#2563eb",
+              lineHeight: 1.1,
+              letterSpacing: "-0.5px",
+              marginBottom: "6px"
+            }}
+          >
             ₹{metrics.totalRefunded.toLocaleString("en-IN")}
           </div>
-          <p className="asset-card-subtext">
-            Commercial inventory value of <strong>₹{metrics.totalRestockedValue.toLocaleString("en-IN")}</strong> recovered across <strong>{metrics.restockedUnits}</strong> restocked stock units.
+          <p
+            className="asset-card-subtext"
+            style={{
+              fontSize: "12px",
+              color: "#64748b",
+              lineHeight: 1.45,
+              margin: "0 0 12px 0"
+            }}
+          >
+            Commercial inventory value of <strong style={{ color: "#0f172a", fontWeight: 600 }}>₹{metrics.totalRestockedValue.toLocaleString("en-IN")}</strong> recovered across <strong style={{ color: "#0f172a", fontWeight: 600 }}>{metrics.restockedUnits}</strong> restocked stock units.
           </p>
 
-          <div className="asset-card-footer-stats">
-            <div className="asset-stat-item">
-              <span className="stat-name">Pending Actions:</span>
-              <strong className="stat-val pending">{metrics.requested} claims</strong>
+          <div
+            className="asset-card-footer-stats"
+            style={{
+              display: "flex",
+              gap: "14px",
+              background: "#f8fafc",
+              border: "1px solid #e2e8f0",
+              padding: "8px 12px",
+              borderRadius: "8px",
+              fontSize: "12px"
+            }}
+          >
+            <div className="asset-stat-item" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <span className="stat-name" style={{ color: "#64748b" }}>Pending Actions:</span>
+              <strong className="stat-val pending" style={{ fontWeight: 700, color: "#d97706" }}>{metrics.requested} claims</strong>
             </div>
-            <div className="asset-stat-item">
-              <span className="stat-name">In Transit:</span>
-              <strong className="stat-val transit">{metrics.inTransit} courier pick</strong>
+            <div className="asset-stat-item" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <span className="stat-name" style={{ color: "#64748b" }}>In Transit:</span>
+              <strong className="stat-val transit" style={{ fontWeight: 700, color: "#2563eb" }}>{metrics.inTransit} courier pick</strong>
             </div>
           </div>
         </div>
