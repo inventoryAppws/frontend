@@ -37,6 +37,7 @@ import VendorRegister from "./pages/vendor/VendorRegister";
 import VendorDashboard from "./pages/vendor/VendorDashboard";
 import VendorProducts from "./pages/vendor/VendorProducts";
 import VendorOrders from "./pages/vendor/VendorOrders";
+import VendorReturns from "./pages/vendor/VendorReturns";
 import VendorAnalytics from "./pages/vendor/VendorAnalytics";
 import VendorSettings from "./pages/vendor/VendorSettings";
 
@@ -232,7 +233,7 @@ function App() {
             {/* Vendor Returns & Refunds */}
             <Route
               path="returns"
-              element={<VendorOrders defaultFilter="returned" />}
+              element={<VendorReturns />}
             />
 
             {/* Vendor Analytics */}

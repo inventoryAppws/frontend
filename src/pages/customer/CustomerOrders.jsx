@@ -18,8 +18,7 @@ import MultiProductsOrderModal from "../../components/MultiProductsOrderModal";
 import OrderDetailsSidepanel from "../../components/OrderDetailsSidepanel";
 import ReturnRequestsSidepanel from "../../components/ReturnRequestsSidepanel";
 import { CancelOrderModal, ReturnOrderModal } from "../../components/OrderActionModals";
-import CustomSelect from "../../components/CustomSelect";
-import { getCustomerOrders } from "../../services/orderService";
+import { getCustomerOrders, cancelOrderReturn } from "../../services/orderService";
 import { addToCart } from "../../services/cartService";
 import { toast } from "../../components/Toast";
 import Loader from "../../components/Loader";
@@ -61,11 +60,14 @@ function getStatusMeta(statusKey, returnStatusKey) {
     if (ret === "approved") {
       return { label: "RETURN APPROVED", badgeClass: "order-pill-return-approved" };
     }
-    if (ret === "returned" || ret === "completed") {
+    if (ret === "returned" || ret === "completed" || ret === "refund_credited") {
       return { label: "RETURNED", badgeClass: "order-pill-cancelled" };
     }
     if (ret === "rejected") {
       return { label: "RETURN REJECTED", badgeClass: "order-pill-cancelled" };
+    }
+    if (ret === "cancelled" || ret === "customer_cancelled") {
+      return { label: "RETURN CANCELLED", badgeClass: "order-pill-cancelled" };
     }
   }
 
@@ -209,6 +211,25 @@ function CustomerOrders() {
       setSelectedOrder(order);
     } catch (err) {
       toast.error(getErrorMessage(err));
+    }
+  };
+
+  const handleCancelReturn = async (order) => {
+    const oId = order.orderId || String(order._id).slice(-8).toUpperCase();
+    if (!window.confirm(`Are you sure you want to cancel the return request for Order #${oId}? Your order will remain Delivered.`)) {
+      return;
+    }
+    try {
+      await cancelOrderReturn(order._id);
+      toast.success(`Return request for Order #${oId} cancelled.`);
+      setOrders((prev) =>
+        prev.map((o) => (o._id === order._id ? { ...o, returnStatus: "cancelled", refundStatus: "none" } : o))
+      );
+      setAllOrdersForCount((prev) =>
+        prev.map((o) => (o._id === order._id ? { ...o, returnStatus: "cancelled", refundStatus: "none" } : o))
+      );
+    } catch (err) {
+      toast.error(getErrorMessage(err) || "Failed to cancel return request");
     }
   };
 
@@ -498,8 +519,18 @@ function CustomerOrders() {
                             <RotateCcw size={15} />
                             <span>Buy Again</span>
                           </button>
-                          {String(order.returnStatus || "").toLowerCase() !== "requested" &&
-                           String(order.returnStatus || "").toLowerCase() !== "approved" && (
+                          {String(order.returnStatus || "").toLowerCase() === "requested" ? (
+                            <button
+                              type="button"
+                              className="btn-order-outline-cancel"
+                              onClick={() => handleCancelReturn(order)}
+                              title="Cancel your return request"
+                            >
+                              <span>Cancel Return</span>
+                            </button>
+                          ) : String(order.returnStatus || "").toLowerCase() !== "approved" &&
+                             String(order.returnStatus || "").toLowerCase() !== "returned" &&
+                             String(order.status || "").toLowerCase() !== "returned" ? (
                             <button
                               type="button"
                               className="btn-order-outline-return"
@@ -507,7 +538,7 @@ function CustomerOrders() {
                             >
                               <span>Return</span>
                             </button>
-                          )}
+                          ) : null}
                         </>
                       ) : (
                         <>

@@ -26048,29 +26048,29 @@ tr:last-child td {
   text-align: left !important;
 }
 
-/* 1. TOP KPI CARDS GRID (8 Cards) */
+/* 1. TOP KPI CARDS GRID (6 Compact Cards) */
 .vendor-orders-page-container .vendor-orders-kpi-grid {
   display: grid !important;
-  grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
-  gap: 12px !important;
-  margin-bottom: 1.25rem !important;
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  margin-bottom: 1rem !important;
   width: 100% !important;
   box-sizing: border-box !important;
 }
 
-@media (max-width: 1600px) {
+@media (max-width: 1360px) {
   .vendor-orders-page-container .vendor-orders-kpi-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
   .vendor-orders-page-container .vendor-orders-kpi-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }
 
-@media (max-width: 540px) {
+@media (max-width: 480px) {
   .vendor-orders-page-container .vendor-orders-kpi-grid {
     grid-template-columns: 1fr !important;
   }
@@ -27064,3 +27064,899 @@ tr:last-child td {
   padding: 8px 16px !important;
   border-radius: 8px !important;
 }
+
+/* =======================================================
+   MORE OPTIONS 3-DOTS DROPDOWN MENU
+======================================================= */
+.vendor-more-wrap {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+.vendor-more-dropdown {
+  position: absolute !important;
+  top: calc(100% + 6px) !important;
+  right: 0 !important;
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15), 0 4px 6px -2px rgba(15, 23, 42, 0.05) !important;
+  min-width: 190px !important;
+  padding: 6px !important;
+  z-index: 100 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  animation: dropdownFade 0.15s ease-out !important;
+}
+
+@keyframes dropdownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.vendor-more-dropdown .more-dropdown-item {
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 8px 12px !important;
+  border-radius: 6px !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  color: #334155 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  cursor: pointer !important;
+  text-align: left !important;
+  transition: all 0.12s ease !important;
+}
+
+.vendor-more-dropdown .more-dropdown-item:hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+.vendor-more-dropdown .more-dropdown-item.return-link {
+  color: #d97706 !important;
+}
+
+.vendor-more-dropdown .more-dropdown-item.return-link:hover {
+  background: #fffbeb !important;
+  color: #b45309 !important;
+}
+
+/* =======================================================
+   DEDICATED VENDOR RETURNS & REFUNDS CONSOLE
+======================================================= */
+.vendor-returns-container {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.vendor-returns-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  gap: 16px !important;
+  flex-wrap: wrap !important;
+  margin-bottom: 4px !important;
+}
+
+.vendor-returns-title-block h2 {
+  font-size: 1.5rem !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  margin: 4px 0 2px 0 !important;
+  letter-spacing: -0.3px !important;
+}
+
+.vendor-returns-header-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+.vendor-btn-secondary {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background: #ffffff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  padding: 8px 14px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #334155 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.vendor-btn-secondary:hover {
+  background: #f8fafc !important;
+  border-color: #94a3b8 !important;
+}
+
+/* Top Section: Left 4 KPI Grid + Right Featured Dark Asset Card */
+.vendor-returns-top-section {
+  display: grid !important;
+  grid-template-columns: 1fr 380px !important;
+  gap: 16px !important;
+  align-items: stretch !important;
+  margin-bottom: 4px !important;
+}
+
+@media (max-width: 1200px) {
+  .vendor-returns-top-section {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.vendor-returns-kpi-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+@media (max-width: 640px) {
+  .vendor-returns-kpi-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.returns-kpi-card {
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  padding: 14px 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.returns-kpi-card:hover {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Sleek Dark Navy Asset Card (Matching reference theme) */
+.returns-featured-asset-card {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 16px !important;
+  padding: 20px 22px !important;
+  color: #ffffff !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.3) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.returns-featured-asset-card::before {
+  content: "" !important;
+  position: absolute !important;
+  top: -60px !important;
+  right: -60px !important;
+  width: 140px !important;
+  height: 140px !important;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(56, 189, 248, 0) 70%) !important;
+  border-radius: 50% !important;
+  pointer-events: none !important;
+}
+
+.asset-card-tag {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.8px !important;
+  text-transform: uppercase !important;
+  color: #38bdf8 !important;
+  margin-bottom: 4px !important;
+}
+
+.asset-card-title {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #f8fafc !important;
+  margin: 0 0 6px 0 !important;
+}
+
+.asset-card-val {
+  font-size: 2.2rem !important;
+  font-weight: 900 !important;
+  color: #38bdf8 !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.5px !important;
+  margin-bottom: 8px !important;
+}
+
+.asset-card-subtext {
+  font-size: 12.5px !important;
+  color: #94a3b8 !important;
+  line-height: 1.5 !important;
+  margin: 0 0 14px 0 !important;
+}
+
+.asset-card-subtext strong {
+  color: #e2e8f0 !important;
+}
+
+.asset-card-footer-stats {
+  display: flex !important;
+  gap: 12px !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  font-size: 12px !important;
+}
+
+.asset-stat-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+}
+
+.asset-stat-item .stat-name {
+  color: #94a3b8 !important;
+}
+
+.asset-stat-item .stat-val {
+  font-weight: 700 !important;
+}
+
+/* Returns Toolbar & Tabs */
+.vendor-returns-toolbar {
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  padding: 8px 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+  box-sizing: border-box !important;
+}
+
+.vendor-returns-toolbar-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  flex: 1 1 450px !important;
+  min-width: 260px !important;
+  flex-wrap: wrap !important;
+}
+
+.vendor-returns-search {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  flex: 1 1 260px !important;
+  min-width: 200px !important;
+}
+
+.vendor-returns-search input {
+  width: 100% !important;
+  padding: 8px 44px 8px 12px !important;
+  border: 1.5px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  color: #0f172a !important;
+  background: #ffffff !important;
+  outline: none !important;
+  height: 38px !important;
+  box-sizing: border-box !important;
+  transition: all 0.15s ease !important;
+}
+
+.vendor-returns-search input:focus {
+  border-color: #d97706 !important;
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12) !important;
+}
+
+.vendor-returns-tabs {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  overflow-x: auto !important;
+  padding: 2px 0 !important;
+}
+
+.returns-tab-btn {
+  background: #f1f5f9 !important;
+  border: 1px solid transparent !important;
+  border-radius: 20px !important;
+  padding: 6px 14px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #475569 !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  transition: all 0.15s ease !important;
+}
+
+.returns-tab-btn:hover {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+.returns-tab-btn.active {
+  background: #0f172a !important;
+  color: #ffffff !important;
+}
+
+/* Returns Empty State */
+.vendor-returns-empty {
+  background: #ffffff !important;
+  border: 1.5px dashed #cbd5e1 !important;
+  border-radius: 14px !important;
+  padding: 48px 24px !important;
+  text-align: center !important;
+  color: #64748b !important;
+}
+
+.vendor-returns-empty .empty-icon {
+  color: #94a3b8 !important;
+  margin-bottom: 12px !important;
+}
+
+.vendor-returns-empty h3 {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  margin: 0 0 6px 0 !important;
+}
+
+.vendor-returns-empty p {
+  font-size: 13px !important;
+  color: #64748b !important;
+  margin: 0 !important;
+}
+
+/* Return Claim Card */
+.vendor-returns-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+}
+
+.return-claim-card {
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+  transition: all 0.2s ease !important;
+}
+
+.return-claim-card:hover {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06) !important;
+}
+
+.return-claim-card .claim-card-header {
+  padding: 12px 18px !important;
+  background: #fffbeb !important;
+  border-bottom: 1px solid #fef3c7 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+}
+
+.return-claim-card.status-refund_credited .claim-card-header,
+.return-claim-card.status-completed .claim-card-header {
+  background: #f0fdf4 !important;
+  border-bottom-color: #dcfce7 !important;
+}
+
+.return-claim-card.status-cancelled .claim-card-header,
+.return-claim-card.status-rejected .claim-card-header {
+  background: #f8fafc !important;
+  border-bottom-color: #e2e8f0 !important;
+}
+
+.claim-header-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.claim-badge-icon {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 10px !important;
+  background: #fef3c7 !important;
+  border: 1px solid #fde68a !important;
+  color: #d97706 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+
+.claim-id-block {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+}
+
+.claim-id-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+}
+
+.claim-id-text {
+  font-size: 14.5px !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+}
+
+.claim-parent-order {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 6px !important;
+  padding: 2px 8px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #475569 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+.claim-status-pill {
+  border-radius: 20px !important;
+  padding: 3px 10px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.3px !important;
+}
+
+.claim-status-pill.pill-requested {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+}
+
+.claim-status-pill.pill-pickup_confirmed,
+.claim-status-pill.pill-pickup_scheduled {
+  background: #dbeafe !important;
+  color: #1e40af !important;
+}
+
+.claim-status-pill.pill-item_received {
+  background: #e0e7ff !important;
+  color: #3730a3 !important;
+}
+
+.claim-status-pill.pill-quality_passed {
+  background: #dcfce7 !important;
+  color: #166534 !important;
+}
+
+.claim-status-pill.pill-refund_credited,
+.claim-status-pill.pill-completed {
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+}
+
+.claim-status-pill.pill-cancelled {
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+}
+
+.claim-status-pill.pill-rejected {
+  background: #ffe4e6 !important;
+  color: #be123c !important;
+}
+
+.claim-date {
+  font-size: 12px !important;
+  color: #64748b !important;
+}
+
+.claim-details-btn {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  padding: 6px 12px !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  color: #334155 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  transition: all 0.15s ease !important;
+}
+
+.claim-details-btn:hover {
+  background: #f8fafc !important;
+  border-color: #94a3b8 !important;
+}
+
+/* Claim Body Grid */
+.claim-card-body {
+  padding: 16px 18px !important;
+  display: grid !important;
+  grid-template-columns: 1.3fr 1fr 1fr !important;
+  gap: 20px !important;
+  align-items: start !important;
+}
+
+@media (max-width: 1080px) {
+  .claim-card-body {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.claim-product-col {
+  display: flex !important;
+  gap: 14px !important;
+}
+
+.claim-thumb-wrap {
+  width: 72px !important;
+  height: 72px !important;
+  border-radius: 10px !important;
+  border: 1px solid #e2e8f0 !important;
+  overflow: hidden !important;
+  flex-shrink: 0 !important;
+  background: #f8fafc !important;
+}
+
+.claim-thumb-img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+.claim-product-info {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+.claim-product-title {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  margin: 0 !important;
+  line-height: 1.3 !important;
+}
+
+.claim-item-meta {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-size: 12.5px !important;
+  color: #64748b !important;
+}
+
+.claim-item-meta strong {
+  color: #0f172a !important;
+}
+
+.claim-extra-pill {
+  background: #f1f5f9 !important;
+  padding: 1px 6px !important;
+  border-radius: 4px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+.claim-reason-box {
+  background: #f8fafc !important;
+  border-left: 3px solid #d97706 !important;
+  padding: 6px 10px !important;
+  border-radius: 0 6px 6px 0 !important;
+  font-size: 12px !important;
+  margin-top: 4px !important;
+}
+
+.reason-label {
+  color: #64748b !important;
+  margin-right: 4px !important;
+}
+
+.reason-text {
+  color: #0f172a !important;
+}
+
+.claim-comments-text {
+  font-size: 12px !important;
+  color: #64748b !important;
+  font-style: italic !important;
+  margin: 4px 0 0 0 !important;
+}
+
+/* Middle Column Logistics */
+.claim-logistics-col {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  border-left: 1px solid #f1f5f9 !important;
+  border-right: 1px solid #f1f5f9 !important;
+  padding: 0 16px !important;
+}
+
+@media (max-width: 1080px) {
+  .claim-logistics-col {
+    border-left: none !important;
+    border-right: none !important;
+    padding: 12px 0 !important;
+    border-top: 1px solid #f1f5f9 !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+  }
+}
+
+.logistics-info-item {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+  font-size: 12.5px !important;
+}
+
+.logistics-info-item .info-title {
+  display: block !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  color: #94a3b8 !important;
+}
+
+.logistics-info-item strong {
+  color: #0f172a !important;
+}
+
+.logistics-info-item .info-addr {
+  font-size: 12px !important;
+  color: #475569 !important;
+  margin: 2px 0 0 0 !important;
+  line-height: 1.4 !important;
+}
+
+/* Right Column Actions */
+.claim-action-col {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+.claim-amount-box {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  padding: 10px 14px !important;
+}
+
+.claim-amount-label {
+  font-size: 11.5px !important;
+  color: #64748b !important;
+  display: block !important;
+}
+
+.claim-amount-val {
+  font-size: 1.25rem !important;
+  font-weight: 800 !important;
+  color: #059669 !important;
+  display: block !important;
+}
+
+.claim-target-badge {
+  font-size: 10.5px !important;
+  color: #475569 !important;
+  background: #ffffff !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  border: 1px solid #e2e8f0 !important;
+  display: inline-block !important;
+  margin-top: 4px !important;
+}
+
+.claim-buttons-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+.btn-claim-primary {
+  background: #0f172a !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 9px 14px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  transition: all 0.15s ease !important;
+}
+
+.btn-claim-primary:hover {
+  background: #1e293b !important;
+}
+
+.btn-claim-success {
+  background: #059669 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 9px 14px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  transition: all 0.15s ease !important;
+}
+
+.btn-claim-success:hover {
+  background: #047857 !important;
+}
+
+.btn-claim-outline-danger {
+  background: #ffffff !important;
+  color: #e11d48 !important;
+  border: 1px solid #fecdd3 !important;
+  border-radius: 8px !important;
+  padding: 7px 14px !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  text-align: center !important;
+  transition: all 0.15s ease !important;
+}
+
+.btn-claim-outline-danger:hover {
+  background: #fff1f2 !important;
+  border-color: #fda4af !important;
+}
+
+.claim-settled-badge {
+  background: #ecfdf5 !important;
+  border: 1px solid #a7f3d0 !important;
+  color: #047857 !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+}
+
+.claim-cancelled-badge {
+  background: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #475569 !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+}
+
+.claim-declined-badge {
+  background: #fff1f2 !important;
+  border: 1px solid #fecdd3 !important;
+  color: #be123c !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+}
+
+/* 5-Step Pipeline Stepper Strip */
+.claim-stepper-strip {
+  background: #f8fafc !important;
+  border-top: 1px solid #e2e8f0 !important;
+  padding: 12px 18px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  overflow-x: auto !important;
+}
+
+.stepper-strip-step {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  flex: 1 1 0 !important;
+  min-width: 90px !important;
+  position: relative !important;
+}
+
+.step-dot-wrap {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  position: relative !important;
+}
+
+.step-dot {
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 50% !important;
+  background: #cbd5e1 !important;
+  color: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 2 !important;
+  margin: 0 auto !important;
+}
+
+.stepper-strip-step.complete .step-dot {
+  background: #059669 !important;
+}
+
+.stepper-strip-step.current .step-dot {
+  background: #d97706 !important;
+  box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.2) !important;
+}
+
+.step-line {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: 100% !important;
+  height: 2px !important;
+  background: #cbd5e1 !important;
+  z-index: 1 !important;
+}
+
+.stepper-strip-step.complete .step-line {
+  background: #059669 !important;
+}
+
+.step-strip-label {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: #64748b !important;
+  margin-top: 6px !important;
+  text-align: center !important;
+}
+
+.stepper-strip-step.complete .step-strip-label {
+  color: #0f172a !important;
+}
+
+.stepper-strip-step.current .step-strip-label {
+  color: #b45309 !important;
+  font-weight: 700 !important;
+}
+

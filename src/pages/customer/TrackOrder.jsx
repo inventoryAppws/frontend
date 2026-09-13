@@ -19,8 +19,9 @@ import {
   Info
 } from "lucide-react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { getCustomerOrders } from "../../services/orderService";
+import { getCustomerOrders, cancelOrderReturn } from "../../services/orderService";
 import { getReturns } from "../../services/returnService";
+import { toast } from "../../components/Toast";
 import Loader from "../../components/Loader";
 import ErrorMessage from "../../components/ErrorMessage";
 import { getErrorMessage } from "../../utils/errorHandler";
@@ -412,6 +413,32 @@ function TrackOrder() {
               : `Current Step: ${currentStageLabel}. Auto-progressing via 24-hour sync cycle.`}
           </span>
         </div>
+
+        {trackingMode === "return" && (order?.returnStatus === "requested" || returnRecord?.status === "requested") && (
+          <div className="track-return-cancel-banner" style={{ marginTop: "12px", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", background: "#fef2f2", border: "1px solid #fecaca", borderRadius: "10px" }}>
+            <span style={{ fontSize: "13px", color: "#991b1b", fontWeight: "500" }}>
+              Need to keep your item? You can cancel this return claim before reverse pickup is confirmed.
+            </span>
+            <button
+              type="button"
+              className="btn btn-outline"
+              style={{ color: "#dc2626", borderColor: "#f87171", background: "#fff", padding: "6px 14px", fontSize: "13px", fontWeight: "600" }}
+              onClick={handleCancelReturn}
+              disabled={cancellingReturn}
+            >
+              {cancellingReturn ? "Cancelling..." : "Cancel Return Request"}
+            </button>
+          </div>
+        )}
+
+        {trackingMode === "return" && (order?.returnStatus === "cancelled" || returnRecord?.status === "cancelled") && (
+          <div className="track-return-cancel-banner" style={{ marginTop: "12px", display: "flex", alignItems: "center", gap: "10px", padding: "12px 16px", background: "#f1f5f9", border: "1px solid #cbd5e1", borderRadius: "10px" }}>
+            <Info size={16} className="text-slate-600" />
+            <span style={{ fontSize: "13px", color: "#334155", fontWeight: "500" }}>
+              This return claim was cancelled by you. Your order remains Delivered.
+            </span>
+          </div>
+        )}
       </section>
 
       {/* CONTENT GRID */}

@@ -54,3 +54,9 @@ export async function requestOrderReturn(orderId, reason, comments = "") {
   const response = await api.post(`/orders/${orderId}/return`, { reason, comments });
   return response.data;
 }
+
+// Cancel Return Request (Allowed while return is requested)
+export async function cancelOrderReturn(orderId) {
+  const response = await api.post(`/orders/${orderId}/cancel-return`);
+  return response.data;
+}

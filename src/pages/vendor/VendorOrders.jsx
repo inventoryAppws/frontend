@@ -239,6 +239,21 @@ function VendorOrders({ defaultFilter = null }) {
   // Invoice Modal state
   const [selectedInvoiceOrder, setSelectedInvoiceOrder] = useState(null);
 
+  // More options dropdown state (fixes 3-dots button)
+  const [openMenuOrderId, setOpenMenuOrderId] = useState(null);
+  const [viewCustomerOrder, setViewCustomerOrder] = useState(null);
+
+  // Close more-options dropdown on outside click
+  useEffect(() => {
+    const handleGlobalClick = (e) => {
+      if (!e.target.closest(".vendor-more-wrap")) {
+        setOpenMenuOrderId(null);
+      }
+    };
+    document.addEventListener("mousedown", handleGlobalClick);
+    return () => document.removeEventListener("mousedown", handleGlobalClick);
+  }, []);
+
   // Return & Refund Console Modal state
   const [selectedReturnOrder, setSelectedReturnOrder] = useState(null);
   const [activeReturnRecord, setActiveReturnRecord] = useState(null);
@@ -534,24 +549,22 @@ function VendorOrders({ defaultFilter = null }) {
         <div className="vendor-orders-title-block">
           <div className="vendor-breadcrumb">
             <Home size={13} />
-            <span>{isReturnsRoute || statusFilter === "returned" ? "Returns & Refunds" : "Orders & Invoices"}</span>
+            <span>Orders &amp; Invoices</span>
             <ChevronRight size={13} />
-            <span className="current">{isReturnsRoute || statusFilter === "returned" ? "Logistics & Claims" : "Orders"}</span>
+            <span className="current">Orders</span>
           </div>
-          <h2>{isReturnsRoute || statusFilter === "returned" ? "Returns & Refunds Management" : "Customer Orders & Invoices"}</h2>
+          <h2>Customer Orders &amp; Invoices</h2>
           <p className="vendor-page-subtext">
-            {isReturnsRoute || statusFilter === "returned"
-              ? "Track reverse logistics, inspect returned items, and process wallet refunds for customers."
-              : "Manage customer orders, track deliveries, and generate invoices."}
+            Manage customer orders, track fulfillment status, and generate invoices.
           </p>
         </div>
       </div>
 
-      {/* 2. TOP KPI CARDS GRID (8 Cards) */}
+      {/* 2. TOP KPI CARDS GRID (6 Compact Cards) */}
       <div className="vendor-orders-kpi-grid">
         <div className="order-kpi-card">
           <div className="kpi-icon-box blue">
-            <ShoppingCart size={20} />
+            <ShoppingCart size={18} />
           </div>
           <div className="kpi-content">
             <span className="kpi-label">Total Orders</span>
@@ -562,82 +575,58 @@ function VendorOrders({ defaultFilter = null }) {
 
         <div className="order-kpi-card">
           <div className="kpi-icon-box purple">
-            <Clock size={20} />
+            <Clock size={18} />
           </div>
           <div className="kpi-content">
             <span className="kpi-label">Placed</span>
             <strong className="kpi-value">{statusCounts.placed || 0}</strong>
-            <span className="kpi-subtext">Waiting for processing</span>
+            <span className="kpi-subtext">Awaiting processing</span>
           </div>
         </div>
 
         <div className="order-kpi-card">
           <div className="kpi-icon-box amber">
-            <Package size={20} />
+            <Package size={18} />
           </div>
           <div className="kpi-content">
             <span className="kpi-label">Packed</span>
             <strong className="kpi-value">{statusCounts.packed || 0}</strong>
-            <span className="kpi-subtext">Ready for shipment</span>
+            <span className="kpi-subtext">Ready for pickup</span>
           </div>
         </div>
 
         <div className="order-kpi-card">
           <div className="kpi-icon-box emerald">
-            <Truck size={20} />
+            <Truck size={18} />
           </div>
           <div className="kpi-content">
             <span className="kpi-label">Shipped</span>
             <strong className="kpi-value">
               {(statusCounts.shipped || 0) + (statusCounts.out_for_delivery || 0)}
             </strong>
-            <span className="kpi-subtext">On the way</span>
+            <span className="kpi-subtext">In transit to customer</span>
           </div>
         </div>
 
         <div className="order-kpi-card">
           <div className="kpi-icon-box green">
-            <CheckCircle2 size={20} />
+            <CheckCircle2 size={18} />
           </div>
           <div className="kpi-content">
             <span className="kpi-label">Delivered</span>
             <strong className="kpi-value">{statusCounts.delivered || 0}</strong>
-            <span className="kpi-subtext">Completed</span>
+            <span className="kpi-subtext">Successfully fulfilled</span>
           </div>
         </div>
 
         <div className="order-kpi-card">
           <div className="kpi-icon-box rose">
-            <XCircle size={20} />
+            <XCircle size={18} />
           </div>
           <div className="kpi-content">
             <span className="kpi-label">Cancelled</span>
             <strong className="kpi-value">{statusCounts.cancelled || 0}</strong>
             <span className="kpi-subtext">Cancelled orders</span>
-          </div>
-        </div>
-
-        {/* Card 7: Returned */}
-        <div className="order-kpi-card">
-          <div className="kpi-icon-box warm-amber">
-            <RotateCcw size={20} />
-          </div>
-          <div className="kpi-content">
-            <span className="kpi-label">Returned</span>
-            <strong className="kpi-value">{returnOrdersCount}</strong>
-            <span className="kpi-subtext">Reverse pickup / return</span>
-          </div>
-        </div>
-
-        {/* Card 8: Refunded */}
-        <div className="order-kpi-card">
-          <div className="kpi-icon-box forest-emerald">
-            <IndianRupee size={20} />
-          </div>
-          <div className="kpi-content">
-            <span className="kpi-label">Refunded</span>
-            <strong className="kpi-value">₹{totalRefundedAmount.toLocaleString("en-IN")}</strong>
-            <span className="kpi-subtext">Total refunds issued</span>
           </div>
         </div>
       </div>
@@ -649,7 +638,7 @@ function VendorOrders({ defaultFilter = null }) {
           <div className="vendor-orders-search">
             <input
               type="text"
-              placeholder="Search by Order ID, customer name, or product..."
+              placeholder="Search by Order ID, customer, or product..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -664,7 +653,7 @@ function VendorOrders({ defaultFilter = null }) {
                   <X size={13} />
                 </button>
               )}
-              <Search size={16} className="search-icon-right" />
+              <Search size={15} className="search-icon-right" />
             </div>
           </div>
 
@@ -677,7 +666,7 @@ function VendorOrders({ defaultFilter = null }) {
               placeholder="Sort by"
               size="sm"
               ariaLabel="Sort Orders"
-              prefixIcon={<ArrowUpDown size={14} />}
+              prefixIcon={<ArrowUpDown size={13} />}
               className="vendor-sort-select"
             />
           </div>
@@ -719,13 +708,6 @@ function VendorOrders({ defaultFilter = null }) {
             onClick={() => handleTabChange("delivered")}
           >
             Delivered ({statusCounts.delivered || 0})
-          </button>
-          <button
-            type="button"
-            className={`orders-tab-btn ${statusFilter === "returned" ? "active" : ""}`}
-            onClick={() => handleTabChange("returned")}
-          >
-            Returns &amp; Refunds ({returnOrdersCount})
           </button>
           <button
             type="button"
@@ -851,15 +833,83 @@ function VendorOrders({ defaultFilter = null }) {
                       </button>
                     )}
 
-                    {/* More Options Button */}
-                    <button
-                      type="button"
-                      className="vendor-more-btn"
-                      onClick={() => setSelectedInvoiceOrder(ord)}
-                      title="More Options"
-                    >
-                      <MoreVertical size={16} />
-                    </button>
+                    {/* More Options Dropdown */}
+                    <div className="vendor-more-wrap">
+                      <button
+                        type="button"
+                        className={`vendor-more-btn ${openMenuOrderId === ord._id ? "active" : ""}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenMenuOrderId(openMenuOrderId === ord._id ? null : ord._id);
+                        }}
+                        title="More Options"
+                      >
+                        <MoreVertical size={16} />
+                      </button>
+
+                      {openMenuOrderId === ord._id && (
+                        <div className="vendor-more-dropdown" onClick={(e) => e.stopPropagation()}>
+                          <button
+                            type="button"
+                            className="more-dropdown-item"
+                            onClick={() => {
+                              setSelectedInvoiceOrder(ord);
+                              setOpenMenuOrderId(null);
+                            }}
+                          >
+                            <FileText size={14} />
+                            <span>View Invoice</span>
+                          </button>
+                          <button
+                            type="button"
+                            className="more-dropdown-item"
+                            onClick={() => {
+                              setSelectedInvoiceOrder(ord);
+                              setOpenMenuOrderId(null);
+                              setTimeout(() => window.print(), 350);
+                            }}
+                          >
+                            <Printer size={14} />
+                            <span>Print Packing Slip</span>
+                          </button>
+                          <button
+                            type="button"
+                            className="more-dropdown-item"
+                            onClick={() => {
+                              handleCopyOrderId(oId);
+                              setOpenMenuOrderId(null);
+                            }}
+                          >
+                            <Copy size={14} />
+                            <span>Copy Order ID</span>
+                          </button>
+                          <button
+                            type="button"
+                            className="more-dropdown-item"
+                            onClick={() => {
+                              setViewCustomerOrder(ord);
+                              setOpenMenuOrderId(null);
+                            }}
+                          >
+                            <User size={14} />
+                            <span>Customer &amp; Shipping</span>
+                          </button>
+                          {((ord.returnStatus && ord.returnStatus !== "none") || rawStatus === "returned" || rawStatus === "return_requested") && (
+                            <button
+                              type="button"
+                              className="more-dropdown-item return-link"
+                              onClick={() => {
+                                handleOpenReturnConsole(ord);
+                                setOpenMenuOrderId(null);
+                              }}
+                            >
+                              <RotateCcw size={14} />
+                              <span>View Return Claim</span>
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -1377,6 +1427,64 @@ function VendorOrders({ defaultFilter = null }) {
                   </button>
                 </>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 7. CUSTOMER & DELIVERY DETAILS MODAL (triggered from More Options) */}
+      {viewCustomerOrder && (
+        <div className="action-modal-overlay" onClick={() => setViewCustomerOrder(null)}>
+          <div className="action-modal-container" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "480px" }}>
+            <div className="action-modal-header" style={{ borderBottom: "1px solid #e2e8f0" }}>
+              <div className="action-modal-header-icon" style={{ background: "#eff6ff", color: "#2563eb" }}>
+                <User size={20} />
+              </div>
+              <div className="action-modal-header-text">
+                <h3>Customer &amp; Delivery Details</h3>
+                <p>Order #{viewCustomerOrder.orderId || String(viewCustomerOrder._id).slice(-8).toUpperCase()}</p>
+              </div>
+              <button type="button" className="action-modal-close-btn" onClick={() => setViewCustomerOrder(null)}>
+                <X size={18} />
+              </button>
+            </div>
+            <div className="action-modal-body" style={{ padding: "20px 24px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "14px", fontSize: "14px" }}>
+                <div>
+                  <span style={{ color: "#64748b", fontSize: "12px", fontWeight: "600", textTransform: "uppercase" }}>Customer Name</span>
+                  <div style={{ fontWeight: "600", color: "#0f172a", marginTop: "2px" }}>
+                    {viewCustomerOrder.shippingAddress?.fullName || viewCustomerOrder.customerName || "Customer"}
+                  </div>
+                </div>
+                <div>
+                  <span style={{ color: "#64748b", fontSize: "12px", fontWeight: "600", textTransform: "uppercase" }}>Contact Number</span>
+                  <div style={{ fontWeight: "600", color: "#0f172a", marginTop: "2px" }}>
+                    {viewCustomerOrder.shippingAddress?.phone || viewCustomerOrder.customerPhone || "Not provided"}
+                  </div>
+                </div>
+                <div>
+                  <span style={{ color: "#64748b", fontSize: "12px", fontWeight: "600", textTransform: "uppercase" }}>Delivery Address</span>
+                  <div style={{ color: "#334155", marginTop: "2px", lineHeight: "1.5" }}>
+                    {viewCustomerOrder.shippingAddress ? (
+                      <>
+                        {viewCustomerOrder.shippingAddress.addressLine1 || viewCustomerOrder.shippingAddress.street}<br />
+                        {viewCustomerOrder.shippingAddress.city}, {viewCustomerOrder.shippingAddress.state} - {viewCustomerOrder.shippingAddress.pincode || viewCustomerOrder.shippingAddress.zipCode}
+                      </>
+                    ) : (
+                      "Standard delivery address"
+                    )}
+                  </div>
+                </div>
+                <div style={{ borderTop: "1px solid #f1f5f9", paddingTop: "12px", display: "flex", justifyContent: "space-between" }}>
+                  <span style={{ color: "#64748b" }}>Payment Method</span>
+                  <strong style={{ textTransform: "uppercase", color: "#0f172a" }}>{viewCustomerOrder.paymentMethod || "COD"}</strong>
+                </div>
+              </div>
+            </div>
+            <div className="action-modal-footer">
+              <button type="button" className="btn btn-outline" onClick={() => setViewCustomerOrder(null)}>
+                Close
+              </button>
             </div>
           </div>
         </div>

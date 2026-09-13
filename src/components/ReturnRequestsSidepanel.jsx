@@ -23,6 +23,9 @@ import {
 } from "lucide-react";
 import { formatDate, formatDateTime } from "../utils/dateFormatter";
 import { getReturns } from "../services/returnService";
+import { cancelOrderReturn } from "../services/orderService";
+import { toast } from "./Toast";
+import { getErrorMessage } from "../utils/errorHandler";
 
 function formatShortDate(dateVal) {
   if (!dateVal) return "—";
@@ -136,6 +139,18 @@ export default function ReturnRequestsSidepanel({
       setLoading(false);
     }
   }, [isOpen]);
+
+  const handleCancelRequest = async (item) => {
+    const targetOrderId = item.orderRef?._id || item.orderRef || item.orderId || item._id;
+    if (!window.confirm("Are you sure you want to cancel this return request?")) return;
+    try {
+      await cancelOrderReturn(targetOrderId);
+      toast.success("Return request cancelled successfully.");
+      loadReturnCollection();
+    } catch (err) {
+      toast.error(getErrorMessage(err) || "Failed to cancel return");
+    }
+  };
 
   useEffect(() => {
     loadReturnCollection();
@@ -431,6 +446,18 @@ export default function ReturnRequestsSidepanel({
                           <span>{isExpanded ? "Hide Tracking" : "Track Status"}</span>
                           {isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
                         </button>
+
+                        {activeTab === "returns" && statusStr === "requested" && (
+                          <button
+                            type="button"
+                            className="btn-order-outline-cancel"
+                            style={{ padding: "5px 12px", fontSize: "12px", borderRadius: "6px" }}
+                            onClick={() => handleCancelRequest(item)}
+                            title="Cancel this return claim"
+                          >
+                            <span>Cancel Request</span>
+                          </button>
+                        )}
 
                         {onSelectOrder && (
                           <button
