@@ -61,14 +61,21 @@ export async function removeCartItem(itemId) {
 
 
 // Checkout
-export async function checkoutCart(items, checkoutDetails = {}) {
-  const response = await api.post(
-    "/cart/checkout",
-    items
-      ? { items, ...checkoutDetails }
-      : checkoutDetails
-  );
+export async function checkoutCart(itemsOrPayload, maybeDetails = {}) {
+  let body;
+  if (itemsOrPayload && !Array.isArray(itemsOrPayload) && (itemsOrPayload.items || itemsOrPayload.addressId)) {
+    body = itemsOrPayload;
+  } else if (Array.isArray(itemsOrPayload)) {
+    if (maybeDetails && typeof maybeDetails === "object" && !Array.isArray(maybeDetails)) {
+      body = { items: itemsOrPayload, ...maybeDetails };
+    } else {
+      body = { items: itemsOrPayload };
+    }
+  } else {
+    body = { ...itemsOrPayload, ...(typeof maybeDetails === "object" ? maybeDetails : {}) };
+  }
 
+  const response = await api.post("/cart/checkout", body);
   notifyCartUpdated();
   return response.data;
 }

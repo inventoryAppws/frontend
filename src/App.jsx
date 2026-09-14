@@ -39,6 +39,7 @@ import VendorProducts from "./pages/vendor/VendorProducts";
 import VendorOrders from "./pages/vendor/VendorOrders";
 import VendorReturns from "./pages/vendor/VendorReturns";
 import VendorAnalytics from "./pages/vendor/VendorAnalytics";
+import VendorPayments from "./pages/vendor/VendorPayments";
 import VendorSettings from "./pages/vendor/VendorSettings";
 
 // =========================
@@ -240,6 +241,16 @@ function App() {
             <Route
               path="analytics"
               element={<VendorAnalytics />}
+            />
+
+            {/* Vendor Payments & Transactions */}
+            <Route
+              path="payments"
+              element={<VendorPayments />}
+            />
+            <Route
+              path="transactions"
+              element={<Navigate to="/vendor/payments" replace />}
             />
 
             {/* Vendor Settings */}

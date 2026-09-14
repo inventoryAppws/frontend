@@ -923,7 +923,7 @@ function CustomerHome() {
 
           {/* Product Grid & Empty State */}
           {loading ? (
-            <Loader text="Loading products..." />
+            <Loader type="grid" count={8} />
           ) : products.length === 0 ? (
             <div className="adv-search-empty-state">
               <div className="adv-empty-icon-wrap">

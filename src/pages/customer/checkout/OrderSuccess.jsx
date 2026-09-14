@@ -4,12 +4,14 @@ import {
   ShoppingBag,
   ArrowRight,
   Truck,
+  Copy,
+  Check,
+  Mail,
+  MapPin,
+  Calendar,
+  CreditCard
 } from "lucide-react";
-
-import {
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 function OrderSuccess() {
@@ -17,23 +19,21 @@ function OrderSuccess() {
   const location = useLocation();
   const [isConfirming, setIsConfirming] = useState(true);
   const [confirmationStage, setConfirmationStage] = useState("packing");
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    const packageTimer = window.setTimeout(() => setConfirmationStage("shipping"), 3000);
-    const vehicleTimer = window.setTimeout(() => setConfirmationStage("on-the-way"), 6000);
-    const completeTimer = window.setTimeout(() => setIsConfirming(false), 10000);
+    const stage1 = window.setTimeout(() => setConfirmationStage("shipping"), 600);
+    const stage2 = window.setTimeout(() => setConfirmationStage("on-the-way"), 1200);
+    const completeTimer = window.setTimeout(() => setIsConfirming(false), 1800);
     return () => {
-      window.clearTimeout(packageTimer);
-      window.clearTimeout(vehicleTimer);
+      window.clearTimeout(stage1);
+      window.clearTimeout(stage2);
       window.clearTimeout(completeTimer);
     };
   }, []);
 
-  const savedOrder =
-    sessionStorage.getItem("lastOrder");
-
-  let orderData =
-    location.state || null;
+  const savedOrder = sessionStorage.getItem("lastOrder");
+  let orderData = location.state || null;
 
   if (!orderData && savedOrder) {
     try {
@@ -43,31 +43,38 @@ function OrderSuccess() {
     }
   }
 
-  const orders =
-    orderData?.orders || [];
+  const orders = orderData?.orders || [];
+  const total = Number(orderData?.total) || 0;
+  const firstOrder = orders[0];
+  const orderId = firstOrder?.orderId || (firstOrder?._id ? String(firstOrder._id).slice(-10).toUpperCase() : "ORD-SUCCESS");
 
-  const total =
-    Number(orderData?.total) || 0;
-
-  const firstOrder =
-    orders[0];
-
-  const orderId =
-    firstOrder?.orderId || firstOrder?._id || "Order confirmed";
+  const copyOrderId = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(orderId);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   if (isConfirming) {
     const stageContent = {
-      packing: ["Packing your order", "We are carefully preparing your items..."],
-      shipping: ["Handing your package to the vehicle", "Your order is packed and ready to leave..."],
-      "on-the-way": ["Your order is on the way", "The delivery vehicle has started its journey..."]
-    }[confirmationStage];
+      packing: ["Preparing your order...", "Verifying order inventory with warehouse hubs"],
+      shipping: ["Securing shipment manifest...", "Generating courier dispatch label"],
+      "on-the-way": ["Finalizing order confirmation...", "Almost there!"]
+    }[confirmationStage] || ["Processing...", "Please wait"];
 
     return (
       <div className="order-confirmation-loading" role="status" aria-live="polite">
         <div className="delivery-animation-track">
-          <div className={`packing-box ${confirmationStage === "packing" ? "active" : "complete"}`}><Package size={34} /></div>
-          <div className={`delivery-animation-package ${confirmationStage === "shipping" ? "active" : ""}`}><Package size={24} /></div>
-          <div className={`delivery-animation-vehicle ${confirmationStage === "on-the-way" ? "active" : ""}`}><Truck size={34} /></div>
+          <div className={`packing-box ${confirmationStage === "packing" ? "active" : "complete"}`}>
+            <Package size={34} />
+          </div>
+          <div className={`delivery-animation-package ${confirmationStage === "shipping" ? "active" : ""}`}>
+            <Package size={24} />
+          </div>
+          <div className={`delivery-animation-vehicle ${confirmationStage === "on-the-way" ? "active" : ""}`}>
+            <Truck size={34} />
+          </div>
         </div>
         <strong>{stageContent[0]}</strong>
         <span>{stageContent[1]}</span>
@@ -76,111 +83,99 @@ function OrderSuccess() {
   }
 
   return (
-    <div className="order-success-page">
-
-      <div className="order-success-card">
-
-        <div className="order-success-icon">
-          <CheckCircle2 size={48} />
+    <div className="revamped-success-container">
+      <div className="revamped-success-card">
+        {/* CELEBRATION ICON */}
+        <div className="success-check-badge">
+          <CheckCircle2 size={56} strokeWidth={2.5} />
         </div>
 
-        <span className="order-success-label">
-          ORDER CONFIRMED
-        </span>
-
-        <h1>
-          Your order has been placed!
-        </h1>
-
-        <p className="order-success-description">
-          Thank you for your purchase.
-          Your order has been successfully
-          created.
+        <span className="success-eyebrow">ORDER CONFIRMED</span>
+        <h1>Thank you for your purchase!</h1>
+        <p className="success-subtitle">
+          Your order has been placed successfully and is being packed for dispatch.
         </p>
 
-        <div className="order-success-details">
-
-          <div>
-            <span>
-              Order ID
-            </span>
-
-            <strong>
-              #{orderId}
-            </strong>
-          </div>
-
-          <div>
-            <span>
-              Total Amount
-            </span>
-
-            <strong>
-              ₹ {total.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </strong>
-          </div>
-
-          <div>
-            <span>
-              Orders Placed
-            </span>
-
-            <strong>
-              {orders.length > 1 ? `${orders.length} Vendor Orders` : `#${orderId}`}
-            </strong>
-          </div>
-
-        </div>
-
-        <div className="order-success-status">
-
-          <div className="success-status-icon">
-            <Package size={21} />
-          </div>
-
-          <div>
-            <strong>
-              Order Processing
-            </strong>
-
-            <p>
-              Your order has been received
-              and is being processed.
-            </p>
-          </div>
-
-        </div>
-
-        <div className="order-success-actions">
-
+        {/* ORDER ID CHIP */}
+        <div className="order-id-chip-row">
+          <span className="order-id-label">Order Reference:</span>
+          <strong className="order-id-code">#{orderId}</strong>
           <button
             type="button"
-            className="btn btn-primary"
-            onClick={() =>
-              navigate(
-                "/customer/orders"
-              )
-            }
+            className="copy-order-id-btn"
+            onClick={copyOrderId}
+            title="Copy Order ID"
           >
-            <ShoppingBag size={17} />
-            View My Orders
+            {copied ? <Check size={14} className="copied-check" /> : <Copy size={14} />}
+            <span>{copied ? "Copied!" : "Copy"}</span>
+          </button>
+        </div>
+
+        {/* SUMMARY GRID */}
+        <div className="success-details-grid">
+          <div className="success-detail-box">
+            <Calendar size={18} className="box-icon" />
+            <div>
+              <span className="detail-label">Order Date</span>
+              <strong>{new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</strong>
+            </div>
+          </div>
+
+          <div className="success-detail-box">
+            <CreditCard size={18} className="box-icon" />
+            <div>
+              <span className="detail-label">Total Amount</span>
+              <strong className="total-highlight">₹{total.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</strong>
+            </div>
+          </div>
+
+          <div className="success-detail-box">
+            <Truck size={18} className="box-icon" />
+            <div>
+              <span className="detail-label">Delivery Timeline</span>
+              <strong>Within 3–5 Business Days</strong>
+            </div>
+          </div>
+
+          <div className="success-detail-box">
+            <Package size={18} className="box-icon" />
+            <div>
+              <span className="detail-label">Items Included</span>
+              <strong>{orders.reduce((s, o) => s + (o.items?.length || 1), 0)} Product(s)</strong>
+            </div>
+          </div>
+        </div>
+
+        {/* EMAIL NOTIFICATION BANNER */}
+        <div className="success-email-notice">
+          <Mail size={18} />
+          <div>
+            <strong>Invoice &amp; Receipt Dispatched</strong>
+            <p>A full digital tax invoice and live BlueDart tracking link have been dispatched to your email.</p>
+          </div>
+        </div>
+
+        {/* CALL TO ACTIONS */}
+        <div className="success-action-buttons">
+          <button
+            type="button"
+            className="btn-track-orders"
+            onClick={() => navigate("/customer/orders")}
+          >
+            <span>View in My Orders</span>
+            <ArrowRight size={16} />
           </button>
 
           <button
             type="button"
-            className="btn btn-secondary"
-            onClick={() =>
-              navigate("/customer")
-            }
+            className="btn-continue-shopping"
+            onClick={() => navigate("/customer")}
           >
-            Continue Shopping
-            <ArrowRight size={17} />
+            <ShoppingBag size={16} />
+            <span>Continue Shopping</span>
           </button>
-
         </div>
-
       </div>
-
     </div>
   );
 }

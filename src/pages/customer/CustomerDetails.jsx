@@ -85,6 +85,7 @@ function CustomerDetails() {
     openPasswordModal,
     openLogoutModal,
     openNotificationSidepanel,
+    openPaymentsSidepanel,
     unreadNotifCount = 0
   } = context;
 
@@ -580,6 +581,29 @@ function CustomerDetails() {
             <span className="account-setting-meta-text">
               {methods.length} payment method{methods.length === 1 ? "" : "s"}
             </span>
+            <ChevronRight size={18} className="account-setting-chevron" />
+          </div>
+        </div>
+
+        {/* Row: Payments & Transaction History */}
+        <div
+          className="account-setting-row"
+          onClick={openPaymentsSidepanel}
+          role="button"
+          tabIndex={0}
+        >
+          <div className="account-setting-left">
+            <div className="account-setting-icon-box blue-theme">
+              <CreditCard size={18} />
+            </div>
+            <div className="account-setting-info">
+              <h4>Payments &amp; Transactions</h4>
+              <p>View complete transaction logs, order payments, recharges and refunds</p>
+            </div>
+          </div>
+
+          <div className="account-setting-right">
+            <span className="account-setting-meta-text">View history</span>
             <ChevronRight size={18} className="account-setting-chevron" />
           </div>
         </div>

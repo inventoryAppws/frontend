@@ -45,6 +45,7 @@ import {
   clearAllNotifications
 } from "../services/notificationService";
 import NotificationSidepanel from "../components/NotificationSidepanel";
+import PaymentsSidepanel from "../components/PaymentsSidepanel";
 import Modal from "../components/Modal";
 import ConfirmModal from "../components/ConfirmModal";
 import CustomSelect from "../components/CustomSelect";
@@ -132,6 +133,7 @@ function CustomerLayout() {
   const [notifications, setNotifications] = useState([]);
   const [unreadNotifCount, setUnreadNotifCount] = useState(0);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [isPaymentsOpen, setIsPaymentsOpen] = useState(false);
   const [notifLoading, setNotifLoading] = useState(false);
   const knownNotifIds = useRef(new Set());
 
@@ -589,6 +591,15 @@ function CustomerLayout() {
             <span>Wallet</span>
           </button>
 
+          <button
+            type="button"
+            className={`account-nav-item ${isPaymentsOpen ? "active" : ""}`}
+            onClick={() => setIsPaymentsOpen(true)}
+          >
+            <CreditCard size={18} />
+            <span>Payments</span>
+          </button>
+
           <Link
             to="/customer/settings"
             className={`account-nav-item ${isSettings ? "active" : ""}`}
@@ -760,6 +771,7 @@ function CustomerLayout() {
               openSupportModal: () => setModal("support"),
               openLogoutModal: () => setModal("logout"),
               openNotificationSidepanel: () => setIsNotifOpen(true),
+              openPaymentsSidepanel: () => setIsPaymentsOpen(true),
               unreadNotifCount,
               notifications,
               reloadAccount: loadGlobalData,
@@ -1046,15 +1058,12 @@ function CustomerLayout() {
       ========================================================== */}
       <Modal isOpen={modal === "addresses"} onClose={closeModal} title="Delivery Addresses" size={addressMode === "form" ? "medium" : "large"}>
         <div className="refined-modal-content">
-          <p className="refined-modal-subtitle">
-            {addressMode === "list"
-              ? "Manage your saved delivery addresses or add a new one for quick checkout."
-              : editingAddress ? "Update your existing delivery address." : "Add a new delivery address for shipping."}
-          </p>
-
           {addressMode === "list" ? (
             <div className="refined-address-list-wrap">
-              <div className="refined-address-top-action">
+              <div className="refined-address-top-bar">
+                <p className="refined-modal-subtitle">
+                  Manage your saved delivery addresses or add a new one for quick checkout.
+                </p>
                 <button type="button" className="btn-refined-primary-sm" onClick={openAddAddress}>
                   <Plus size={16} /> Add New Address
                 </button>
@@ -1094,52 +1103,57 @@ function CustomerLayout() {
               </div>
             </div>
           ) : (
-            <form className="refined-form" onSubmit={handleSaveAddress}>
-              <div className="refined-form-grid-2">
-                <div className="refined-form-group">
-                  <label>Full Name <span className="req-star">*</span></label>
-                  <input type="text" required value={addressForm.fullName} onChange={(e) => setAddressForm({ ...addressForm, fullName: e.target.value })} placeholder="Recipient's Name" />
-                </div>
-                <div className="refined-form-group">
-                  <label>Mobile Number <span className="req-star">*</span></label>
-                  <input type="tel" required maxLength={10} value={addressForm.phone} onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value })} placeholder="10-digit mobile" />
-                </div>
-                <div className="refined-form-group span-2">
-                  <label>Address Line 1 <span className="req-star">*</span></label>
-                  <input type="text" required value={addressForm.addressLine1} onChange={(e) => setAddressForm({ ...addressForm, addressLine1: e.target.value })} placeholder="Flat / House no. / Street" />
-                </div>
-                <div className="refined-form-group span-2">
-                  <label>Address Line 2 (Optional)</label>
-                  <input type="text" value={addressForm.addressLine2} onChange={(e) => setAddressForm({ ...addressForm, addressLine2: e.target.value })} placeholder="Area, Landmark" />
-                </div>
-                <div className="refined-form-group">
-                  <label>City <span className="req-star">*</span></label>
-                  <input type="text" required value={addressForm.city} onChange={(e) => setAddressForm({ ...addressForm, city: e.target.value })} placeholder="City" />
-                </div>
-                <div className="refined-form-group">
-                  <label>State <span className="req-star">*</span></label>
-                  <input type="text" required value={addressForm.state} onChange={(e) => setAddressForm({ ...addressForm, state: e.target.value })} placeholder="State" />
-                </div>
-                <div className="refined-form-group">
-                  <label>Pincode <span className="req-star">*</span></label>
-                  <input type="text" required maxLength={6} value={addressForm.pincode} onChange={(e) => setAddressForm({ ...addressForm, pincode: e.target.value })} placeholder="6-digit pincode" />
-                </div>
-                <div className="refined-form-group">
-                  <label>Address Type</label>
-                  <div className="refined-type-pill-selector">
-                    {["Home", "Work", "Other"].map((t) => (
-                      <button type="button" key={t} className={`type-selector-pill ${addressForm.type === t ? "active" : ""}`} onClick={() => setAddressForm({ ...addressForm, type: t })}>
-                        {t === "Home" ? "🏠 Home" : t === "Work" ? "💼 Work" : "📍 Other"}
-                      </button>
-                    ))}
+            <>
+              <p className="refined-modal-subtitle">
+                {editingAddress ? "Update your existing delivery address." : "Add a new delivery address for shipping."}
+              </p>
+              <form className="refined-form" onSubmit={handleSaveAddress}>
+                <div className="refined-form-grid-2">
+                  <div className="refined-form-group">
+                    <label>Full Name <span className="req-star">*</span></label>
+                    <input type="text" required value={addressForm.fullName} onChange={(e) => setAddressForm({ ...addressForm, fullName: e.target.value })} placeholder="Full Name" />
+                  </div>
+                  <div className="refined-form-group">
+                    <label>Phone Number <span className="req-star">*</span></label>
+                    <input type="tel" required maxLength={10} value={addressForm.phone} onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value })} placeholder="10-digit mobile" />
+                  </div>
+                  <div className="refined-form-group span-2">
+                    <label>Address Line 1 (Flat, House No., Building) <span className="req-star">*</span></label>
+                    <input type="text" required value={addressForm.addressLine1} onChange={(e) => setAddressForm({ ...addressForm, addressLine1: e.target.value })} placeholder="Street address" />
+                  </div>
+                  <div className="refined-form-group span-2">
+                    <label>Address Line 2 (Area, Colony, Landmark)</label>
+                    <input type="text" value={addressForm.addressLine2} onChange={(e) => setAddressForm({ ...addressForm, addressLine2: e.target.value })} placeholder="Landmark (optional)" />
+                  </div>
+                  <div className="refined-form-group">
+                    <label>City <span className="req-star">*</span></label>
+                    <input type="text" required value={addressForm.city} onChange={(e) => setAddressForm({ ...addressForm, city: e.target.value })} placeholder="City" />
+                  </div>
+                  <div className="refined-form-group">
+                    <label>State <span className="req-star">*</span></label>
+                    <input type="text" required value={addressForm.state} onChange={(e) => setAddressForm({ ...addressForm, state: e.target.value })} placeholder="State" />
+                  </div>
+                  <div className="refined-form-group">
+                    <label>Pincode <span className="req-star">*</span></label>
+                    <input type="text" required maxLength={6} value={addressForm.pincode} onChange={(e) => setAddressForm({ ...addressForm, pincode: e.target.value })} placeholder="6-digit pincode" />
+                  </div>
+                  <div className="refined-form-group">
+                    <label>Address Type</label>
+                    <div className="type-selector-pills">
+                      {["Home", "Work", "Other"].map((t) => (
+                        <button type="button" key={t} className={`type-selector-pill ${addressForm.type === t ? "active" : ""}`} onClick={() => setAddressForm({ ...addressForm, type: t })}>
+                          {t === "Home" ? "🏠 Home" : t === "Work" ? "💼 Work" : "📍 Other"}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="refined-modal-footer">
-                <button type="button" className="btn-refined-cancel" onClick={() => setAddressMode("list")} disabled={saving}>Cancel</button>
-                <button type="submit" className="btn-refined-submit" disabled={saving}>{saving ? "Saving..." : editingAddress ? "Update Address" : "Save Address"}</button>
-              </div>
-            </form>
+                <div className="refined-modal-footer">
+                  <button type="button" className="btn-refined-cancel" onClick={() => setAddressMode("list")} disabled={saving}>Cancel</button>
+                  <button type="submit" className="btn-refined-submit" disabled={saving}>{saving ? "Saving..." : editingAddress ? "Update Address" : "Save Address"}</button>
+                </div>
+              </form>
+            </>
           )}
         </div>
       </Modal>
@@ -1154,17 +1168,12 @@ function CustomerLayout() {
         size="large"
       >
         <div className="refined-modal-content">
-          <p className="refined-modal-subtitle">
-            {paymentMode === "list"
-              ? "Manage your saved credit/debit cards, UPI IDs, and net banking options."
-              : editingMethod
-              ? "Update your payment method details."
-              : "Add a new secure payment method for instant checkout."}
-          </p>
-
           {paymentMode === "list" ? (
             <div className="refined-payment-list-wrap">
-              <div className="refined-address-top-action">
+              <div className="refined-address-top-bar">
+                <p className="refined-modal-subtitle">
+                  Manage your saved credit/debit cards, UPI IDs, and net banking options.
+                </p>
                 <button type="button" className="btn-refined-primary-sm" onClick={openAddPayment}>
                   <Plus size={16} /> Add Payment Method
                 </button>
@@ -1239,7 +1248,13 @@ function CustomerLayout() {
               </div>
             </div>
           ) : (
-            <div className="refined-payment-add-shell">
+            <>
+              <p className="refined-modal-subtitle">
+                {editingMethod
+                  ? "Update your payment method details."
+                  : "Add a new secure payment method for instant checkout."}
+              </p>
+              <div className="refined-payment-add-shell">
               <div className="refined-payment-tab-row">
                 <button type="button" className={`refined-tab-btn ${paymentTab === "card" ? "active" : ""}`} onClick={() => setPaymentTab("card")}><CreditCard size={16} /><span>Credit / Debit Card</span></button>
                 <button type="button" className={`refined-tab-btn ${paymentTab === "upi" ? "active" : ""}`} onClick={() => setPaymentTab("upi")}><Smartphone size={16} /><span>UPI ID</span></button>
@@ -1343,6 +1358,7 @@ function CustomerLayout() {
                 </div>
               </form>
             </div>
+            </>
           )}
         </div>
       </Modal>
@@ -1518,6 +1534,22 @@ function CustomerLayout() {
         onDismiss={handleDismissNotif}
         onClearAll={handleClearAllNotifs}
         loading={notifLoading}
+      />
+
+      {/* PAYMENTS & TRANSACTIONS SIDEPANEL */}
+      <PaymentsSidepanel
+        isOpen={isPaymentsOpen}
+        onClose={() => setIsPaymentsOpen(false)}
+        walletBalance={wallet.balance}
+        onRechargeWallet={() => {
+          setIsPaymentsOpen(false);
+          setModal("wallet");
+        }}
+        onManagePaymentMethods={() => {
+          setIsPaymentsOpen(false);
+          setModal("payment");
+          setPaymentMode("list");
+        }}
       />
     </div>
   );

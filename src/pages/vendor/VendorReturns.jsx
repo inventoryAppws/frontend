@@ -476,7 +476,7 @@ function VendorReturns() {
       {error && <ErrorMessage message={error} />}
 
       {loading ? (
-        <Loader text="Loading return claims and reverse logistics..." />
+        <Loader type="table" rows={6} columns={6} />
       ) : sortedClaims.length === 0 ? (
         <div className="vendor-returns-empty">
           <RotateCcw size={44} className="empty-icon" />

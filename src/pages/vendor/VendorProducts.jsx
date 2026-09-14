@@ -653,9 +653,7 @@ function VendorProducts() {
 
       {/* 4. MAIN PRODUCT TABLE */}
       {loading ? (
-        <div className="vendor-products-loader">
-          <Loader text="Loading inventory catalog..." />
-        </div>
+        <Loader type="table" rows={6} columns={7} />
       ) : error ? (
         <ErrorMessage message={error} onRetry={() => loadProducts(1, false)} />
       ) : products.length === 0 ? (

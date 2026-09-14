@@ -226,7 +226,7 @@ function Cart() {
   // =========================================================
 
   if (loading) {
-    return <Loader text="Loading cart..." />;
+    return <Loader type="cart" />;
   }
 
 
@@ -607,9 +607,9 @@ function Cart() {
       <ConfirmModal
         isOpen={Boolean(itemToRemove)}
         title="Remove from Cart?"
-        message={`Instead of removing "${itemToRemove?.name || "this item"}" from your cart, you can add it to your wishlist and return to buy whenever you change your mind!`}
+        message="You can move this item to your wishlist instead, so you can easily find it and buy it later."
         confirmText="Remove from Cart"
-        cancelText="Cancel"
+        showCancel={false}
         secondaryAction={{
           text: "Add to Wishlist",
           icon: <Heart size={16} fill="#f43f5e" color="#f43f5e" />,
@@ -621,8 +621,8 @@ function Cart() {
             border: "1.5px solid #fecdd3",
             color: "#e11d48",
             borderRadius: "8px",
-            padding: "8px 16px",
-            fontSize: "13px",
+            padding: "9px 18px",
+            fontSize: "13.5px",
             fontWeight: 600,
           },
         }}

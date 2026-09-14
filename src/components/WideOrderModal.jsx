@@ -14,6 +14,9 @@ const STATUS_CONFIG = {
   return_requested: { label: "Return Requested", badgeClass: "status-badge-packed" },
   approved: { label: "Return Approved", badgeClass: "status-badge-packed" },
   returned: { label: "Returned", badgeClass: "status-badge-cancelled" },
+  return_cancelled: { label: "Return Cancelled", badgeClass: "status-badge-cancelled" },
+  customer_cancelled: { label: "Return Cancelled", badgeClass: "status-badge-cancelled" },
+  rejected: { label: "Return Rejected", badgeClass: "status-badge-cancelled" },
 };
 
 function getStatusMeta(statusKey) {
@@ -48,7 +51,8 @@ function WideOrderModal({ order, onClose, onViewInvoice, onCancelOrder, onReturn
   const orderStatus = String(order.status || "placed").toLowerCase().replace(/-/g, "_");
   const returnStatus = String(order.returnStatus || "").toLowerCase().replace(/-/g, "_");
   const currentStatus = returnStatus && returnStatus !== "none"
-    ? (returnStatus === "requested" ? "return_requested" : returnStatus)
+    ? (returnStatus === "requested" ? "return_requested"
+      : (returnStatus === "cancelled" ? "return_cancelled" : returnStatus))
     : orderStatus;
   const stepKeys = ["placed", "packed", "shipped", "out_for_delivery", "delivered"];
   const currentIndex = Math.max(0, stepKeys.indexOf(currentStatus));

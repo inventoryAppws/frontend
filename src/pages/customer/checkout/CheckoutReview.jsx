@@ -16,6 +16,10 @@ import {
   Smartphone,
   X,
   ChevronRight,
+  Shield,
+  Lock,
+  Percent,
+  Check
 } from "lucide-react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
@@ -23,12 +27,46 @@ import {
   getCart,
   checkoutCart,
 } from "../../../services/cartService";
+import { getAddresses } from "../../../services/addressService";
 
-import Loader from "../../../components/Loader";
+import CheckoutSkeleton from "../../../components/skeletons/CheckoutSkeleton";
 import ErrorMessage from "../../../components/ErrorMessage";
 import Modal from "../../../components/Modal";
-
 import { getErrorMessage } from "../../../utils/errorHandler";
+
+const AVAILABLE_COUPONS = [
+  {
+    code: "HUB10",
+    label: "10% OFF on all products",
+    description: "Maximum discount of up to ₹5,000",
+    type: "percent",
+    value: 10,
+    cap: 5000,
+  },
+  {
+    code: "SHOP50",
+    label: "Flat ₹50 OFF on orders above ₹999",
+    description: "Instant cart discount",
+    type: "flat",
+    value: 50,
+    minimum: 999,
+  },
+  {
+    code: "WELCOME100",
+    label: "Flat ₹100 OFF on your first order",
+    description: "Special welcome reward",
+    type: "flat",
+    value: 100,
+  },
+  {
+    code: "FREESHIP",
+    label: "Free shipping on orders above ₹499",
+    description: "Zero delivery charges",
+    type: "shipping",
+    value: 0,
+    minimum: 499,
+  },
+];
 
 function CheckoutReview() {
   const navigate = useNavigate();
@@ -44,42 +82,8 @@ function CheckoutReview() {
   const [error, setError] = useState("");
 
   const [coupon, setCoupon] = useState(null);
+  const [couponCodeInput, setCouponCodeInput] = useState("");
   const [couponOpen, setCouponOpen] = useState(false);
-  const [selectedCoupon, setSelectedCoupon] = useState(null);
-
-  const coupons = [
-    {
-      code: "HUB10",
-      label: "10% off on all products",
-      description: "Save up to ₹5,000",
-      type: "percent",
-      value: 10,
-      cap: 5000,
-    },
-    {
-      code: "SHOP50",
-      label: "Flat ₹50 off on orders above ₹999",
-      description: "Save ₹50 instantly",
-      type: "flat",
-      value: 50,
-      minimum: 999,
-    },
-    {
-      code: "WELCOME100",
-      label: "Flat ₹100 off on your first order",
-      description: "New customer offer",
-      type: "flat",
-      value: 100,
-    },
-    {
-      code: "FREESHIP",
-      label: "Free shipping on orders above ₹499",
-      description: "Save on delivery",
-      type: "shipping",
-      value: 0,
-      minimum: 499,
-    },
-  ];
 
   const loadCheckoutData = async () => {
     setLoading(true);
@@ -93,44 +97,40 @@ function CheckoutReview() {
         : Array.isArray(cartData) ? cartData : cartData?.items || [];
 
       if (cartItems.length === 0) {
-        navigate("/customer/cart", {
-          replace: true,
-        });
+        navigate("/customer/cart", { replace: true });
         return;
       }
 
       setItems(cartItems);
 
-      const savedAddress =
-        sessionStorage.getItem("checkoutAddress");
+      const savedAddress = sessionStorage.getItem("checkoutAddress");
+      const savedDelivery = sessionStorage.getItem("checkoutDelivery");
+      const savedPayment = sessionStorage.getItem("checkoutPayment");
 
-      const savedDelivery =
-        sessionStorage.getItem("checkoutDelivery");
-
-      const savedPayment =
-        sessionStorage.getItem("checkoutPayment");
-
+      let currentAddr = null;
       if (savedAddress) {
+        try { currentAddr = JSON.parse(savedAddress); } catch { currentAddr = null; }
+      }
+      if (!currentAddr || !currentAddr._id) {
         try {
-          setAddress(JSON.parse(savedAddress));
+          const addrList = await getAddresses();
+          if (Array.isArray(addrList) && addrList.length > 0) {
+            currentAddr = addrList.find((a) => a.isDefault) || addrList[0];
+            sessionStorage.setItem("checkoutAddress", JSON.stringify(currentAddr));
+          }
         } catch {
-          setAddress(null);
+          // non-blocking
         }
       }
+      setAddress(currentAddr);
 
-      if (savedDelivery) {
-        setDelivery(savedDelivery);
-      }
-
+      if (savedDelivery) setDelivery(savedDelivery);
       if (savedPayment) {
         try {
-          const parsedPayment = JSON.parse(savedPayment);
-          setPayment(parsedPayment);
+          const parsed = JSON.parse(savedPayment);
+          setPayment(parsed);
         } catch {
-          setPayment({
-            paymentMethod: savedPayment,
-            secondaryPaymentMethod: "",
-          });
+          setPayment({ paymentMethod: savedPayment });
         }
       }
     } catch (err) {
@@ -144,274 +144,70 @@ function CheckoutReview() {
     loadCheckoutData();
   }, []);
 
-  const getDeliveryFee = () => {
-    return delivery === "express" ? 99 : 0;
-  };
+  const getDeliveryFee = () => (delivery === "express" ? 99 : 0);
 
   const subtotal = items.reduce((sum, item) => {
     const price = Number(item.price) || 0;
-    const qty = Number(item.qty) || 0;
-
+    const qty = Number(item.qty) || 1;
     return sum + price * qty;
   }, 0);
 
   const deliveryFee = getDeliveryFee();
-
-  const chargeableDeliveryFee =
-    coupon?.type === "shipping" ? 0 : deliveryFee;
-
+  const chargeableDeliveryFee = coupon?.type === "shipping" ? 0 : deliveryFee;
   const couponDiscount = coupon?.discount || 0;
 
-  const total = Math.max(
-    0,
-    subtotal +
-      chargeableDeliveryFee -
-      couponDiscount
-  );
-
-  const deliveryLabel =
-    delivery === "express"
-      ? "Express Delivery"
-      : "Standard Delivery";
-
-  /* =========================
-     PAYMENT DETAILS
-  ========================= */
-
-  const selectedPayment =
-    typeof payment === "string"
-      ? payment
-      : payment?.paymentMethod || "upi";
-
-  const paymentLabelMap = {
-    upi: "UPI",
-    card: "Credit / Debit Card",
-    netbanking: "Net Banking",
-    cod: "Cash on Delivery",
-    wallet: "Wallet",
-  };
-
-  const paymentLabel =
-    paymentLabelMap[selectedPayment] ||
-    selectedPayment ||
-    "UPI";
-
-  const paymentSummary =
-    typeof payment === "object"
-      ? payment?.paymentSummary || {}
-      : {};
-
-  const getPaymentIcon = () => {
-    if (selectedPayment === "upi") {
-      return <Smartphone size={23} />;
-    }
-
-    if (selectedPayment === "card") {
-      return <CreditCard size={23} />;
-    }
-
-    if (selectedPayment === "netbanking") {
-      return <Building2 size={23} />;
-    }
-
-    if (selectedPayment === "wallet") {
-      return <Wallet size={23} />;
-    }
-
-    return <CreditCard size={23} />;
-  };
-
-  const getPaymentProvider = () => {
-    return (
-      paymentSummary.provider ||
-      paymentSummary.bankName ||
-      paymentSummary.bank ||
-      payment.bankName ||
-      payment.bank ||
-      payment.cardBank ||
-      payment.walletName ||
-      ""
-    );
-  };
-
-  const getPaymentDetail = () => {
-    if (paymentSummary.detail) {
-      return paymentSummary.detail;
-    }
-
-    if (paymentSummary.description) {
-      return paymentSummary.description;
-    }
-
-    if (selectedPayment === "upi") {
-      return (
-        payment.upiId ||
-        payment.upi ||
-        paymentSummary.upiId ||
-        paymentSummary.upi ||
-        "UPI payment"
-      );
-    }
-
-    if (selectedPayment === "card") {
-      const last4 =
-        payment.last4 ||
-        payment.cardLast4 ||
-        paymentSummary.last4 ||
-        paymentSummary.cardLast4;
-
-      return last4
-        ? `•••• •••• •••• ${last4}`
-        : "Saved card";
-    }
-
-    if (selectedPayment === "netbanking") {
-      const last4 =
-        payment.accountLast4 ||
-        payment.last4 ||
-        paymentSummary.accountLast4 ||
-        paymentSummary.last4;
-
-      return last4
-        ? `A/C ending ${last4}`
-        : "Bank account";
-    }
-
-    if (selectedPayment === "wallet") {
-      return (
-        payment.walletBalance !== undefined
-          ? `Available balance: ₹${Number(
-              payment.walletBalance
-            ).toLocaleString("en-IN", {
-              minimumFractionDigits: 2,
-            })}`
-          : "Wallet payment"
-      );
-    }
-
-    if (selectedPayment === "cod") {
-      return "Pay when your order is delivered";
-    }
-
-    return "Payment details confirmed";
-  };
-
-  const getPaymentSecondaryDetail = () => {
-    if (selectedPayment === "upi") {
-      return (
-        payment.upiId ||
-        payment.upi ||
-        paymentSummary.upiId ||
-        paymentSummary.upi ||
-        ""
-      );
-    }
-
-    if (selectedPayment === "card") {
-      const last4 =
-        payment.last4 ||
-        payment.cardLast4 ||
-        paymentSummary.last4 ||
-        paymentSummary.cardLast4;
-
-      return last4 ? `Card ending ${last4}` : "";
-    }
-
-    if (selectedPayment === "netbanking") {
-      return (
-        payment.accountNumber ||
-        payment.accountLast4 ||
-        paymentSummary.accountLast4
-          ? `A/C ending ${
-              payment.accountLast4 ||
-              paymentSummary.accountLast4
-            }`
-          : ""
-      );
-    }
-
-    return "";
-  };
-
-  const paymentProvider = getPaymentProvider();
-  const paymentDetail = getPaymentDetail();
-  const paymentSecondary = getPaymentSecondaryDetail();
-
-  /* =========================
-     COUPON
-  ========================= */
+  const total = Math.max(0, subtotal + chargeableDeliveryFee - couponDiscount);
 
   const calculateCouponDiscount = (selected) => {
-    if (
-      selected.minimum &&
-      subtotal < selected.minimum
-    ) {
-      return null;
-    }
-
+    if (selected.minimum && subtotal < selected.minimum) return null;
+    if (selected.type === "shipping") return deliveryFee;
     if (selected.type === "percent") {
-      return Math.min(
-        Math.round(
-          (subtotal * selected.value) / 100
-        ),
-        selected.cap || Infinity
-      );
+      return Math.min(Math.round((subtotal * selected.value) / 100), selected.cap || Infinity);
     }
-
     return selected.value;
   };
 
-  const openCouponModal = () => {
-    setSelectedCoupon(coupon);
-    setCouponOpen(true);
-    setError("");
-  };
-
-  const applySelectedCoupon = () => {
-    if (!selectedCoupon) {
-      setCoupon(null);
-      setCouponOpen(false);
+  const handleApplyCoupon = (c) => {
+    const target = c || AVAILABLE_COUPONS.find(x => x.code.toUpperCase() === couponCodeInput.trim().toUpperCase());
+    if (!target) {
+      setError("Invalid coupon code. Try HUB10 or SHOP50.");
       return;
     }
-
-    const discount =
-      calculateCouponDiscount(selectedCoupon);
-
+    const discount = calculateCouponDiscount(target);
     if (discount === null) {
-      setError(
-        `${selectedCoupon.code} applies to orders above ₹${selectedCoupon.minimum}.`
-      );
+      setError(`${target.code} requires a minimum order value of ₹${target.minimum}.`);
       return;
     }
-
-    setCoupon({
-      ...selectedCoupon,
-      discount,
-    });
-
+    setCoupon({ ...target, discount });
+    setCouponCodeInput("");
     setCouponOpen(false);
     setError("");
   };
 
-  const removeCoupon = () => {
+  const handleRemoveCoupon = () => {
     setCoupon(null);
-    setSelectedCoupon(null);
   };
 
-  /* =========================
-     PLACE ORDER
-  ========================= */
+  /* Payment Label Helpers */
+  const selectedPaymentType = typeof payment === "string" ? payment : payment?.paymentMethod || "upi";
+  const paymentSummary = typeof payment === "object" ? payment?.summary || {} : {};
+
+  const getPaymentDetailsDisplay = () => {
+    if (paymentSummary.detail) return paymentSummary.detail;
+    if (selectedPaymentType === "upi") return payment?.newPaymentDetails?.upiId || "UPI Instant Payment";
+    if (selectedPaymentType === "card") return `Card ending in ${payment?.newPaymentDetails?.cardNumber?.slice(-4) || "••••"}`;
+    if (selectedPaymentType === "wallet") return "Store Wallet Payment";
+    if (selectedPaymentType === "cod") return "Cash on Delivery";
+    return "Online Payment";
+  };
 
   const handlePlaceOrder = async () => {
     if (items.length === 0) {
       setError("Your cart is empty.");
       return;
     }
-
     if (!address?._id) {
-      setError(
-        "Select or save a delivery address before placing the order."
-      );
+      setError("Please select or save a delivery address before placing your order.");
       return;
     }
 
@@ -419,83 +215,36 @@ function CheckoutReview() {
     setError("");
 
     try {
-      const checkoutItems = items.map(
-        (item) => ({
-          productId: item.productId,
-          qty: Number(item.qty),
-        })
-      );
+      const checkoutItems = items.map((item) => ({
+        productId: item.productId?._id || item.productId,
+        qty: Number(item.qty || 1),
+      }));
 
-      const response = await checkoutCart(
-        checkoutItems,
-        {
-          addressId: address._id,
-          deliveryMethod: delivery,
-          paymentMethod:
-            payment.paymentMethod || payment,
-          savedMethodId:
-            payment.savedMethodId || undefined,
-          secondaryPaymentMethod:
-            payment.secondaryPaymentMethod ||
-            undefined,
-          secondaryPaymentMethodId:
-            payment.secondaryPaymentMethodId ||
-            undefined,
-          newPaymentDetails:
-            payment.newPaymentDetails ||
-            undefined,
-          couponCode:
-            coupon?.code || undefined,
-          couponDiscount:
-            coupon?.discount || 0,
-        }
-      );
+      const payload = {
+        items: checkoutItems,
+        addressId: address._id,
+        deliveryMethod: delivery,
+        paymentMethod: selectedPaymentType,
+        secondaryPaymentMethod: payment?.secondaryPaymentMethod || "",
+        secondaryPaymentMethodId: payment?.secondaryPaymentMethodId || payment?.savedMethodId || "",
+        couponCode: coupon?.code || "",
+        couponDiscount,
+      };
 
-      const orders = response?.orders || [];
+      const response = await checkoutCart(payload);
 
-      sessionStorage.setItem(
-        "lastOrder",
-        JSON.stringify({
-          orders,
-          address,
-          delivery,
-          payment,
-          coupon,
-          subtotal,
-          deliveryFee,
-          total,
-        })
-      );
-
-      sessionStorage.removeItem(
-        "checkoutAddress"
-      );
-
-      sessionStorage.removeItem(
-        "checkoutDelivery"
-      );
-
-      sessionStorage.removeItem(
-        "checkoutPayment"
-      );
+      sessionStorage.removeItem("checkoutAddress");
+      sessionStorage.removeItem("checkoutDelivery");
+      sessionStorage.removeItem("checkoutPayment");
       sessionStorage.removeItem("buyNowItem");
 
-      navigate(
-        "/customer/checkout/success",
-        {
-          replace: true,
-          state: {
-            orders,
-            address,
-            delivery,
-            payment,
-            coupon,
-            subtotal,
-            deliveryFee,
-            total,
-          },
-        }
-      );
+      const createdOrders = response?.orders || response?.order || (Array.isArray(response) ? response : [response]);
+      sessionStorage.setItem("lastOrder", JSON.stringify({ orders: Array.isArray(createdOrders) ? createdOrders : [createdOrders], total }));
+
+      navigate("/customer/checkout/success", {
+        state: { orders: Array.isArray(createdOrders) ? createdOrders : [createdOrders], total },
+        replace: true
+      });
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
@@ -504,714 +253,348 @@ function CheckoutReview() {
   };
 
   if (loading) {
-    return (
-      <Loader text="Preparing your order..." />
-    );
+    return <CheckoutSkeleton />;
   }
 
   return (
-    <div className="checkout-layout">
-      <div className="checkout-main-card review-main-card">
-
-        {/* =========================
-            PAGE HEADER
-        ========================= */}
-
-        <div className="checkout-section-heading">
-          <div className="checkout-section-icon">
-            <CheckCircle2 size={21} />
+    <div className="revamped-review-layout">
+      {/* LEFT COLUMN: ORDER DETAILS */}
+      <div className="revamped-review-main">
+        {/* SECTION HEADER */}
+        <div className="revamped-section-header">
+          <div className="section-icon-badge">
+            <CheckCircle2 size={22} />
           </div>
-
           <div>
             <h2>Review Your Order</h2>
-            <p>
-              Check your details before placing
-              the order.
-            </p>
+            <p>Please double-check your delivery address, shipping method, and items.</p>
           </div>
         </div>
 
-        <ErrorMessage
-          message={error}
-          onRetry={loadCheckoutData}
-        />
-
-        <div className="review-main-column">
-
-          {/* =========================
-              ORDER ITEMS — TOP
-          ========================= */}
-
-          <div className="review-section review-items-section">
-
-            <div className="review-section-header">
-              <div className="review-title">
-                <ShoppingBag size={19} />
-                <h3>Order Items</h3>
-              </div>
-
-              <span className="review-section-count">
-                {items.length}{" "}
-                {items.length === 1
-                  ? "Item"
-                  : "Items"}
-              </span>
-            </div>
-
-            <div className="review-items">
-
-              {items.map((item) => {
-                const price =
-                  Number(item.price) || 0;
-
-                const qty =
-                  Number(item.qty) || 0;
-
-                const itemTotal =
-                  price * qty;
-
-                return (
-                  <div
-                    className="review-item"
-                    key={
-                      item.id ||
-                      item._id ||
-                      item.productId
-                    }
-                  >
-                    <div className="review-item-icon">
-                      {item.image ||
-                      item.imageUrl ? (
-                        <img
-                          src={
-                            item.image ||
-                            item.imageUrl
-                          }
-                          alt=""
-                        />
-                      ) : (
-                        <Package size={20} />
-                      )}
-                    </div>
-
-                    <div className="review-item-details">
-                      <strong>
-                        {item.name || "Product"}
-                      </strong>
-
-                      <small>
-                        Vendor:{" "}
-                        {item.vendorName ||
-                          "Unknown"}
-                      </small>
-                    </div>
-
-                    <div className="review-item-qty">
-                      Qty: {qty}
-                    </div>
-
-                    <strong className="review-item-price">
-                      ₹{" "}
-                      {itemTotal.toLocaleString(
-                        "en-IN",
-                        {
-                          minimumFractionDigits: 2,
-                        }
-                      )}
-                    </strong>
-                  </div>
-                );
-              })}
-
-            </div>
-
-            <button
-              type="button"
-              className="review-edit-cart"
-              onClick={() =>
-                navigate("/customer/cart")
-              }
-            >
-              Edit Cart
-              <ChevronRight size={15} />
-            </button>
+        {error && (
+          <div className="revamped-checkout-error">
+            <X size={16} />
+            <span>{error}</span>
           </div>
+        )}
 
-          {/* =========================
-              ADDRESS
-          ========================= */}
-
-          <div className="review-section review-address-section">
-
-            <div className="review-section-header">
-              <div className="review-title">
-                <MapPin size={18} />
-                <h3>Delivery Address</h3>
+        {/* 3 SUMMARY CARDS ROW */}
+        <div className="review-essentials-grid">
+          {/* 1. SHIPPING ADDRESS */}
+          <div className="review-essential-card">
+            <div className="essential-card-top">
+              <div className="essential-icon-title">
+                <MapPin size={17} className="essential-icon" />
+                <strong>Shipping Address</strong>
               </div>
-
               <button
                 type="button"
-                className="review-change"
-                onClick={() =>
-                  navigate(
-                    "/customer/checkout/address"
-                  )
-                }
+                className="essential-change-btn"
+                onClick={() => navigate("/customer/checkout/address")}
               >
                 Change
               </button>
             </div>
-
             {address ? (
-              <div className="review-address">
-
-                <strong>
-                  {address.fullName}
-                </strong>
-
-                <p>
+              <div className="essential-card-content">
+                <p className="recipient-name">{address.fullName}</p>
+                <p className="address-body">
                   {address.addressLine1}
-                  {address.addressLine2
-                    ? `, ${address.addressLine2}`
-                    : ""}
+                  {address.addressLine2 ? `, ${address.addressLine2}` : ""}
+                  <br />
+                  {address.city}, {address.state} - {address.pincode}
                 </p>
-
-                <p>
-                  {address.city},{" "}
-                  {address.state} -{" "}
-                  {address.pincode}
-                </p>
-
-                <p>
-                  Mobile: {address.phone}
-                </p>
-
-                <span className="address-badge">
-                  {address.type}
-                </span>
-
+                <p className="phone-body">Phone: {address.phone}</p>
               </div>
             ) : (
-              <div className="review-missing">
-                Address not selected.
-              </div>
+              <p className="missing-notice">No address selected</p>
             )}
           </div>
 
-          {/* =========================
-              DELIVERY
-          ========================= */}
-
-          <div className="review-section review-delivery-section">
-
-            <div className="review-section-header">
-              <div className="review-title">
-                <Truck size={18} />
-                <h3>Delivery</h3>
+          {/* 2. DELIVERY METHOD */}
+          <div className="review-essential-card">
+            <div className="essential-card-top">
+              <div className="essential-icon-title">
+                <Truck size={17} className="essential-icon" />
+                <strong>Delivery Method</strong>
               </div>
-
               <button
                 type="button"
-                className="review-change"
-                onClick={() =>
-                  navigate(
-                    "/customer/checkout/delivery"
-                  )
-                }
+                className="essential-change-btn"
+                onClick={() => navigate("/customer/checkout/delivery")}
               >
                 Change
               </button>
             </div>
-
-            <div className="review-simple-row">
-
-              <div className="review-delivery-info">
-
-                <div className="review-mini-icon">
-                  <Package size={20} />
-                </div>
-
-                <div>
-                  <strong>
-                    {deliveryLabel}
-                  </strong>
-
-                  <p>
-                    {delivery === "express"
-                      ? "Delivery within 2–3 days"
-                      : "Delivery within 4–6 days"}
-                  </p>
-                </div>
-              </div>
-
-              <strong
-                className={
-                  deliveryFee === 0
-                    ? "free-label"
-                    : ""
-                }
-              >
-                {deliveryFee === 0
-                  ? "FREE"
-                  : `₹${deliveryFee.toFixed(
-                      2
-                    )}`}
-              </strong>
+            <div className="essential-card-content">
+              <p className="recipient-name">
+                {delivery === "express" ? "Priority Express Air" : "Standard Ground Delivery"}
+              </p>
+              <p className="address-body">
+                {delivery === "express" ? "Delivered in 2–3 business days" : "Delivered in 4–6 business days"}
+              </p>
+              <span className={`speed-pill ${delivery}`}>
+                {delivery === "express" ? "⚡ Express (₹99)" : "⭐ Free Delivery"}
+              </span>
             </div>
           </div>
 
-          {/* =========================
-              PAYMENT
-          ========================= */}
-
-          <div className="review-section review-payment-section">
-
-            <div className="review-section-header">
-              <div className="review-title">
-                <CreditCard size={18} />
-                <h3>Payment</h3>
+          {/* 3. PAYMENT METHOD */}
+          <div className="review-essential-card">
+            <div className="essential-card-top">
+              <div className="essential-icon-title">
+                <CreditCard size={17} className="essential-icon" />
+                <strong>Payment Method</strong>
               </div>
-
               <button
                 type="button"
-                className="review-change"
-                onClick={() =>
-                  navigate(
-                    "/customer/checkout/payment"
-                  )
-                }
+                className="essential-change-btn"
+                onClick={() => navigate("/customer/checkout/payment")}
               >
                 Change
               </button>
             </div>
-
-            <div className="review-payment-card">
-
-              <div className="review-payment-icon">
-                {getPaymentIcon()}
-              </div>
-
-              <div className="review-payment-info">
-
-                <strong>
-                  {paymentLabel}
-                </strong>
-
-                {paymentProvider && (
-                  <span>
-                    {paymentProvider}
-                  </span>
-                )}
-
-                <small>
-                  {paymentDetail}
-                </small>
-
-                {paymentSecondary &&
-                  paymentSecondary !==
-                    paymentDetail && (
-                    <small>
-                      {paymentSecondary}
-                    </small>
-                  )}
-
-              </div>
-
+            <div className="essential-card-content">
+              <p className="recipient-name">
+                {paymentSummary?.label || (selectedPaymentType === "upi"
+                  ? "UPI Instant"
+                  : selectedPaymentType === "card"
+                  ? "Credit/Debit Card"
+                  : selectedPaymentType === "wallet"
+                  ? "Store Wallet"
+                  : selectedPaymentType === "cod"
+                  ? "Cash on Delivery"
+                  : "Net Banking")}
+              </p>
+              <p className="address-body">{getPaymentDetailsDisplay()}</p>
+              <span className="payment-security-badge">
+                <Lock size={11} /> 100% Secure
+              </span>
             </div>
-          </div>
-
-          {/* =========================
-              COUPON
-          ========================= */}
-
-          <div className="review-section review-coupon-section">
-
-            <div className="review-section-header">
-
-              <div className="review-title">
-                <Tag size={18} />
-                <h3>Apply Coupon</h3>
-              </div>
-
-              <button
-                type="button"
-                className="review-coupon-button"
-                onClick={openCouponModal}
-              >
-                {coupon
-                  ? "Change"
-                  : "Apply Coupon"}
-              </button>
-            </div>
-
-            <p className="review-coupon-description">
-              Save more with exciting offers
-              and coupons.
-            </p>
-
-            {coupon && (
-              <div className="review-coupon-applied">
-
-                <div className="coupon-applied-left">
-
-                  <div className="coupon-success-icon">
-                    <CheckCircle2 size={17} />
-                  </div>
-
-                  <div>
-                    <strong>
-                      {coupon.code} Applied
-                    </strong>
-
-                    <span>
-                      You saved ₹{" "}
-                      {coupon.discount.toLocaleString(
-                        "en-IN"
-                      )}
-                      {coupon.type ===
-                        "percent" &&
-                        ` (${coupon.value}% off)`}
-                    </span>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  className="coupon-remove-button"
-                  aria-label="Remove coupon"
-                  onClick={removeCoupon}
-                >
-                  <X size={15} />
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* =========================
-              BOTTOM NAVIGATION
-          ========================= */}
-
-          <div className="checkout-navigation">
-
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={goBack}
-              disabled={placingOrder}
-            >
-              <ArrowLeft size={17} />
-              Back
-            </button>
-
-            <button
-              type="button"
-              className="btn btn-primary checkout-place-order"
-              onClick={handlePlaceOrder}
-              disabled={placingOrder}
-            >
-              {placingOrder
-                ? "Placing Order..."
-                : "Place Order"}
-            </button>
           </div>
         </div>
 
-        {/* =========================
-            SIDEBAR
-        ========================= */}
-
-        <aside className="review-sidebar">
-
-          {/* ORDER SUMMARY */}
-
-          <section className="review-summary-card">
-
-            <div className="review-sidebar-title">
-              <ShoppingBag size={18} />
-              <h3>Order Summary</h3>
+        {/* ORDERED ITEMS LIST */}
+        <div className="review-items-container">
+          <div className="items-header-bar">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Package size={18} />
+              <strong>Items in this order ({items.length})</strong>
             </div>
-
-            <div className="review-summary-line">
-              <span>
-                Subtotal ({items.length} items)
-              </span>
-
-              <strong>
-                ₹{" "}
-                {subtotal.toLocaleString(
-                  "en-IN",
-                  {
-                    minimumFractionDigits: 2,
-                  }
-                )}
-              </strong>
-            </div>
-
-            {coupon && (
-              <div className="review-summary-line discount">
-
-                <span>
-                  {coupon.code} Discount
-                </span>
-
-                <strong>
-                  − ₹{" "}
-                  {coupon.discount.toLocaleString(
-                    "en-IN",
-                    {
-                      minimumFractionDigits: 2,
-                    }
-                  )}
-                </strong>
-              </div>
-            )}
-
-            <div className="review-summary-line">
-              <span>Delivery</span>
-
-              <strong className="free-label">
-                {chargeableDeliveryFee === 0
-                  ? "FREE"
-                  : `₹${chargeableDeliveryFee.toFixed(
-                      2
-                    )}`}
-              </strong>
-            </div>
-
-            <div className="review-summary-total">
-              <span>Total Amount</span>
-
-              <strong>
-                ₹{" "}
-                {total.toLocaleString(
-                  "en-IN",
-                  {
-                    minimumFractionDigits: 2,
-                  }
-                )}
-              </strong>
-            </div>
-
-            {coupon && (
-              <div className="review-saving-note">
-                <Tag size={16} />
-
-                <span>
-                  You are saving ₹{" "}
-                  {coupon.discount.toLocaleString(
-                    "en-IN"
-                  )}
-                  !
-                </span>
-              </div>
-            )}
-          </section>
-
-          {/* TRUST */}
-
-          <section className="review-trust-card">
-
-            <div className="review-sidebar-title">
-              <ShieldCheck size={18} />
-              <h3>Why shop with us?</h3>
-            </div>
-
-            <div className="review-trust-row">
-
-              <div className="trust-icon">
-                <ShieldCheck size={19} />
-              </div>
-
-              <div>
-                <strong>
-                  Secure Payments
-                </strong>
-
-                <span>
-                  Your transactions are safe
-                  with us
-                </span>
-              </div>
-            </div>
-
-            <div className="review-trust-row">
-
-              <div className="trust-icon">
-                <RotateCcw size={19} />
-              </div>
-
-              <div>
-                <strong>
-                  Easy Returns
-                </strong>
-
-                <span>
-                  Hassle-free return policy
-                </span>
-              </div>
-            </div>
-
-            <div className="review-trust-row">
-
-              <div className="trust-icon">
-                <Truck size={19} />
-              </div>
-
-              <div>
-                <strong>
-                  Reliable Delivery
-                </strong>
-
-                <span>
-                  On-time delivery across
-                  India
-                </span>
-              </div>
-            </div>
-          </section>
-        </aside>
-      </div>
-
-      {/* =========================
-          COUPON MODAL
-      ========================= */}
-
-      <Modal
-        isOpen={couponOpen}
-        onClose={() => setCouponOpen(false)}
-        title="Available Coupons"
-        size="medium"
-      >
-        <div className="coupon-modal-content">
-
-          <div className="coupon-modal-header">
-            <div className="coupon-modal-icon">
-              <Tag size={20} />
-            </div>
-
-            <div>
-              <h4>
-                Choose an offer
-              </h4>
-
-              <p>
-                Select the best coupon for
-                your order.
-              </p>
-            </div>
+            <button
+              type="button"
+              className="edit-cart-link"
+              onClick={() => navigate("/customer/cart")}
+            >
+              Edit Cart
+            </button>
           </div>
 
-          <div className="coupon-options">
-
-            {coupons.map((option) => {
-              const discount =
-                calculateCouponDiscount(
-                  option
-                );
-
-              const unavailable =
-                discount === null;
-
-              const isSelected =
-                selectedCoupon?.code ===
-                option.code;
+          <div className="items-table-list">
+            {items.map((item, idx) => {
+              const prod = item.productId || item;
+              const name = prod.name || item.name || "Product";
+              const price = Number(item.price || prod.price || 0);
+              const qty = Number(item.qty || 1);
+              const lineTotal = price * qty;
+              const image = prod.image || prod.images?.[0] || item.image || "";
 
               return (
-                <button
-                  type="button"
-                  key={option.code}
-                  className={`coupon-option ${
-                    isSelected
-                      ? "selected"
-                      : ""
-                  } ${
-                    unavailable
-                      ? "unavailable"
-                      : ""
-                  }`}
-                  onClick={() => {
-                    if (!unavailable) {
-                      setSelectedCoupon(
-                        option
-                      );
-                      setError("");
-                    }
-                  }}
-                  disabled={unavailable}
-                >
-                  <span
-                    className={`coupon-radio ${
-                      isSelected
-                        ? "checked"
-                        : ""
-                    }`}
-                  >
-                    {isSelected && (
-                      <span />
+                <div key={item._id || idx} className="review-item-row">
+                  <div className="item-thumb-box">
+                    {image ? (
+                      <img src={image} alt={name} />
+                    ) : (
+                      <ShoppingBag size={24} className="thumb-placeholder" />
                     )}
-                  </span>
+                  </div>
 
-                  <span className="coupon-option-content">
+                  <div className="item-info-col">
+                    <strong className="item-name">{name}</strong>
+                    <div className="item-sub-tags">
+                      {prod.category && <span className="cat-tag">{prod.category}</span>}
+                      {prod.vendorName && <span className="vendor-tag">Sold by: {prod.vendorName}</span>}
+                    </div>
+                  </div>
 
-                    <strong>
-                      {option.code}
-                    </strong>
+                  <div className="item-qty-col">
+                    <span className="qty-chip">Qty: {qty}</span>
+                  </div>
 
-                    <small>
-                      {option.label}
-                    </small>
-
-                    <em>
-                      {unavailable
-                        ? `Minimum order ₹${option.minimum}`
-                        : option.description}
-                    </em>
-                  </span>
-
-                  <b
-                    className={`coupon-offer-badge ${
-                      option.type ===
-                      "shipping"
-                        ? "shipping"
-                        : ""
-                    }`}
-                  >
-                    {option.type ===
-                    "percent"
-                      ? `${option.value}% OFF`
-                      : option.type ===
-                        "shipping"
-                      ? "FREE DELIVERY"
-                      : `₹${option.value} OFF`}
-                  </b>
-                </button>
+                  <div className="item-price-col">
+                    <strong>₹{lineTotal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</strong>
+                    {qty > 1 && <small>₹{price.toLocaleString("en-IN")} each</small>}
+                  </div>
+                </div>
               );
             })}
           </div>
+        </div>
+      </div>
 
-          <div className="coupon-modal-actions">
-
+      {/* RIGHT COLUMN: STICKY ORDER SUMMARY */}
+      <div className="revamped-review-sidebar">
+        {/* COUPON CARD */}
+        <div className="sidebar-coupon-card">
+          <div className="coupon-card-header">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Tag size={16} style={{ color: '#2563eb' }} />
+              <strong>Promotions &amp; Coupons</strong>
+            </div>
             <button
               type="button"
-              className="coupon-cancel-button"
-              onClick={() =>
-                setCouponOpen(false)
-              }
+              className="view-coupons-btn"
+              onClick={() => setCouponOpen(true)}
             >
-              Cancel
-            </button>
-
-            <button
-              type="button"
-              className="coupon-apply-button"
-              disabled={!selectedCoupon}
-              onClick={
-                applySelectedCoupon
-              }
-            >
-              Apply Coupon
+              View Offers
             </button>
           </div>
+
+          {coupon ? (
+            <div className="coupon-active-badge">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Check size={16} className="coupon-check-icon" />
+                <div>
+                  <strong>{coupon.code} APPLIED</strong>
+                  <span>Saved ₹{coupon.discount?.toLocaleString("en-IN")} on this order</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="coupon-remove-btn"
+                onClick={handleRemoveCoupon}
+                title="Remove Coupon"
+              >
+                <X size={15} />
+              </button>
+            </div>
+          ) : (
+            <div className="coupon-input-group">
+              <input
+                type="text"
+                placeholder="Enter coupon code (e.g. HUB10)"
+                value={couponCodeInput}
+                onChange={(e) => setCouponCodeInput(e.target.value)}
+                className="coupon-text-input"
+              />
+              <button
+                type="button"
+                className="coupon-apply-btn"
+                onClick={() => handleApplyCoupon()}
+                disabled={!couponCodeInput.trim()}
+              >
+                Apply
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* PRICE BREAKDOWN CARD */}
+        <div className="sidebar-summary-card">
+          <h3 className="summary-title">Order Summary</h3>
+
+          <div className="summary-line-rows">
+            <div className="summary-row">
+              <span>Items Subtotal</span>
+              <strong>₹{subtotal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</strong>
+            </div>
+
+            <div className="summary-row">
+              <span>Delivery Fee</span>
+              {chargeableDeliveryFee === 0 ? (
+                <strong className="free-tag">FREE</strong>
+              ) : (
+                <strong>₹{chargeableDeliveryFee.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</strong>
+              )}
+            </div>
+
+            {coupon && (
+              <div className="summary-row discount">
+                <span>Coupon Discount ({coupon.code})</span>
+                <strong className="discount-tag">-₹{coupon.discount?.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</strong>
+              </div>
+            )}
+
+            <div className="summary-row">
+              <span>Estimated GST &amp; Taxes</span>
+              <strong className="tax-included">Included in price</strong>
+            </div>
+
+            <div className="summary-total-divider" />
+
+            <div className="summary-total-row">
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span className="total-label">Total Amount</span>
+                <span className="tax-subtext">(Inclusive of all taxes)</span>
+              </div>
+              <strong className="total-value">
+                ₹{total.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+              </strong>
+            </div>
+          </div>
+
+          {/* PRIMARY PLACE ORDER ACTION BUTTON */}
+          <button
+            type="button"
+            className="place-order-cta-btn"
+            onClick={handlePlaceOrder}
+            disabled={placingOrder}
+          >
+            {placingOrder ? (
+              <span className="placing-state">
+                <div className="spinner-mini" /> Placing Order...
+              </span>
+            ) : (
+              <span className="normal-state">
+                <Lock size={17} /> Place Order &amp; Pay ₹{total.toLocaleString("en-IN")}
+              </span>
+            )}
+          </button>
+
+          {/* TRUST BADGES */}
+          <div className="sidebar-trust-box">
+            <div className="trust-item">
+              <Shield size={15} />
+              <span>Safe &amp; Secure Payments</span>
+            </div>
+            <div className="trust-item">
+              <RotateCcw size={15} />
+              <span>Easy 7-Day Returns</span>
+            </div>
+            <div className="trust-item">
+              <CheckCircle2 size={15} />
+              <span>100% Authentic Products</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* AVAILABLE COUPONS MODAL */}
+      <Modal
+        isOpen={couponOpen}
+        onClose={() => setCouponOpen(false)}
+        title="Available Platform Coupons & Offers"
+      >
+        <div className="coupons-modal-list">
+          {AVAILABLE_COUPONS.map((c) => (
+            <div key={c.code} className="coupon-modal-item">
+              <div className="coupon-modal-left">
+                <div className="coupon-tag-code">
+                  <Percent size={13} />
+                  <span>{c.code}</span>
+                </div>
+                <strong className="coupon-modal-label">{c.label}</strong>
+                <p className="coupon-modal-desc">{c.description}</p>
+              </div>
+              <button
+                type="button"
+                className="coupon-modal-apply"
+                onClick={() => handleApplyCoupon(c)}
+              >
+                Apply Offer
+              </button>
+            </div>
+          ))}
         </div>
       </Modal>
     </div>

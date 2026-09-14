@@ -9,6 +9,7 @@ function ConfirmModal({
   message,
   confirmText = "Confirm",
   cancelText = "Cancel",
+  showCancel = true,
   onConfirm,
   onCancel,
   danger = true,
@@ -32,7 +33,7 @@ function ConfirmModal({
 
       <div
         className="confirm-modal"
-        style={secondaryAction ? { maxWidth: "480px" } : undefined}
+        style={secondaryAction ? { maxWidth: "460px" } : undefined}
       >
 
         <button
@@ -70,14 +71,17 @@ function ConfirmModal({
 
         <div className="confirm-actions">
 
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={onCancel}
-            disabled={loading || secondaryAction?.loading}
-          >
-            {cancelText}
-          </button>
+          {showCancel && cancelText && (
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={onCancel}
+              disabled={loading || secondaryAction?.loading}
+              style={{ whiteSpace: "nowrap" }}
+            >
+              {cancelText}
+            </button>
+          )}
 
           {secondaryAction && (
             <button
@@ -91,6 +95,7 @@ function ConfirmModal({
                 justifyContent: "center",
                 gap: "6px",
                 fontWeight: 600,
+                whiteSpace: "nowrap",
                 cursor:
                   loading || secondaryAction?.loading
                     ? "not-allowed"
@@ -114,6 +119,7 @@ function ConfirmModal({
             }
             onClick={onConfirm}
             disabled={loading || secondaryAction?.loading}
+            style={{ whiteSpace: "nowrap" }}
           >
             {loading
               ? "Processing..."

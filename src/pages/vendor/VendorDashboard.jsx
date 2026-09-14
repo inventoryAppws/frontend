@@ -205,7 +205,14 @@ function VendorDashboard() {
   };
 
 
-  if (loading) return <Loader text="Loading your vendor dashboard..." />;
+  if (loading) {
+    return (
+      <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <Loader type="stats" count={4} />
+        <Loader type="table" rows={6} columns={6} />
+      </div>
+    );
+  }
 
   return (
     <div className="vendor-dashboard-container">

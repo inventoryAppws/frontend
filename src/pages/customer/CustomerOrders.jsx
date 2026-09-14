@@ -10,14 +10,17 @@ import {
   MapPin,
   ArrowUpDown,
   X,
-  Plus
+  Plus,
+  CreditCard
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import CustomSelect from "../../components/CustomSelect";
 import WideOrderModal from "../../components/WideOrderModal";
 import MultiProductsOrderModal from "../../components/MultiProductsOrderModal";
 import OrderDetailsSidepanel from "../../components/OrderDetailsSidepanel";
 import ReturnRequestsSidepanel from "../../components/ReturnRequestsSidepanel";
 import { CancelOrderModal, ReturnOrderModal } from "../../components/OrderActionModals";
+import ConfirmModal from "../../components/ConfirmModal";
 import { getCustomerOrders, cancelOrderReturn } from "../../services/orderService";
 import { addToCart } from "../../services/cartService";
 import { toast } from "../../components/Toast";
@@ -89,6 +92,7 @@ function getStatusMeta(statusKey, returnStatusKey) {
 
 function CustomerOrders() {
   const navigate = useNavigate();
+  const { openPaymentsSidepanel } = useOutletContext() || {};
   const sentinelRef = useRef(null);
   const [orders, setOrders] = useState([]);
   const [allOrdersForCount, setAllOrdersForCount] = useState([]);
@@ -104,6 +108,8 @@ function CustomerOrders() {
   const [cancelOrderTarget, setCancelOrderTarget] = useState(null); // Cancel popup
   const [returnOrderTarget, setReturnOrderTarget] = useState(null); // Return popup
   const [isRequestsDrawerOpen, setIsRequestsDrawerOpen] = useState(false); // Returns/Cancellations/Refunds sidepanel
+  const [cancelReturnTarget, setCancelReturnTarget] = useState(null); // Cancel return confirmation modal
+  const [cancellingReturn, setCancellingReturn] = useState(false);
 
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -220,11 +226,15 @@ function CustomerOrders() {
     }
   };
 
-  const handleCancelReturn = async (order) => {
+  const handleCancelReturn = (order) => {
+    setCancelReturnTarget(order);
+  };
+
+  const confirmCancelReturn = async () => {
+    const order = cancelReturnTarget;
+    if (!order) return;
     const oId = order.orderId || String(order._id).slice(-8).toUpperCase();
-    if (!window.confirm(`Are you sure you want to cancel the return request for Order #${oId}? Your order will remain Delivered.`)) {
-      return;
-    }
+    setCancellingReturn(true);
     try {
       await cancelOrderReturn(order._id);
       toast.success(`Return request for Order #${oId} cancelled.`);
@@ -234,19 +244,16 @@ function CustomerOrders() {
       setAllOrdersForCount((prev) =>
         prev.map((o) => (o._id === order._id ? { ...o, returnStatus: "cancelled", refundStatus: "none" } : o))
       );
+      setCancelReturnTarget(null);
     } catch (err) {
       toast.error(getErrorMessage(err) || "Failed to cancel return request");
+    } finally {
+      setCancellingReturn(false);
     }
   };
 
   return (
     <div className="revamped-orders-page">
-      {/* ── BREADCRUMB ── */}
-      <div className="orders-breadcrumb">
-        <span onClick={() => navigate("/customer/home")}>Dashboard</span>
-        <span className="bc-sep">&gt;</span>
-        <span className="bc-current">My Orders</span>
-      </div>
 
       {/* ── HERO BANNER WITH DELIVERED PARCEL GRAPHIC ── */}
       <div className="revamped-orders-hero">
@@ -365,25 +372,36 @@ function CustomerOrders() {
             </span>
           )}
         </button>
+
+        {/* ── PAYMENT & TRANSACTIONS HISTORY ICON BUTTON ── */}
+        <button
+          type="button"
+          className="orders-payments-icon-btn"
+          onClick={() => openPaymentsSidepanel && openPaymentsSidepanel()}
+          title="Payment & Transactions History"
+          aria-label="Payment & Transactions History"
+        >
+          <CreditCard size={17} />
+        </button>
       </div>
 
       <ErrorMessage message={error} onRetry={loadOrders} />
 
       {/* ── ORDERS CONTENT GRID ── */}
       {loading ? (
-        <Loader text="Loading your orders..." />
+        <Loader type="orders" count={4} />
       ) : sortedOrders.length === 0 ? (
         <div className="orders-empty-state-card">
           <div className="empty-state-icon-box">
             <Package size={42} />
           </div>
-          <h3>{search || status !== "all" ? "No matching orders found" : "No orders yet"}</h3>
+          <h3>{search || status !== "all" ? "No matching orders found" : "No orders placed yet"}</h3>
           <p>
             {search || status !== "all"
-              ? "Try adjusting your search query or status filters."
-              : "When you place an order, it will appear here with live tracking updates."}
+              ? "Try adjusting your search query or status filters to locate orders."
+              : "Explore our trending products and place your first order with instant live tracking!"}
           </p>
-          {(search || status !== "all") && (
+          {search || status !== "all" ? (
             <button
               type="button"
               className="btn btn-outline"
@@ -393,6 +411,16 @@ function CustomerOrders() {
               }}
             >
               Clear Filters
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => navigate("/customer/home")}
+              style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "10px 22px" }}
+            >
+              <Package size={17} />
+              <span>Explore Marketplace Catalog</span>
             </button>
           )}
         </div>
@@ -670,6 +698,16 @@ function CustomerOrders() {
         onClose={() => setIsRequestsDrawerOpen(false)}
         orders={allOrdersForCount.length > 0 ? allOrdersForCount : orders}
         onSelectOrder={(ord) => setSelectedOrder(ord)}
+      />
+
+      {/* ── MODAL: CANCEL RETURN CONFIRMATION ── */}
+      <ConfirmModal
+        isOpen={Boolean(cancelReturnTarget)}
+        title="Cancel Return Request?"
+        message={`Are you sure you want to cancel the return request for Order #${cancelReturnTarget?.orderId || (cancelReturnTarget?._id ? String(cancelReturnTarget._id).slice(-8).toUpperCase() : "")}? Your order will remain Delivered.`}
+        confirmText={cancellingReturn ? "Cancelling..." : "Yes, Cancel Return"}
+        onConfirm={confirmCancelReturn}
+        onCancel={() => setCancelReturnTarget(null)}
       />
     </div>
   );

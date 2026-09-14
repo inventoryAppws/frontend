@@ -100,14 +100,14 @@ function Addresses({ embedded = false }) {
 
       {addresses.length === 0 ? (
         <div className="empty-card empty-address-card">
-          <MapPin size={38} />
+          <div className="empty-state-icon-box">
+            <MapPin size={38} />
+          </div>
           <h2>No saved addresses</h2>
-          <p>Add an address to use it during checkout.</p>
-          {embedded && (
-            <button type="button" className="btn btn-primary" onClick={openAddModal}>
-              <Plus size={17} /> Add New Address
-            </button>
-          )}
+          <p>Add a delivery address to make checkout fast and seamless.</p>
+          <button type="button" className="btn btn-primary" onClick={openAddModal}>
+            <Plus size={17} /> Add New Address
+          </button>
         </div>
       ) : embedded ? (
         <div className="address-compact-shell">

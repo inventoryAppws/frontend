@@ -723,7 +723,7 @@ function VendorOrders({ defaultFilter = null }) {
       {error && <ErrorMessage message={error} />}
 
       {loading && orders.length === 0 ? (
-        <Loader text="Loading customer orders..." />
+        <Loader type="table" rows={6} columns={7} />
       ) : sortedOrders.length === 0 ? (
         <div className="vendor-orders-empty">
           <ShoppingCart size={48} />
