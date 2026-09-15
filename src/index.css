@@ -33327,32 +33327,71 @@ tr:last-child td {
   position: relative !important;
   display: flex !important;
   align-items: center !important;
+  flex-shrink: 0 !important;
+  min-width: 175px !important;
 }
 
-.coupons-sort-icon {
-  position: absolute !important;
-  left: 10px !important;
-  color: #64748b !important;
-  pointer-events: none !important;
+.custom-select-wrapper.coupons-sort-custom-select {
+  width: 100% !important;
 }
 
-.coupons-sort-select {
-  padding: 8px 12px 8px 28px !important;
+.custom-select-wrapper.coupons-sort-custom-select .custom-select-trigger {
+  padding: 7px 11px !important;
   border-radius: 8px !important;
   border: 1px solid #e2e8f0 !important;
   background: #f8fafc !important;
   font-size: 12px !important;
   font-weight: 600 !important;
   color: #334155 !important;
-  cursor: pointer !important;
-  outline: none !important;
+  height: 35px !important;
+  gap: 6px !important;
+  box-shadow: none !important;
   transition: all 0.18s ease !important;
 }
 
-.coupons-sort-select:hover,
-.coupons-sort-select:focus {
-  border-color: #2563eb !important;
+.custom-select-wrapper.coupons-sort-custom-select .custom-select-trigger:hover {
   background: #ffffff !important;
+  border-color: #2563eb !important;
+}
+
+.custom-select-wrapper.coupons-sort-custom-select.open .custom-select-trigger {
+  background: #ffffff !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 2.5px rgba(37, 99, 235, 0.12) !important;
+}
+
+.custom-select-wrapper.coupons-sort-custom-select .custom-select-text {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #0f172a !important;
+  gap: 6px !important;
+}
+
+.custom-select-wrapper.coupons-sort-custom-select .custom-select-dropdown {
+  min-width: 215px !important;
+  left: auto !important;
+  right: 0 !important;
+  top: calc(100% + 5px) !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.14), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  z-index: 1300 !important;
+  padding: 6px !important;
+}
+
+.custom-select-wrapper.coupons-sort-custom-select .custom-select-option {
+  padding: 7px 10px !important;
+  font-size: 12px !important;
+  border-radius: 8px !important;
+}
+
+.custom-select-wrapper.coupons-sort-custom-select .custom-select-badge {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  padding: 1px 6px !important;
+  background: #dcfce7 !important;
+  color: #15803d !important;
 }
 
 /* Filter Chips Bar */

@@ -1010,15 +1010,18 @@ function CustomerLayout() {
                 </div>
                 <div className="refined-form-group">
                   <label>Gender <span className="req-star">*</span></label>
-                  <select
+                  <CustomSelect
                     value={profileForm.gender || "Female"}
-                    onChange={(e) => setProfileForm({ ...profileForm, gender: e.target.value })}
-                  >
-                    <option value="Female">Female</option>
-                    <option value="Male">Male</option>
-                    <option value="Other">Other</option>
-                    <option value="Prefer not to say">Prefer not to say</option>
-                  </select>
+                    onChange={(val) => setProfileForm({ ...profileForm, gender: val })}
+                    options={[
+                      { value: "Female", label: "Female" },
+                      { value: "Male", label: "Male" },
+                      { value: "Other", label: "Other" },
+                      { value: "Prefer not to say", label: "Prefer not to say" },
+                    ]}
+                    size="md"
+                    ariaLabel="Select gender"
+                  />
                 </div>
                 <div className="refined-form-group span-2">
                   <label>Date of Birth <span className="req-star">*</span></label>

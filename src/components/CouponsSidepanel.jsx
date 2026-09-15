@@ -14,12 +14,39 @@ import {
   Truck,
   RotateCcw,
   CheckCircle2,
+  TrendingDown,
+  TrendingUp,
 } from "lucide-react";
+import CustomSelect from "./CustomSelect";
+
+const SORT_OPTIONS = [
+  {
+    value: "best",
+    label: "Best Savings",
+    icon: <Sparkles size={14} style={{ color: "#16a34a" }} />,
+    badge: "Top",
+  },
+  {
+    value: "min_spend",
+    label: "Lowest Min Spend",
+    icon: <TrendingDown size={14} style={{ color: "#2563eb" }} />,
+  },
+  {
+    value: "discount_val",
+    label: "Discount (High to Low)",
+    icon: <TrendingUp size={14} style={{ color: "#d97706" }} />,
+  },
+  {
+    value: "expiry",
+    label: "Expiring Soonest",
+    icon: <Clock size={14} style={{ color: "#ef4444" }} />,
+  },
+];
 
 /**
  * Helper to calculate discount amount for a given coupon and subtotal
  */
-export function calculateCouponSavings(c, subtotal = 0, deliveryFee = 0) {
+function calculateCouponSavings(c, subtotal = 0, deliveryFee = 0) {
   if (!c) return 0;
   const isShip = c.code === "FREESHIP" || c.discountType === "shipping" || c.type === "shipping";
   if (isShip) return deliveryFee || 40;
@@ -340,18 +367,15 @@ export default function CouponsSidepanel({
           </div>
 
           <div className="coupons-sort-wrap">
-            <ArrowUpDown size={14} className="coupons-sort-icon" />
-            <select
+            <CustomSelect
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="coupons-sort-select"
-              aria-label="Sort coupons by"
-            >
-              <option value="best">Best Savings</option>
-              <option value="min_spend">Lowest Min Spend</option>
-              <option value="discount_val">Discount (High to Low)</option>
-              <option value="expiry">Expiring Soonest</option>
-            </select>
+              onChange={(val) => setSortBy(val)}
+              options={SORT_OPTIONS}
+              prefixIcon={<ArrowUpDown size={14} />}
+              size="sm"
+              className="coupons-sort-custom-select"
+              ariaLabel="Sort coupons by"
+            />
           </div>
         </div>
 
