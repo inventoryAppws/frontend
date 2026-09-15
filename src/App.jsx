@@ -71,6 +71,12 @@ function App() {
             CUSTOMER AUTH
         ========================== */}
 
+        {/* Standard Login Alias */}
+        <Route
+          path="/login"
+          element={<Navigate to="/customer/login" replace />}
+        />
+
         <Route
           path="/customer/login"
           element={<CustomerLogin />}

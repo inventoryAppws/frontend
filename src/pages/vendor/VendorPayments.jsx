@@ -26,6 +26,7 @@ import {
   Info
 } from "lucide-react";
 import { getVendorTransactions, requestVendorPayout } from "../../services/vendorTransactionService";
+import { getVendorSettings, requestVendorSecurityOtp } from "../../services/authService";
 import Loader from "../../components/Loader";
 import { toast } from "../../components/Toast";
 import useDebounce from "../../hooks/useDebounce";
@@ -80,6 +81,13 @@ const DATE_RANGE_OPTIONS = [
   { value: "30days", label: "Last 30 Days" }
 ];
 
+const SORT_OPTIONS = [
+  { value: "date_desc", label: "Date: Newest First" },
+  { value: "date_asc", label: "Date: Oldest First" },
+  { value: "amount_desc", label: "Amount: High to Low" },
+  { value: "amount_asc", label: "Amount: Low to High" }
+];
+
 const LIMIT_OPTIONS = [
   { value: "10", label: "10" },
   { value: "15", label: "15" },
@@ -113,10 +121,11 @@ export default function VendorPayments() {
   const [totalItems, setTotalItems] = useState(0);
   const sentinelRef = useRef(null);
 
-  // Filters
+  // Filters & Sorting
   const [activeTab, setActiveTab] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [dateRange, setDateRange] = useState("all");
+  const [sortBy, setSortBy] = useState("date_desc");
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 300);
 
@@ -135,6 +144,25 @@ export default function VendorPayments() {
   const [upiId, setUpiId] = useState("");
   const [payoutNotes, setPayoutNotes] = useState("");
   const [submittingPayout, setSubmittingPayout] = useState(false);
+
+  // 2FA Security states
+  const [vendorSettings, setVendorSettings] = useState(null);
+  const [otpStep, setOtpStep] = useState(false); // true when 2FA OTP input is requested
+  const [payoutOtp, setPayoutOtp] = useState("");
+  const [otpSending, setOtpSending] = useState(false);
+
+  // Load vendor settings to check 2FA status
+  useEffect(() => {
+    getVendorSettings()
+      .then((s) => {
+        if (s) {
+          setVendorSettings(s);
+          if (s.accountNumber) setBankAccount(s.accountNumber);
+          if (s.ifscCode) setBankIfsc(s.ifscCode);
+        }
+      })
+      .catch(() => null);
+  }, []);
 
   const handleCopy = (text, key) => {
     if (!text) return;
@@ -160,6 +188,7 @@ export default function VendorPayments() {
         type: activeTab,
         status: statusFilter,
         dateRange,
+        sortBy,
         q: debouncedSearch
       });
 
@@ -178,7 +207,7 @@ export default function VendorPayments() {
       setLoadingMore(false);
       setRefreshing(false);
     }
-  }, [page, limit, activeTab, statusFilter, dateRange, debouncedSearch]);
+  }, [page, limit, activeTab, statusFilter, dateRange, sortBy, debouncedSearch]);
 
   useEffect(() => {
     fetchTransactionsData();
@@ -212,12 +241,25 @@ export default function VendorPayments() {
     setActiveTab("all");
     setStatusFilter("all");
     setDateRange("all");
+    setSortBy("date_desc");
     setSearch("");
     setPage(1);
     setTransactions([]);
   };
 
-  const isFiltered = activeTab !== "all" || statusFilter !== "all" || dateRange !== "all" || search !== "";
+  const isFiltered = activeTab !== "all" || statusFilter !== "all" || dateRange !== "all" || sortBy !== "date_desc" || search !== "";
+
+  const handleSendPayoutOtp = async () => {
+    setOtpSending(true);
+    try {
+      await requestVendorSecurityOtp("Vendor Payout Withdrawal");
+      toast.success("Security OTP sent to your registered email");
+    } catch (err) {
+      toast.error(err.response?.data?.msg || err.message || "Failed to send security OTP");
+    } finally {
+      setOtpSending(false);
+    }
+  };
 
   // Handle Payout Request Submit
   const handlePayoutSubmit = async (e) => {
@@ -249,19 +291,42 @@ export default function VendorPayments() {
       accountStr = `UPI: ${upiId}`;
     }
 
+    // If 2FA is enabled and we haven't prompted for OTP yet
+    if (vendorSettings?.twoFactorAuth && !otpStep) {
+      setOtpStep(true);
+      setPayoutOtp("");
+      handleSendPayoutOtp();
+      return;
+    }
+
+    if (vendorSettings?.twoFactorAuth && otpStep && (!payoutOtp || payoutOtp.trim().length !== 6)) {
+      toast.error("Please enter the 6-digit OTP code sent to your email");
+      return;
+    }
+
     setSubmittingPayout(true);
     try {
-      await requestVendorPayout({
+      const res = await requestVendorPayout({
         amount,
         payoutMethod,
         payoutAccount: accountStr,
-        notes: payoutNotes
+        notes: payoutNotes,
+        ...(payoutOtp ? { otp: payoutOtp.trim() } : {})
       });
+
+      if (res && res.otpRequired) {
+        setOtpStep(true);
+        setPayoutOtp("");
+        handleSendPayoutOtp();
+        return;
+      }
 
       toast.success(`🎉 Payout request of ₹${amount.toLocaleString("en-IN")} submitted successfully!`);
       setPayoutModalOpen(false);
       setPayoutAmount("");
       setPayoutNotes("");
+      setOtpStep(false);
+      setPayoutOtp("");
       // Refresh transactions and summary
       fetchTransactionsData(true);
     } catch (err) {
@@ -557,6 +622,16 @@ export default function VendorPayments() {
               value={dateRange}
               onChange={(val) => { setDateRange(val); setPage(1); }}
               options={DATE_RANGE_OPTIONS}
+              className="vp-custom-select"
+            />
+          </div>
+
+          {/* Sort Dropdown */}
+          <div className="vp-filter-custom-select-wrap">
+            <CustomSelect
+              value={sortBy}
+              onChange={(val) => { setSortBy(val); setPage(1); }}
+              options={SORT_OPTIONS}
               className="vp-custom-select"
             />
           </div>
@@ -1132,11 +1207,64 @@ export default function VendorPayments() {
                   />
                 </div>
 
+                {/* 2FA OTP Verification Block when 2FA is active */}
+                {vendorSettings?.twoFactorAuth && otpStep && (
+                  <div className="action-modal-form-group" style={{ background: "#f8fafc", border: "1.5px solid #e0e7ff", borderRadius: "12px", padding: "16px", marginTop: "12px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+                      <ShieldCheck size={20} color="#4f46e5" />
+                      <strong style={{ fontSize: "0.95rem", color: "#1e1b4b" }}>2FA OTP Verification Required</strong>
+                    </div>
+                    <p style={{ fontSize: "0.85rem", color: "#475569", margin: "0 0 12px 0", lineHeight: 1.4 }}>
+                      A 6-digit OTP code has been sent to your registered email address to authorize this payout settlement.
+                    </p>
+                    <label className="action-modal-label">Enter 6-Digit Security OTP *</label>
+                    <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                      <input
+                        type="text"
+                        maxLength={6}
+                        placeholder="• • • • • •"
+                        value={payoutOtp}
+                        onChange={(e) => setPayoutOtp(e.target.value.replace(/\D/g, ""))}
+                        className="form-control"
+                        style={{
+                          fontSize: "1.3rem",
+                          letterSpacing: "0.35em",
+                          textAlign: "center",
+                          fontWeight: "700",
+                          maxWidth: "180px",
+                          border: "1.5px solid #6366f1"
+                        }}
+                        autoFocus
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={handleSendPayoutOtp}
+                        disabled={otpSending}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          color: "#4f46e5",
+                          fontWeight: "600",
+                          fontSize: "0.85rem",
+                          cursor: "pointer",
+                          padding: "6px 12px",
+                          borderRadius: "6px"
+                        }}
+                      >
+                        {otpSending ? "Sending OTP..." : "Resend OTP"}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 {/* Secure settlement alert */}
                 <div className="vp-secure-alert">
                   <Info size={16} />
                   <span>
-                    Payouts are processed automatically via automated banking rails. Zero withdrawal fees applied.
+                    {vendorSettings?.twoFactorAuth
+                      ? "2FA Payout Protection is Active. Two-Factor Authentication is enforced for fund withdrawals."
+                      : "Payouts are processed automatically via automated banking rails. Zero withdrawal fees applied."}
                   </span>
                 </div>
               </div>
@@ -1145,7 +1273,11 @@ export default function VendorPayments() {
                 <button
                   type="button"
                   className="btn btn-outline"
-                  onClick={() => setPayoutModalOpen(false)}
+                  onClick={() => {
+                    setPayoutModalOpen(false);
+                    setOtpStep(false);
+                    setPayoutOtp("");
+                  }}
                   disabled={submittingPayout}
                 >
                   Cancel
@@ -1155,7 +1287,11 @@ export default function VendorPayments() {
                   className="btn btn-primary"
                   disabled={submittingPayout || summary.availableBalance < 500}
                 >
-                  {submittingPayout ? "Processing Payout..." : "Confirm & Withdraw Funds"}
+                  {submittingPayout
+                    ? "Processing Payout..."
+                    : vendorSettings?.twoFactorAuth && !otpStep
+                    ? "Proceed & Verify OTP"
+                    : "Confirm & Withdraw Funds"}
                 </button>
               </div>
             </form>

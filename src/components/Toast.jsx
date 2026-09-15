@@ -2,10 +2,29 @@ import { useEffect, useState } from "react";
 import { CheckCircle2, AlertCircle, Info, X } from "lucide-react";
 
 let toastCounter = 0;
+const recentToasts = new Map(); // message+type -> timestamp
+
+function shouldThrottleToast(type, message) {
+  const key = `${type}:${String(message || '').trim()}`;
+  const now = Date.now();
+  const lastTime = recentToasts.get(key) || 0;
+  if (now - lastTime < 3500) {
+    return true; // Throttle duplicate toast within 3.5s
+  }
+  recentToasts.set(key, now);
+  // Cleanup old keys
+  if (recentToasts.size > 20) {
+    for (const [k, time] of recentToasts.entries()) {
+      if (now - time > 5000) recentToasts.delete(k);
+    }
+  }
+  return false;
+}
 
 export const toast = {
   success: (message, title = "Success") => {
     if (typeof window !== "undefined") {
+      if (shouldThrottleToast("success", message)) return;
       window.dispatchEvent(
         new CustomEvent("app-toast", {
           detail: { id: ++toastCounter, type: "success", title, message }
@@ -15,6 +34,7 @@ export const toast = {
   },
   error: (message, title = "Error") => {
     if (typeof window !== "undefined") {
+      if (shouldThrottleToast("error", message)) return;
       window.dispatchEvent(
         new CustomEvent("app-toast", {
           detail: { id: ++toastCounter, type: "error", title, message }
@@ -24,6 +44,7 @@ export const toast = {
   },
   info: (message, title = "Info") => {
     if (typeof window !== "undefined") {
+      if (shouldThrottleToast("info", message)) return;
       window.dispatchEvent(
         new CustomEvent("app-toast", {
           detail: { id: ++toastCounter, type: "info", title, message }

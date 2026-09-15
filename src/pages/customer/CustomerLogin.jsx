@@ -57,7 +57,12 @@ function CustomerLogin() {
     } catch (err) {
       const msg = getErrorMessage(err);
       setError(msg);
-      toast.error(msg);
+      // If status is 401 or 403 or accountBlocked, api interceptor has already displayed the toast
+      const status = err.response?.status;
+      const isBlockedOrAuth = status === 401 || status === 403 || err.response?.data?.accountBlocked;
+      if (!isBlockedOrAuth) {
+        toast.error(msg);
+      }
     } finally {
       setLoading(false);
     }
@@ -106,7 +111,11 @@ function CustomerLogin() {
     } catch (err) {
       const msg = getErrorMessage(err);
       setError(msg);
-      toast.error(msg);
+      const status = err.response?.status;
+      const isBlockedOrAuth = status === 401 || status === 403 || err.response?.data?.accountBlocked;
+      if (!isBlockedOrAuth) {
+        toast.error(msg);
+      }
     } finally {
       setLoading(false);
     }

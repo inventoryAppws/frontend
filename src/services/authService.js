@@ -51,3 +51,38 @@ export async function resetPasswordWithOtp({ email, otp, newPassword, userType =
   const response = await api.post("/auth/reset-password", { email, otp, newPassword, userType });
   return response.data;
 }
+
+export async function getVendorProfile() {
+  const response = await api.get("/auth/me");
+  return response.data;
+}
+
+export async function updateVendorProfile(data) {
+  const response = await api.patch("/auth/profile", data);
+  return response.data;
+}
+
+export async function changeVendorPassword(data) {
+  const response = await api.patch("/auth/change-password", data);
+  return response.data;
+}
+
+export async function getVendorSettings() {
+  const response = await api.get("/auth/settings");
+  return response.data;
+}
+
+export async function updateVendorSettings(data) {
+  const response = await api.put("/auth/settings", data);
+  return response.data;
+}
+
+export async function requestVendorSecurityOtp(purpose = "Security Verification") {
+  const response = await api.post("/auth/security-otp", { purpose });
+  return response.data;
+}
+
+export async function getStoreSettingsPublic() {
+  const response = await api.get("/customers/store-settings");
+  return response.data;
+}

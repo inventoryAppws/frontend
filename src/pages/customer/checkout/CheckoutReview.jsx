@@ -28,45 +28,14 @@ import {
   checkoutCart,
 } from "../../../services/cartService";
 import { getAddresses } from "../../../services/addressService";
+import { getStoreSettingsPublic } from "../../../services/authService";
+import { getPublicCoupons } from "../../../services/productService";
 
 import CheckoutSkeleton from "../../../components/skeletons/CheckoutSkeleton";
 import ErrorMessage from "../../../components/ErrorMessage";
-import Modal from "../../../components/Modal";
+import CouponsSidepanel from "../../../components/CouponsSidepanel";
+import { toast } from "../../../components/Toast";
 import { getErrorMessage } from "../../../utils/errorHandler";
-
-const AVAILABLE_COUPONS = [
-  {
-    code: "HUB10",
-    label: "10% OFF on all products",
-    description: "Maximum discount of up to ₹5,000",
-    type: "percent",
-    value: 10,
-    cap: 5000,
-  },
-  {
-    code: "SHOP50",
-    label: "Flat ₹50 OFF on orders above ₹999",
-    description: "Instant cart discount",
-    type: "flat",
-    value: 50,
-    minimum: 999,
-  },
-  {
-    code: "WELCOME100",
-    label: "Flat ₹100 OFF on your first order",
-    description: "Special welcome reward",
-    type: "flat",
-    value: 100,
-  },
-  {
-    code: "FREESHIP",
-    label: "Free shipping on orders above ₹499",
-    description: "Zero delivery charges",
-    type: "shipping",
-    value: 0,
-    minimum: 499,
-  },
-];
 
 function CheckoutReview() {
   const navigate = useNavigate();
@@ -84,6 +53,22 @@ function CheckoutReview() {
   const [coupon, setCoupon] = useState(null);
   const [couponCodeInput, setCouponCodeInput] = useState("");
   const [couponOpen, setCouponOpen] = useState(false);
+  const [availableCoupons, setAvailableCoupons] = useState([]);
+  const [loadingCoupons, setLoadingCoupons] = useState(false);
+
+  const loadAvailableCoupons = async () => {
+    setLoadingCoupons(true);
+    try {
+      const data = await getPublicCoupons();
+      if (Array.isArray(data)) {
+        setAvailableCoupons(data);
+      }
+    } catch (err) {
+      console.warn("Could not fetch active coupons:", err?.message);
+    } finally {
+      setLoadingCoupons(false);
+    }
+  };
 
   const loadCheckoutData = async () => {
     setLoading(true);
@@ -140,11 +125,18 @@ function CheckoutReview() {
     }
   };
 
+  const [storeSettings, setStoreSettings] = useState(null);
+
   useEffect(() => {
     loadCheckoutData();
+    loadAvailableCoupons();
+    getStoreSettingsPublic()
+      .then((s) => setStoreSettings(s))
+      .catch(() => null);
   }, []);
 
-  const getDeliveryFee = () => (delivery === "express" ? 99 : 0);
+  const freeThreshold = Number(storeSettings?.freeShippingThreshold ?? 499);
+  const defaultFee = Number(storeSettings?.defaultDeliveryFee ?? 40);
 
   const subtotal = items.reduce((sum, item) => {
     const price = Number(item.price) || 0;
@@ -152,40 +144,71 @@ function CheckoutReview() {
     return sum + price * qty;
   }, 0);
 
+  const getDeliveryFee = () => {
+    if (delivery === "express") return 99;
+    return subtotal >= freeThreshold ? 0 : defaultFee;
+  };
+
   const deliveryFee = getDeliveryFee();
-  const chargeableDeliveryFee = coupon?.type === "shipping" ? 0 : deliveryFee;
+  const isShippingCoupon = coupon?.code === "FREESHIP" || coupon?.discountType === "shipping" || coupon?.type === "shipping";
+  const chargeableDeliveryFee = isShippingCoupon ? 0 : deliveryFee;
   const couponDiscount = coupon?.discount || 0;
 
   const total = Math.max(0, subtotal + chargeableDeliveryFee - couponDiscount);
 
   const calculateCouponDiscount = (selected) => {
-    if (selected.minimum && subtotal < selected.minimum) return null;
-    if (selected.type === "shipping") return deliveryFee;
-    if (selected.type === "percent") {
-      return Math.min(Math.round((subtotal * selected.value) / 100), selected.cap || Infinity);
+    const minimum = Number(selected.minOrderAmount ?? selected.minimum ?? 0);
+    if (minimum > 0 && subtotal < minimum) return null;
+
+    const isShip = selected.code === "FREESHIP" || selected.discountType === "shipping" || selected.type === "shipping";
+    if (isShip) return deliveryFee;
+
+    const isPct = selected.discountType === "percentage" || selected.type === "percent";
+    const val = Number(selected.discountValue ?? selected.value ?? 0);
+    const maxCap = selected.maxDiscountAmount ? Number(selected.maxDiscountAmount) : (selected.cap || Infinity);
+
+    if (isPct) {
+      return Math.min(Math.round((subtotal * val) / 100), maxCap);
     }
-    return selected.value;
+    return val;
   };
 
   const handleApplyCoupon = (c) => {
-    const target = c || AVAILABLE_COUPONS.find(x => x.code.toUpperCase() === couponCodeInput.trim().toUpperCase());
+    const codeToFind = (c?.code || couponCodeInput).trim().toUpperCase();
+    if (!codeToFind) return { success: false, message: "Please enter a valid coupon code." };
+
+    let target = c || availableCoupons.find((x) => x.code.toUpperCase() === codeToFind);
+
     if (!target) {
-      setError("Invalid coupon code. Try HUB10 or SHOP50.");
-      return;
+      const msg = `Coupon "${codeToFind}" not found. Please check available offers.`;
+      setError(msg);
+      toast.error(msg);
+      return { success: false, message: msg };
     }
+
+    const minAmt = Number(target.minOrderAmount ?? target.minimum ?? 0);
     const discount = calculateCouponDiscount(target);
     if (discount === null) {
-      setError(`${target.code} requires a minimum order value of ₹${target.minimum}.`);
-      return;
+      const msg = `${target.code} requires a minimum order value of ₹${minAmt.toLocaleString("en-IN")}.`;
+      setError(msg);
+      toast.error(msg);
+      return { success: false, message: msg };
     }
+
     setCoupon({ ...target, discount });
     setCouponCodeInput("");
     setCouponOpen(false);
     setError("");
+    toast.success(`Coupon ${target.code} applied! Saved ₹${discount.toLocaleString("en-IN")}`);
+    return { success: true, message: `Coupon ${target.code} applied!` };
   };
 
   const handleRemoveCoupon = () => {
+    const prevCode = coupon?.code;
     setCoupon(null);
+    if (prevCode) {
+      toast.info(`Coupon ${prevCode} removed.`);
+    }
   };
 
   /* Payment Label Helpers */
@@ -472,7 +495,7 @@ function CheckoutReview() {
             <div className="coupon-input-group">
               <input
                 type="text"
-                placeholder="Enter coupon code (e.g. HUB10)"
+                placeholder="Enter coupon code (e.g. MEGA25, SUPER500)"
                 value={couponCodeInput}
                 onChange={(e) => setCouponCodeInput(e.target.value)}
                 className="coupon-text-input"
@@ -569,34 +592,18 @@ function CheckoutReview() {
         </div>
       </div>
 
-      {/* AVAILABLE COUPONS MODAL */}
-      <Modal
+      {/* AVAILABLE COUPONS SIDEPANEL */}
+      <CouponsSidepanel
         isOpen={couponOpen}
         onClose={() => setCouponOpen(false)}
-        title="Available Platform Coupons & Offers"
-      >
-        <div className="coupons-modal-list">
-          {AVAILABLE_COUPONS.map((c) => (
-            <div key={c.code} className="coupon-modal-item">
-              <div className="coupon-modal-left">
-                <div className="coupon-tag-code">
-                  <Percent size={13} />
-                  <span>{c.code}</span>
-                </div>
-                <strong className="coupon-modal-label">{c.label}</strong>
-                <p className="coupon-modal-desc">{c.description}</p>
-              </div>
-              <button
-                type="button"
-                className="coupon-modal-apply"
-                onClick={() => handleApplyCoupon(c)}
-              >
-                Apply Offer
-              </button>
-            </div>
-          ))}
-        </div>
-      </Modal>
+        availableCoupons={availableCoupons}
+        loading={loadingCoupons}
+        appliedCoupon={coupon}
+        onApplyCoupon={handleApplyCoupon}
+        onRemoveCoupon={handleRemoveCoupon}
+        subtotal={subtotal}
+        deliveryFee={deliveryFee}
+      />
     </div>
   );
 }

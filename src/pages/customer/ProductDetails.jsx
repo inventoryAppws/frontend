@@ -735,7 +735,30 @@ function ProductDetails() {
                   }}
                 >
                   <div className='similar-card-icon-box'>
-                    <Package size={36} color='#64748b' />
+                    {(simProd.image || simProd.images?.[0]) ? (
+                      <img
+                        src={simProd.image || simProd.images[0]}
+                        alt={simProd.name}
+                        className='similar-card-img'
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          if (e.target.nextElementSibling) {
+                            e.target.nextElementSibling.style.display = 'flex';
+                          }
+                        }}
+                      />
+                    ) : null}
+                    <div
+                      style={{
+                        display: (simProd.image || simProd.images?.[0]) ? 'none' : 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '100%',
+                        height: '100%'
+                      }}
+                    >
+                      <Package size={36} color='#64748b' />
+                    </div>
                     {isSimOutOfStock && (
                       <span className='similar-out-badge'>Out of stock</span>
                     )}

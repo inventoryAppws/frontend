@@ -3,6 +3,7 @@ import {
   createContext,
   useContext,
   useState,
+  useEffect
 } from "react";
 
 const AuthContext = createContext(null);
@@ -83,28 +84,34 @@ export const AuthProvider = ({ children }) => {
   // =====================================================
 
   const logout = () => {
-
-    localStorage.removeItem(
-      "token"
-    );
-
-    localStorage.removeItem(
-      "userType"
-    );
-
-    localStorage.removeItem(
-      "user"
-    );
-
+    localStorage.removeItem("token");
+    localStorage.removeItem("userType");
+    localStorage.removeItem("user");
 
     setToken(null);
-
     setUserType(null);
-
     setUser(null);
-
   };
 
+  useEffect(() => {
+    const handleAuthLogout = () => {
+      logout();
+    };
+    window.addEventListener("auth:logout", handleAuthLogout);
+    return () => window.removeEventListener("auth:logout", handleAuthLogout);
+  }, []);
+
+
+  // =====================================================
+  // UPDATE USER DATA
+  // =====================================================
+  const updateUser = (nextData) => {
+    setUser((prev) => {
+      const merged = typeof nextData === "function" ? nextData(prev) : { ...prev, ...nextData };
+      localStorage.setItem("user", JSON.stringify(merged));
+      return merged;
+    });
+  };
 
   return (
     <AuthContext.Provider
@@ -115,6 +122,7 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated: Boolean(token),
         login,
         logout,
+        updateUser,
       }}
     >
       {children}

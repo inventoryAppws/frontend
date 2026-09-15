@@ -15,6 +15,7 @@ import ErrorMessage from "../../components/ErrorMessage";
 import ConfirmModal from "../../components/ConfirmModal";
 import { toast } from "../../components/Toast";
 import { getErrorMessage } from "../../utils/errorHandler";
+import { getStoreSettingsPublic } from "../../services/authService";
 
 function Cart() {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ function Cart() {
 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [storeSettings, setStoreSettings] = useState(null);
 
   const [error, setError] = useState("");
 
@@ -40,7 +42,11 @@ function Cart() {
     setError("");
 
     try {
-      const data = await getCart();
+      const [data, settings] = await Promise.all([
+        getCart(),
+        getStoreSettingsPublic().catch(() => null)
+      ]);
+      if (settings) setStoreSettings(settings);
 
       /*
         Backend returns:
@@ -578,6 +584,14 @@ function Cart() {
                 <strong>
                   ₹ {total.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </strong>
+
+                {storeSettings?.freeShippingThreshold != null && (
+                  <span style={{ fontSize: "11.5px", color: total >= Number(storeSettings.freeShippingThreshold) ? "#10b981" : "#64748b", fontWeight: 500, marginTop: "3px" }}>
+                    {total >= Number(storeSettings.freeShippingThreshold)
+                      ? "🎉 Qualified for Free Standard Delivery!"
+                      : `Add ₹${Math.max(0, Number(storeSettings.freeShippingThreshold) - total).toLocaleString("en-IN")} more for Free Delivery (Threshold: ₹${storeSettings.freeShippingThreshold})`}
+                  </span>
+                )}
 
               </div>
 

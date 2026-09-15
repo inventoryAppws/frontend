@@ -34,7 +34,7 @@ import {
 import { useNavigate, useSearchParams, useOutletContext } from "react-router-dom";
 import { addToCart } from "../../services/cartService";
 import { getWishlist, addToWishlist, removeFromWishlist } from "../../services/wishlistService";
-import { getPublicProducts, getProductSearchMeta } from "../../services/productService";
+import { getPublicProducts, getProductSearchMeta, getPublicBanners, getPublicPromotions } from "../../services/productService";
 import Loader from "../../components/Loader";
 import ErrorMessage from "../../components/ErrorMessage";
 import WishlistCollectionPicker from "../../components/WishlistCollectionPicker";
@@ -52,12 +52,12 @@ const SORT_OPTIONS = [
 ];
 
 const HERO_SLIDES = [
-  { id: 1, img: "/banners/banner-slide-1.jpg?v=3", alt: "Great Products Great Prices" },
-  { id: 2, img: "/banners/banner-slide-2.jpg?v=3", alt: "Make Everyday Life Easier" },
-  { id: 3, img: "/banners/banner-slide-3.jpg?v=3", alt: "Style for Every You" },
-  { id: 4, img: "/banners/banner-slide-4.jpg?v=3", alt: "Upgrade to Smarter Living" },
-  { id: 5, img: "/banners/banner-slide-5.jpg?v=3", alt: "Fresh Choices Brighter Living" },
-  { id: 6, img: "/banners/banner-slide-6.jpg?v=3", alt: "Big Savings Happier Days" },
+  { id: 1, img: "/banners/banner-slide-1.jpg?v=3", alt: "Great Products Great Prices", title: "Great Products, Great Prices", subtitle: "Shop premium quality selections hand-picked from verified vendors across the country" },
+  { id: 2, img: "/banners/banner-slide-2.jpg?v=3", alt: "Make Everyday Life Easier", title: "Make Everyday Life Easier", subtitle: "Discover smart kitchen appliances and home essentials crafted to simplify every moment" },
+  { id: 3, img: "/banners/banner-slide-3.jpg?v=3", alt: "Style for Every You", title: "Style for Every You", subtitle: "Express yourself with fresh fashion collections and high quality apparel" },
+  { id: 4, img: "/banners/banner-slide-4.jpg?v=3", alt: "Upgrade to Smarter Living", title: "Upgrade to Smarter Living", subtitle: "Experience modern electronics, audio accessories, and next-generation tech" },
+  { id: 5, img: "/banners/banner-slide-5.jpg?v=3", alt: "Fresh Choices Brighter Living", title: "Fresh Choices, Brighter Living", subtitle: "Daily essentials, organic goods, and lifestyle accessories designed for your well-being" },
+  { id: 6, img: "/banners/banner-slide-6.jpg?v=3", alt: "Big Savings Happier Days", title: "Big Savings, Happier Days", subtitle: "Unbeatable deals and exclusive multi-vendor discounts on trending items" },
 ];
 
 const getCategoryIcon = (categoryName) => {
@@ -82,16 +82,54 @@ function CustomerHome() {
   const [isSortModalOpen, setIsSortModalOpen] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [viewMode, setViewMode] = useState("grid"); // "grid" | "list"
+  const [banners, setBanners] = useState([]);
+  const [promotions, setPromotions] = useState([]);
   const sentinelRef = useRef(null);
   const searchContainerRef = useRef(null);
 
-  // 3-second slideshow interval for header banner
+  // Load published banners and promotions configured by Admin
   useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % HERO_SLIDES.length);
-    }, 3000);
-    return () => clearInterval(timer);
+    getPublicBanners()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setBanners(data);
+        }
+      })
+      .catch((err) => {
+        console.warn("Could not load dynamic hero banners:", err?.message);
+      });
+
+    getPublicPromotions()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setPromotions(data);
+        }
+      })
+      .catch((err) => {
+        console.warn("Could not load promotions:", err?.message);
+      });
   }, []);
+
+  // Compute slides: Use admin configured published banners if available; fallback to defaults
+  const activeSlides = banners.length > 0
+    ? banners.map((b) => ({
+        id: b._id,
+        img: b.imageUrl,
+        alt: b.title || "Promotional Banner",
+        title: b.title,
+        subtitle: b.subtitle,
+        linkUrl: b.linkUrl || "/customer"
+      }))
+    : HERO_SLIDES;
+
+  // 4-second slideshow interval for header banner
+  useEffect(() => {
+    if (!activeSlides.length) return;
+    const timer = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % activeSlides.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [activeSlides.length]);
 
   // Search input and applied query state
   const [searchInput, setSearchInput] = useState("");
@@ -467,9 +505,9 @@ function CustomerHome() {
       {/* 1. HERO & ADVANCED SEARCH BAR                             */}
       {/* ========================================================= */}
       <section className="adv-search-hero-section">
-        {/* Background Slideshow Layer (Changes every 3s) */}
+        {/* Background Slideshow Layer (Changes every 4s) */}
         <div className="adv-hero-slideshow-wrap">
-          {HERO_SLIDES.map((slide, index) => (
+          {activeSlides.map((slide, index) => (
             <div
               key={slide.id}
               className={`adv-hero-slide-bg ${index === activeSlide ? "active" : ""}`}
@@ -483,9 +521,11 @@ function CustomerHome() {
         {/* Hero Left Content */}
         <div className="adv-hero-content-layer">
           <span className="adv-hero-badge">EXPLORE CATALOG</span>
-          <h1 className="adv-hero-title">Discover Quality Products</h1>
+          <h1 className="adv-hero-title">
+            {activeSlides[activeSlide]?.title || "Discover Quality Products"}
+          </h1>
           <p className="adv-hero-subtitle">
-            Shop from verified vendors, top categories and best ratings
+            {activeSlides[activeSlide]?.subtitle || "Shop from verified vendors, top categories and best ratings"}
           </p>
 
           {/* Search Bar with Scope Selector & Live Dropdown */}
@@ -733,18 +773,96 @@ function CustomerHome() {
 
         {/* Slide Indicator Dots at Bottom Right */}
         <div className="adv-hero-dots" aria-label="Slideshow Indicators">
-          {HERO_SLIDES.map((slide, idx) => (
+          {activeSlides.map((slide, idx) => (
             <button
-              key={slide.id}
+              key={slide.id || idx}
               type="button"
               className={`adv-hero-dot ${idx === activeSlide ? "active" : ""}`}
               onClick={() => setActiveSlide(idx)}
               aria-label={`Go to slide ${idx + 1}`}
-              title={slide.alt}
+              title={slide.alt || slide.title}
             />
           ))}
         </div>
       </section>
+
+      {/* ========================================================= */}
+      {/* 1.5 ACTIVE PROMOTIONS & MARKETING CAMPAIGNS               */}
+      {/* ========================================================= */}
+      {promotions.length > 0 && (
+        <section className="customer-promotions-section" aria-label="Active Promotions">
+          <div className="promotions-section-header">
+            <div className="promotions-header-left">
+              <span className="promotions-header-badge">
+                <Sparkles size={13} /> ACTIVE CAMPAIGNS
+              </span>
+              <h2 className="promotions-title">Featured Deals &amp; Promotional Offers</h2>
+              <p className="promotions-subtitle">
+                Exclusive storewide campaigns and limited-time category discounts from verified vendors.
+              </p>
+            </div>
+            <div className="promotions-count-badge">
+              <strong>{promotions.length}</strong> Live Events
+            </div>
+          </div>
+
+          <div className="promotions-cards-grid">
+            {promotions.map((promo) => {
+              const hasImage = Boolean(promo.bannerImage);
+              const targetCat = promo.targetCategory || "All";
+              const isCatSelected = selectedCategory.toLowerCase() === targetCat.toLowerCase();
+
+              return (
+                <div
+                  key={promo._id}
+                  className={`promo-card ${isCatSelected ? "active-promo-card" : ""}`}
+                  style={hasImage ? { backgroundImage: `linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.88)), url(${promo.bannerImage})` } : {}}
+                  onClick={() => {
+                    setSelectedCategory(targetCat);
+                    const catalogEl = document.querySelector(".adv-catalog-layout");
+                    if (catalogEl) {
+                      catalogEl.scrollIntoView({ behavior: "smooth" });
+                    }
+                    toast.info(`Viewing ${promo.title} (${targetCat})`);
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      setSelectedCategory(targetCat);
+                    }
+                  }}
+                >
+                  <div className="promo-card-top">
+                    <span className="promo-badge-pill">
+                      {promo.badgeText || "SPECIAL OFFER"}
+                    </span>
+                    {promo.discountPercent > 0 && (
+                      <span className="promo-discount-pill">
+                        Up to {promo.discountPercent}% OFF
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="promo-card-content">
+                    <h3 className="promo-card-title">{promo.title}</h3>
+                    {promo.tagline && <p className="promo-card-tagline">{promo.tagline}</p>}
+                  </div>
+
+                  <div className="promo-card-footer">
+                    <span className="promo-target-cat">
+                      Category: <strong>{targetCat}</strong>
+                    </span>
+                    <button type="button" className="promo-action-link">
+                      Shop Deals &rarr;
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* Notifications */}
       <ErrorMessage message={error} onRetry={() => loadProducts(1, false)} />

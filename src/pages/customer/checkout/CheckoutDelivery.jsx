@@ -10,11 +10,13 @@ import {
   Shield
 } from "lucide-react";
 import { useOutletContext } from "react-router-dom";
+import { getStoreSettingsPublic } from "../../../services/authService";
 
 function CheckoutDelivery() {
   const { goBack, goNext } = useOutletContext();
   const [selectedDelivery, setSelectedDelivery] = useState("standard");
   const [deliveryAddress, setDeliveryAddress] = useState(null);
+  const [storeSettings, setStoreSettings] = useState(null);
 
   useEffect(() => {
     const savedDelivery = sessionStorage.getItem("checkoutDelivery");
@@ -29,16 +31,23 @@ function CheckoutDelivery() {
         setDeliveryAddress(null);
       }
     }
+
+    getStoreSettingsPublic()
+      .then((s) => setStoreSettings(s))
+      .catch(() => null);
   }, []);
+
+  const freeThreshold = Number(storeSettings?.freeShippingThreshold ?? 499);
+  const standardFee = Number(storeSettings?.defaultDeliveryFee ?? 40);
 
   const deliveryOptions = [
     {
       id: "standard",
       title: "Standard Ground Delivery",
-      badge: "FREE",
+      badge: `FREE over ₹${freeThreshold}`,
       badgeType: "free",
-      description: "Reliable surface logistics via BlueDart / Delhivery network.",
-      price: 0,
+      description: `Surface logistics. Free for orders ≥ ₹${freeThreshold}, otherwise ₹${standardFee}.`,
+      price: standardFee,
       timeline: "Delivered in 4–6 business days",
       icon: Truck,
     },

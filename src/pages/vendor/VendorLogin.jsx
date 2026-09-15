@@ -57,7 +57,11 @@ function VendorLogin() {
     } catch (err) {
       const msg = getErrorMessage(err);
       setError(msg);
-      toast.error(msg);
+      const status = err.response?.status;
+      const isBlockedOrAuth = status === 401 || status === 403 || err.response?.data?.accountBlocked;
+      if (!isBlockedOrAuth) {
+        toast.error(msg);
+      }
     } finally {
       setLoading(false);
     }
@@ -106,7 +110,11 @@ function VendorLogin() {
     } catch (err) {
       const msg = getErrorMessage(err);
       setError(msg);
-      toast.error(msg);
+      const status = err.response?.status;
+      const isBlockedOrAuth = status === 401 || status === 403 || err.response?.data?.accountBlocked;
+      if (!isBlockedOrAuth) {
+        toast.error(msg);
+      }
     } finally {
       setLoading(false);
     }

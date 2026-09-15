@@ -13,6 +13,7 @@ export async function getVendorTransactions(params = {}) {
   if (params.dateRange && params.dateRange !== "all") query.dateRange = params.dateRange;
   if (params.dateFrom) query.dateFrom = params.dateFrom;
   if (params.dateTo) query.dateTo = params.dateTo;
+  if (params.sortBy) query.sortBy = params.sortBy;
 
   const response = await api.get("/vendor/transactions", { params: query });
   return response.data;

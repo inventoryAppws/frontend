@@ -15,11 +15,23 @@ import {
   MapPin,
   FileText,
   Clock,
-  Sparkles
+  Sparkles,
+  Key,
+  Lock,
+  User,
+  X
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import CustomSelect from "../../components/CustomSelect";
 import { toast } from "../../components/Toast";
+import {
+  getVendorProfile,
+  updateVendorProfile,
+  changeVendorPassword,
+  getVendorSettings,
+  updateVendorSettings,
+  requestVendorSecurityOtp
+} from "../../services/authService";
 
 const VENDOR_SETTINGS_STORAGE_KEY = "vendor_store_settings";
 
@@ -45,9 +57,26 @@ const PAYOUT_OPTIONS = [
 
 
 function VendorSettings() {
-  const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState("general"); // 'general' | 'policies' | 'inventory' | 'payouts'
+  const { user, updateUser } = useAuth();
+  const [activeTab, setActiveTab] = useState("profile"); // 'profile' | 'password' | 'general' | 'policies' | 'inventory' | 'payouts' | 'tax' | 'notifications' | 'security'
   const [saving, setSaving] = useState(false);
+
+  // Profile fields synced with backend database
+  const [profileForm, setProfileForm] = useState({
+    name: user?.name || "",
+    email: user?.email || "",
+    phone: user?.phone || "+91 98765 43210",
+    businessName: user?.businessName || ""
+  });
+  const [savingProfile, setSavingProfile] = useState(false);
+
+  // Password fields
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: ""
+  });
+  const [savingPassword, setSavingPassword] = useState(false);
 
   const [settings, setSettings] = useState({
     storeName: user?.name || "Premium Electronics & Goods",
@@ -83,7 +112,65 @@ function VendorSettings() {
     apiAccessEnabled: true
   });
 
+  // Saved settings ref to detect bank changes
+  const [initialBankDetails, setInitialBankDetails] = useState({
+    bankName: "HDFC Bank Ltd",
+    accountHolder: user?.name || "Vendor Enterprises",
+    accountNumber: "50100234567890",
+    ifscCode: "HDFC0001234"
+  });
+
+  // OTP Modal State for Bank details
+  const [otpModalOpen, setOtpModalOpen] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [otpSending, setOtpSending] = useState(false);
+  const [otpVerifying, setOtpVerifying] = useState(false);
+
   useEffect(() => {
+    // Fetch live vendor profile and backend settings
+    (async () => {
+      try {
+        const [p, dbSettings] = await Promise.all([
+          getVendorProfile().catch(() => null),
+          getVendorSettings().catch(() => null)
+        ]);
+
+        if (p) {
+          setProfileForm({
+            name: p.name || "",
+            email: p.email || "",
+            phone: p.phone || "",
+            businessName: p.businessName || ""
+          });
+        }
+
+        if (dbSettings && Object.keys(dbSettings).length > 0) {
+          setSettings((prev) => ({
+            ...prev,
+            ...dbSettings,
+            storeName: dbSettings.storeName || p?.businessName || p?.name || prev.storeName,
+            email: dbSettings.email || p?.email || prev.email,
+            phone: dbSettings.phone || p?.phone || prev.phone
+          }));
+          setInitialBankDetails({
+            bankName: dbSettings.bankName || "HDFC Bank Ltd",
+            accountHolder: dbSettings.accountHolder || p?.name || "Vendor Enterprises",
+            accountNumber: dbSettings.accountNumber || "50100234567890",
+            ifscCode: dbSettings.ifscCode || "HDFC0001234"
+          });
+        } else if (p) {
+          setSettings((prev) => ({
+            ...prev,
+            storeName: p.businessName || p.name || prev.storeName,
+            email: p.email || prev.email,
+            phone: p.phone || prev.phone
+          }));
+        }
+      } catch (e) {
+        console.warn("Could not fetch vendor profile/settings:", e.message);
+      }
+    })();
+
     try {
       const saved = localStorage.getItem(VENDOR_SETTINGS_STORAGE_KEY);
       if (saved) {
@@ -98,18 +185,128 @@ function VendorSettings() {
     setSettings((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSave = (e) => {
+  const handleProfileSubmit = async (e) => {
+    e.preventDefault();
+    if (!profileForm.name.trim()) return toast.error("Full Name is required");
+    if (!profileForm.email.trim()) return toast.error("Email is required");
+
+    setSavingProfile(true);
+    try {
+      const updated = await updateVendorProfile({
+        name: profileForm.name,
+        email: profileForm.email,
+        phone: profileForm.phone,
+        businessName: profileForm.businessName
+      });
+      if (updateUser) {
+        updateUser({
+          name: updated.name,
+          email: updated.email,
+          phone: updated.phone,
+          businessName: updated.businessName
+        });
+      }
+      toast.success("Merchant profile and account details updated successfully!");
+    } catch (err) {
+      toast.error(err.response?.data?.msg || err.message || "Failed to update profile");
+    } finally {
+      setSavingProfile(false);
+    }
+  };
+
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault();
+    if (!passwordForm.currentPassword) return toast.error("Enter your current password");
+    if (passwordForm.newPassword.length < 6) return toast.error("New password must be at least 6 characters");
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      return toast.error("New passwords do not match");
+    }
+
+    setSavingPassword(true);
+    try {
+      const res = await changeVendorPassword({
+        currentPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword,
+        confirmPassword: passwordForm.confirmPassword
+      });
+      toast.success(res.message || "Password changed successfully!");
+      setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    } catch (err) {
+      toast.error(err.response?.data?.msg || err.message || "Failed to change password");
+    } finally {
+      setSavingPassword(false);
+    }
+  };
+
+  // Check if bank details have been changed
+  const haveBankDetailsChanged = () => {
+    return (
+      settings.bankName !== initialBankDetails.bankName ||
+      settings.accountHolder !== initialBankDetails.accountHolder ||
+      settings.accountNumber !== initialBankDetails.accountNumber ||
+      settings.ifscCode !== initialBankDetails.ifscCode
+    );
+  };
+
+  const handleRequestOtp = async () => {
+    setOtpSending(true);
+    try {
+      await requestVendorSecurityOtp("Bank Details Modification");
+      toast.success(`Verification code sent to your registered email (${settings.email || user?.email})`);
+    } catch (err) {
+      toast.error(err.response?.data?.msg || err.message || "Failed to send verification code");
+    } finally {
+      setOtpSending(false);
+    }
+  };
+
+  const handleSave = async (e, providedOtp = null) => {
     e?.preventDefault();
+
+    // If 2FA is enabled and bank details are being changed, verify OTP
+    if (settings.twoFactorAuth && haveBankDetailsChanged() && !providedOtp) {
+      setOtpCode("");
+      setOtpModalOpen(true);
+      handleRequestOtp();
+      return;
+    }
+
     setSaving(true);
     try {
       localStorage.setItem(VENDOR_SETTINGS_STORAGE_KEY, JSON.stringify(settings));
-      setTimeout(() => {
-        setSaving(false);
-        toast.success("Vendor store settings updated successfully!");
-      }, 400);
-    } catch {
+      const res = await updateVendorSettings({ ...settings, ...(providedOtp ? { otp: providedOtp } : {}) });
+      if (res && res.otpRequired) {
+        setOtpCode("");
+        setOtpModalOpen(true);
+        handleRequestOtp();
+        return;
+      }
+      setInitialBankDetails({
+        bankName: settings.bankName,
+        accountHolder: settings.accountHolder,
+        accountNumber: settings.accountNumber,
+        ifscCode: settings.ifscCode
+      });
+      setOtpModalOpen(false);
+      toast.success("Vendor store settings updated & saved to cloud successfully!");
+    } catch (err) {
+      console.warn("Backend save notice:", err.message);
+      toast.error(err.response?.data?.msg || err.message || "Failed to update vendor store settings");
+    } finally {
       setSaving(false);
-      toast.error("Failed to save settings");
+    }
+  };
+
+  const handleVerifyOtpAndSave = async (e) => {
+    e.preventDefault();
+    if (!otpCode || otpCode.trim().length !== 6) {
+      return toast.error("Please enter a valid 6-digit verification code");
+    }
+    setOtpVerifying(true);
+    try {
+      await handleSave(null, otpCode.trim());
+    } finally {
+      setOtpVerifying(false);
     }
   };
 
@@ -118,31 +315,33 @@ function VendorSettings() {
       {/* Page Header */}
       <div className="vendor-settings-header">
         <div>
-          <span className="vendor-page-kicker">STORE PREFERENCES &amp; CONFIGURATION</span>
-          <h2>Vendor Store Settings</h2>
+          <span className="vendor-page-kicker">MERCHANT ACCOUNT &amp; STORE SETTINGS</span>
+          <h2>Vendor Profile &amp; Settings</h2>
           <p className="vendor-page-subtext">
-            Configure your storefront details, fulfillment policies, tax compliance, stock thresholds, and payout accounts.
+            Manage your account credentials, login email, password, store profile, policies, and notifications.
           </p>
         </div>
 
-        <button
-          type="button"
-          disabled={saving}
-          onClick={handleSave}
-          className="vendor-save-settings-btn"
-        >
-          {saving ? (
-            <>
-              <RefreshCw size={16} className="spin" />
-              <span>Saving Changes...</span>
-            </>
-          ) : (
-            <>
-              <Save size={16} />
-              <span>Save Settings</span>
-            </>
-          )}
-        </button>
+        {activeTab !== "profile" && activeTab !== "password" && (
+          <button
+            type="button"
+            disabled={saving}
+            onClick={handleSave}
+            className="vendor-save-settings-btn"
+          >
+            {saving ? (
+              <>
+                <RefreshCw size={16} className="spin" />
+                <span>Saving Changes...</span>
+              </>
+            ) : (
+              <>
+                <Save size={16} />
+                <span>Save Settings</span>
+              </>
+            )}
+          </button>
+        )}
       </div>
 
       {/* Main Settings Card */}
@@ -151,13 +350,37 @@ function VendorSettings() {
         <div className="vendor-settings-tabs">
           <button
             type="button"
+            className={`settings-tab-btn ${activeTab === "profile" ? "active" : ""}`}
+            onClick={() => setActiveTab("profile")}
+          >
+            <User size={18} />
+            <div className="tab-btn-text">
+              <strong>Account Profile</strong>
+              <span>Name, email, phone &amp; business</span>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            className={`settings-tab-btn ${activeTab === "password" ? "active" : ""}`}
+            onClick={() => setActiveTab("password")}
+          >
+            <Lock size={18} />
+            <div className="tab-btn-text">
+              <strong>Change Password</strong>
+              <span>Security credentials &amp; login key</span>
+            </div>
+          </button>
+
+          <button
+            type="button"
             className={`settings-tab-btn ${activeTab === "general" ? "active" : ""}`}
             onClick={() => setActiveTab("general")}
           >
             <Store size={18} />
             <div className="tab-btn-text">
-              <strong>Store Profile</strong>
-              <span>Brand name, contact &amp; address</span>
+              <strong>Store Details</strong>
+              <span>Brand taglines, address &amp; GSTIN</span>
             </div>
           </button>
 
@@ -236,10 +459,183 @@ function VendorSettings() {
 
         {/* Tab Content Panels */}
         <div className="vendor-settings-content">
-          <form onSubmit={handleSave}>
-            {/* 1. GENERAL STORE PROFILE */}
-            {activeTab === "general" && (
-              <div className="settings-panel animate-fade-in">
+          {/* 0A. ACCOUNT PROFILE (NAME, EMAIL, DETAILS) */}
+          {activeTab === "profile" && (
+            <div className="settings-panel animate-fade-in">
+              <div className="panel-section-title">
+                <User size={20} />
+                <div>
+                  <h3>Merchant Account Credentials</h3>
+                  <p>Update your full name, registered login email, phone, and legal business title.</p>
+                </div>
+              </div>
+
+              <form onSubmit={handleProfileSubmit}>
+                <div className="settings-form-grid">
+                  <div className="settings-field">
+                    <label>Full Name / Merchant Representative *</label>
+                    <input
+                      type="text"
+                      value={profileForm.name}
+                      onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                      placeholder="e.g. Rajesh Kumar"
+                      required
+                    />
+                  </div>
+
+                  <div className="settings-field">
+                    <label>Registered Login Email *</label>
+                    <div className="input-with-icon">
+                      <Mail size={16} />
+                      <input
+                        type="email"
+                        value={profileForm.email}
+                        onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
+                        placeholder="vendor@store.com"
+                        required
+                      />
+                    </div>
+                    <span style={{ fontSize: "11.5px", color: "var(--admin-text-sub, #64748b)", marginTop: "4px", display: "block" }}>
+                      This email is used for sign in, OTP verification, and order alerts.
+                    </span>
+                  </div>
+
+                  <div className="settings-field">
+                    <label>Contact Phone Number</label>
+                    <div className="input-with-icon">
+                      <Phone size={16} />
+                      <input
+                        type="tel"
+                        value={profileForm.phone}
+                        onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
+                        placeholder="+91 98765 43210"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="settings-field">
+                    <label>Registered Business / Trade Name</label>
+                    <div className="input-with-icon">
+                      <Building2 size={16} />
+                      <input
+                        type="text"
+                        value={profileForm.businessName}
+                        onChange={(e) => setProfileForm({ ...profileForm, businessName: e.target.value })}
+                        placeholder="e.g. Apex Tech Solutions LLP"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="panel-footer-save" style={{ marginTop: "24px" }}>
+                  <button
+                    type="submit"
+                    disabled={savingProfile}
+                    className="vendor-save-settings-btn"
+                  >
+                    {savingProfile ? (
+                      <>
+                        <RefreshCw size={16} className="spin" />
+                        <span>Updating Profile...</span>
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle2 size={16} />
+                        <span>Save Account Details</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {/* 0B. CHANGE PASSWORD */}
+          {activeTab === "password" && (
+            <div className="settings-panel animate-fade-in">
+              <div className="panel-section-title">
+                <Lock size={20} />
+                <div>
+                  <h3>Change Account Password</h3>
+                  <p>Keep your merchant store secure by using a strong alphanumeric password.</p>
+                </div>
+              </div>
+
+              <form onSubmit={handlePasswordSubmit}>
+                <div className="settings-form-grid" style={{ maxWidth: "560px" }}>
+                  <div className="settings-field full-width">
+                    <label>Current Password *</label>
+                    <div className="input-with-icon">
+                      <Key size={16} />
+                      <input
+                        type="password"
+                        value={passwordForm.currentPassword}
+                        onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                        placeholder="Enter your existing password"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="settings-field full-width">
+                    <label>New Password (min 6 characters) *</label>
+                    <div className="input-with-icon">
+                      <Lock size={16} />
+                      <input
+                        type="password"
+                        value={passwordForm.newPassword}
+                        onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                        placeholder="Create strong new password"
+                        required
+                        minLength={6}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="settings-field full-width">
+                    <label>Confirm New Password *</label>
+                    <div className="input-with-icon">
+                      <Lock size={16} />
+                      <input
+                        type="password"
+                        value={passwordForm.confirmPassword}
+                        onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                        placeholder="Re-enter new password"
+                        required
+                        minLength={6}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="panel-footer-save" style={{ marginTop: "24px" }}>
+                  <button
+                    type="submit"
+                    disabled={savingPassword}
+                    className="vendor-save-settings-btn"
+                  >
+                    {savingPassword ? (
+                      <>
+                        <RefreshCw size={16} className="spin" />
+                        <span>Updating Password...</span>
+                      </>
+                    ) : (
+                      <>
+                        <ShieldCheck size={16} />
+                        <span>Update Password</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {activeTab !== "profile" && activeTab !== "password" && (
+            <form onSubmit={handleSave}>
+              {/* 1. GENERAL STORE PROFILE */}
+              {activeTab === "general" && (
+                <div className="settings-panel animate-fade-in">
                 <div className="panel-section-title">
                   <Store size={20} />
                   <div>
@@ -708,8 +1104,117 @@ function VendorSettings() {
               </button>
             </div>
           </form>
+        )}
         </div>
       </div>
+
+      {/* 2FA OTP MODAL FOR BANK DETAIL CHANGES */}
+      {otpModalOpen && (
+        <div className="vp-sidepanel-backdrop" style={{ zIndex: 100000 }} onClick={() => !otpVerifying && setOtpModalOpen(false)}>
+          <div
+            className="action-modal-card"
+            style={{ maxWidth: "480px", width: "90%", margin: "auto", background: "#ffffff", borderRadius: "16px", padding: "28px", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: "#fef3c7", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <ShieldCheck size={22} />
+                </div>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "700", color: "#111827" }}>Two-Factor Security Verification</h3>
+                  <span style={{ fontSize: "0.85rem", color: "#6b7280" }}>OTP required to modify bank details</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => !otpVerifying && setOtpModalOpen(false)}
+                style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af" }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <p style={{ fontSize: "0.9rem", color: "#4b5563", lineHeight: 1.5, marginBottom: "20px" }}>
+              Because Two-Factor Authentication (2FA) is enabled on your merchant account, a 6-digit verification code was sent to <strong>{settings.email || user?.email}</strong>. Please enter it below to confirm changing your bank account information.
+            </p>
+
+            <form onSubmit={handleVerifyOtpAndSave}>
+              <div style={{ marginBottom: "20px" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "600", color: "#374151", marginBottom: "8px" }}>
+                  Enter 6-Digit OTP Code *
+                </label>
+                <input
+                  type="text"
+                  maxLength={6}
+                  value={otpCode}
+                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
+                  placeholder="• • • • • •"
+                  style={{
+                    width: "100%",
+                    fontSize: "1.5rem",
+                    letterSpacing: "0.4em",
+                    textAlign: "center",
+                    fontWeight: "700",
+                    padding: "10px",
+                    borderRadius: "8px",
+                    border: "1.5px solid #d1d5db",
+                    outline: "none"
+                  }}
+                  autoFocus
+                  required
+                />
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+                <span style={{ fontSize: "0.82rem", color: "#6b7280" }}>Didn't receive the email?</span>
+                <button
+                  type="button"
+                  onClick={handleRequestOtp}
+                  disabled={otpSending}
+                  style={{ background: "none", border: "none", color: "#4f46e5", fontWeight: "600", fontSize: "0.85rem", cursor: "pointer" }}
+                >
+                  {otpSending ? "Sending..." : "Resend Code"}
+                </button>
+              </div>
+
+              <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
+                <button
+                  type="button"
+                  onClick={() => setOtpModalOpen(false)}
+                  disabled={otpVerifying}
+                  style={{
+                    padding: "10px 18px",
+                    borderRadius: "8px",
+                    border: "1px solid #d1d5db",
+                    background: "#ffffff",
+                    color: "#374151",
+                    fontWeight: "600",
+                    cursor: "pointer"
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={otpVerifying || otpCode.length !== 6}
+                  style={{
+                    padding: "10px 22px",
+                    borderRadius: "8px",
+                    border: "none",
+                    background: otpCode.length === 6 ? "#4f46e5" : "#9ca3af",
+                    color: "#ffffff",
+                    fontWeight: "600",
+                    cursor: otpCode.length === 6 ? "pointer" : "not-allowed"
+                  }}
+                >
+                  {otpVerifying ? "Verifying..." : "Verify & Save Details"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

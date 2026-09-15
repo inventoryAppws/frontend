@@ -84,6 +84,21 @@ export async function getProductSearchMeta(q = "") {
   return response.data;
 }
 
+export async function getPublicBanners() {
+  const response = await api.get("/products/public-banners");
+  return response.data;
+}
+
+export async function getPublicPromotions() {
+  const response = await api.get("/products/public-promotions");
+  return response.data;
+}
+
+export async function getPublicCoupons() {
+  const response = await api.get("/products/public-coupons");
+  return response.data;
+}
+
 // =============================
 // VENDOR PRODUCTS
 // =============================
