@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 // =========================
 // Common Pages
 // =========================
-import Home from "./pages/common/home";
+import Home from "./pages/common/Home";
 import NotFound from "./pages/common/NotFound";
 
 // =========================
