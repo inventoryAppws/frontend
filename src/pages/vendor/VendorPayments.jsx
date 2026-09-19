@@ -31,6 +31,7 @@ import Loader from "../../components/Loader";
 import { toast } from "../../components/Toast";
 import useDebounce from "../../hooks/useDebounce";
 import CustomSelect from "../../components/CustomSelect";
+import "../../styles/vendor-payments.css";
 
 function formatPaymentMethod(method) {
   if (!method) return "Online Payment";

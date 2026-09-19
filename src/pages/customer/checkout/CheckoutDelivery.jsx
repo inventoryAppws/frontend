@@ -30,6 +30,15 @@ function CheckoutDelivery() {
       } catch {
         setDeliveryAddress(null);
       }
+    } else {
+      const activeNav = localStorage.getItem("selected_delivery_address");
+      if (activeNav) {
+        try {
+          const parsedNav = JSON.parse(activeNav);
+          setDeliveryAddress(parsedNav);
+          sessionStorage.setItem("checkoutAddress", activeNav);
+        } catch {}
+      }
     }
 
     getStoreSettingsPublic()

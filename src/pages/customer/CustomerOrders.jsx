@@ -11,9 +11,10 @@ import {
   ArrowUpDown,
   X,
   Plus,
-  CreditCard
+  CreditCard,
+  Headphones
 } from "lucide-react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext, useSearchParams } from "react-router-dom";
 import CustomSelect from "../../components/CustomSelect";
 import WideOrderModal from "../../components/WideOrderModal";
 import MultiProductsOrderModal from "../../components/MultiProductsOrderModal";
@@ -92,6 +93,8 @@ function getStatusMeta(statusKey, returnStatusKey) {
 
 function CustomerOrders() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const urlOrderId = searchParams.get("orderId") || searchParams.get("search") || "";
   const { openPaymentsSidepanel } = useOutletContext() || {};
   const sentinelRef = useRef(null);
   const [orders, setOrders] = useState([]);
@@ -112,9 +115,15 @@ function CustomerOrders() {
   const [cancellingReturn, setCancellingReturn] = useState(false);
 
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(urlOrderId);
   const [status, setStatus] = useState("all");
   const [sortBy, setSortBy] = useState("newest"); // newest, oldest, price_high, price_low
+
+  useEffect(() => {
+    if (urlOrderId) {
+      setSearch(urlOrderId);
+    }
+  }, [urlOrderId]);
 
   const debouncedSearch = useDebounce(search, 350);
 
@@ -469,17 +478,55 @@ function CustomerOrders() {
                       </span>
                       <button
                         type="button"
-                        className="order-view-details-link"
-                        onClick={() => setSelectedOrder(order)}
+                        className="order-header-help-btn"
+                        onClick={() => {
+                          window.dispatchEvent(new CustomEvent('open-customer-tickets', {
+                            detail: {
+                              orderId: order._id,
+                              orderDisplayId: orderId,
+                              category: 'order',
+                              subject: `Support for Order #${orderId}`
+                            }
+                          }));
+                        }}
+                        title="Need help with this order? Raise a support ticket"
+                        aria-label="Need Help"
                       >
-                        <span>View Details</span>
-                        <ChevronRight size={14} />
+                        <Headphones size={13} />
+                        <span>Need Help?</span>
                       </button>
                     </div>
                   </div>
 
-                  {/* CARD BODY: PRODUCT ROW */}
-                  <div className="order-card-product-row">
+                  {/* CARD BODY: PRODUCT ROW (CLICKABLE TO PRODUCT DETAILS) */}
+                  <div
+                    className="order-card-product-row"
+                    onClick={() => {
+                      const prodId =
+                        firstItem?.productId?._id ||
+                        firstItem?.productId ||
+                        firstItem?._id ||
+                        order.productId?._id ||
+                        order.productId;
+                      if (prodId) {
+                        navigate(`/customer/products/${prodId}`);
+                      }
+                    }}
+                    title="Click to view product details"
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        const prodId =
+                          firstItem?.productId?._id ||
+                          firstItem?.productId ||
+                          firstItem?._id ||
+                          order.productId?._id ||
+                          order.productId;
+                        if (prodId) navigate(`/customer/products/${prodId}`);
+                      }
+                    }}
+                  >
                     <div className="order-product-thumb-wrap">
                       {firstItem?.image ? (
                         <img
@@ -535,7 +582,7 @@ function CustomerOrders() {
 
                   {/* CARD FOOTER */}
                   <div className="order-card-footer">
-                    <div className="order-card-total-box">
+                    <div className="order-card-total-box" style={{ whiteSpace: "nowrap", flexShrink: 0 }}>
                       <span className="order-total-label">Total Amount</span>
                       <strong className="order-total-amount">
                         ₹ {orderTotal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
@@ -617,9 +664,8 @@ function CustomerOrders() {
           <div ref={sentinelRef} className="infinite-scroll-sentinel" />
 
           {loadingMore && (
-            <div className="infinite-scroll-loading">
-              <div className="spinner-small" />
-              <span>Loading more purchases...</span>
+            <div className="infinite-scroll-loading-skeleton" style={{ width: "100%", marginTop: "16px", marginBottom: "16px" }}>
+              <Loader type="orders" count={2} />
             </div>
           )}
 

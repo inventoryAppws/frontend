@@ -52,7 +52,12 @@ function CustomerLogin() {
       if (!data?.token) throw new Error("Login succeeded but no token was returned.");
 
       toast.success("Logged in successfully!");
-      login(data.token, "customer");
+      login(data.token, "customer", data.user || null);
+      if (data.user) {
+        try {
+          localStorage.setItem("customer_profile", JSON.stringify(data.user));
+        } catch {}
+      }
       navigate("/customer");
     } catch (err) {
       const msg = getErrorMessage(err);
@@ -107,6 +112,11 @@ function CustomerLogin() {
 
       toast.success("OTP Verified! Logged in successfully.");
       login(data.token, "customer", data.user);
+      if (data.user) {
+        try {
+          localStorage.setItem("customer_profile", JSON.stringify(data.user));
+        } catch {}
+      }
       navigate("/customer");
     } catch (err) {
       const msg = getErrorMessage(err);

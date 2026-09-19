@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 import {
   Plus,
@@ -25,7 +25,9 @@ import {
   Sparkles,
   RefreshCw,
   SlidersHorizontal,
-  Check
+  Check,
+  Eye,
+  Star
 } from "lucide-react";
 import {
   getVendorProducts,
@@ -42,6 +44,8 @@ import CustomSelect from "../../components/CustomSelect";
 import { toast } from "../../components/Toast";
 import { getErrorMessage } from "../../utils/errorHandler";
 import useDebounce from "../../hooks/useDebounce";
+import { generateProductCopy } from "../../services/vendorAiService";
+import AiWriteButton from "../../components/AiWriteButton";
 
 const PAGE_SIZE = 20;
 
@@ -118,6 +122,7 @@ export function normalizeImageUrl(url) {
 
 function VendorProducts() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const sentinelRef = useRef(null);
 
   const [products, setProducts] = useState([]);
@@ -182,6 +187,36 @@ function VendorProducts() {
     price: "",
     discountPercentage: "10"
   });
+
+  const [generatingCopy, setGeneratingCopy] = useState(false);
+
+  const handleAiGenerateCopy = async () => {
+    if (!form.name && !form.category) {
+      toast.error("Please enter a product title or category first.");
+      return;
+    }
+    setGeneratingCopy(true);
+    try {
+      const res = await generateProductCopy({
+        name: form.name,
+        category: form.category,
+        keywords: form.name,
+        tone: "persuasive"
+      });
+      if (res?.description) {
+        setForm((prev) => ({
+          ...prev,
+          description: res.description,
+          name: prev.name || res.title || prev.name
+        }));
+        toast.success("✨ High-converting product copy generated!");
+      }
+    } catch (err) {
+      toast.error("Failed to generate AI copy: " + (err.response?.data?.msg || err.message));
+    } finally {
+      setGeneratingCopy(false);
+    }
+  };
 
   // =====================================
   // LIVE IMAGE PREVIEW VALIDATION
@@ -697,7 +732,12 @@ function VendorProducts() {
                   <tr key={p._id} className={isOut ? "row-out-of-stock" : isLow ? "row-low-stock" : ""}>
                     {/* Thumbnail */}
                     <td>
-                      <div className="vendor-product-thumb">
+                      <div
+                        className="vendor-product-thumb"
+                        onClick={() => navigate(`/vendor/products/${p._id}`)}
+                        style={{ cursor: 'pointer' }}
+                        title="View Product Details & Reviews"
+                      >
                         {pImg ? (
                           <img
                             src={pImg}
@@ -719,11 +759,42 @@ function VendorProducts() {
                     {/* Name & Features */}
                     <td>
                       <div className="vendor-product-name-block">
-                        <strong title={p.name}>{p.name}</strong>
+                        <strong
+                          title={p.name}
+                          onClick={() => navigate(`/vendor/products/${p._id}`)}
+                          style={{ cursor: 'pointer', color: '#1e293b' }}
+                          onMouseEnter={(e) => (e.currentTarget.style.color = '#4f46e5')}
+                          onMouseLeave={(e) => (e.currentTarget.style.color = '#1e293b')}
+                        >
+                          {p.name}
+                        </strong>
                         {p.description && (
                           <p className="vendor-desc-snippet">{p.description}</p>
                         )}
-                        <div className="vendor-tags-row">
+                        <div className="vendor-tags-row" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
+                          <span
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/vendor/products/${p._id}#reviews-section`);
+                            }}
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '3px',
+                              fontSize: '11px',
+                              fontWeight: 700,
+                              color: '#b45309',
+                              background: '#fef3c7',
+                              padding: '1px 6px',
+                              borderRadius: '4px',
+                              cursor: 'pointer'
+                            }}
+                            title="Product Rating & Customer Reviews"
+                          >
+                            <Star size={10} fill="#f59e0b" color="#f59e0b" />
+                            {Number(p.rating || 4.5).toFixed(1)}
+                            {p.ratingCount ? ` (${p.ratingCount})` : ''}
+                          </span>
                           {p.colors && p.colors.length > 0 && p.colors[0] !== "N/A" && (
                             <span className="vendor-mini-badge">
                               {p.colors.slice(0, 2).join(", ")}
@@ -823,6 +894,18 @@ function VendorProducts() {
                     {/* Actions */}
                     <td>
                       <div className="vendor-row-actions">
+                        {/* Details Button */}
+                        <button
+                          type="button"
+                          className="vendor-action-btn view"
+                          onClick={() => navigate(`/vendor/products/${p._id}`)}
+                          title="View Detailed Product Page & Customer Reviews"
+                          style={{ color: '#4f46e5', borderColor: '#c7d2fe', background: '#eef2ff' }}
+                        >
+                          <Eye size={14} />
+                          <span>Details</span>
+                        </button>
+
                         {/* History / Audit Trail Button */}
                         <button
                           type="button"
@@ -909,7 +992,21 @@ function VendorProducts() {
                 <div className="modal-form-col">
                   {/* Name */}
                   <div className="vendor-form-group">
-                    <label>Product Title / Name *</label>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                      <label style={{ margin: 0 }}>Product Title / Name *</label>
+                      <AiWriteButton
+                        task="product_title"
+                        input={form.name}
+                        context={{ category: form.category, price: form.price }}
+                        onGenerated={(res) => {
+                          const t = res.title || res.text || res.result;
+                          if (t) setForm((prev) => ({ ...prev, name: t }));
+                        }}
+                        label="✨ AI Title"
+                        size="small"
+                        title="Optimize product title for SEO and click-through"
+                      />
+                    </div>
                     <input
                       type="text"
                       placeholder="e.g. Sony WH-1000XM5 Noise Cancelling Headphones"
@@ -1034,9 +1131,27 @@ function VendorProducts() {
 
                   {/* Description */}
                   <div className="vendor-form-group">
-                    <label>Product Description</label>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                      <label style={{ margin: 0 }}>Product Description</label>
+                      <AiWriteButton
+                        task="product_description"
+                        input={form.description || form.name}
+                        context={{
+                          productName: form.name,
+                          category: form.category,
+                          price: form.price
+                        }}
+                        onGenerated={(res) => {
+                          const d = res.description || res.text || res.result;
+                          if (d) setForm((prev) => ({ ...prev, description: d }));
+                        }}
+                        label="✨ AI Write Description"
+                        size="small"
+                        title="Auto-generate optimized product description & SEO highlights"
+                      />
+                    </div>
                     <textarea
-                      rows={3}
+                      rows={4}
                       placeholder="Write key features, specs, and highlights..."
                       value={form.description}
                       onChange={(e) => setForm({ ...form, description: e.target.value })}

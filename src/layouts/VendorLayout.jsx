@@ -20,12 +20,16 @@ import {
   Menu,
   X,
   RotateCcw,
-  CreditCard
+  CreditCard,
+  Headphones,
+  ShieldCheck
 } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
 import UserAvatar from "../components/UserAvatar";
 import NotificationSidepanel from "../components/NotificationSidepanel";
+import VendorAiDrawer from "../components/vendor/VendorAiDrawer";
+import VendorAiFab from "../components/vendor/VendorAiFab";
 import {
   getNotifications,
   markNotificationAsRead,
@@ -52,6 +56,19 @@ function VendorLayout() {
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [notifLoading, setNotifLoading] = useState(false);
   const knownNotifIds = useRef(new Set());
+
+  // Atlas Vendor AI Drawer
+  const [isVendorAiOpen, setIsVendorAiOpen] = useState(false);
+  const [aiInitialQuery, setAiInitialQuery] = useState("");
+
+  useEffect(() => {
+    const handleOpenAi = (e) => {
+      setAiInitialQuery(e.detail?.query || "");
+      setIsVendorAiOpen(true);
+    };
+    window.addEventListener("open-vendor-ai", handleOpenAi);
+    return () => window.removeEventListener("open-vendor-ai", handleOpenAi);
+  }, []);
 
   // Profile dropdown menu
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
@@ -167,6 +184,7 @@ function VendorLayout() {
     if (path === "/vendor" || path === "/vendor/") return "Vendor Dashboard";
     if (path.includes("/vendor/products")) return "Inventory & Products";
     if (path.includes("/vendor/returns") || location.search.includes("tab=returned")) return "Returns & Refunds Management";
+    if (path.includes("/vendor/warranty-claims") || path.includes("/vendor/claims")) return "Warranty Claims & RMA Inspection";
     if (path.includes("/vendor/payments") || path.includes("/vendor/transactions")) return "Payments & Transactions";
     if (path.includes("/vendor/orders")) return "Orders & Fulfillment";
     if (path.includes("/vendor/analytics")) return "Sales Analytics & Reports";
@@ -267,6 +285,16 @@ function VendorLayout() {
           </NavLink>
 
           <NavLink
+            to="/vendor/warranty-claims"
+            className={({ isActive }) =>
+              `vendor-nav-link ${isActive || location.pathname.includes("/vendor/warranty-claims") || location.pathname.includes("/vendor/claims") ? "active" : ""}`
+            }
+          >
+            <ShieldCheck className="vendor-nav-icon" size={18} />
+            <span>Warranty Claims (RMA)</span>
+          </NavLink>
+
+          <NavLink
             to="/vendor/payments"
             className={({ isActive }) =>
               `vendor-nav-link ${isActive || location.pathname.includes("/vendor/payments") ? "active" : ""}`
@@ -274,6 +302,16 @@ function VendorLayout() {
           >
             <CreditCard className="vendor-nav-icon" size={18} />
             <span>Payments &amp; Payouts</span>
+          </NavLink>
+
+          <NavLink
+            to="/vendor/tickets"
+            className={({ isActive }) =>
+              `vendor-nav-link ${isActive || location.pathname.includes("/vendor/tickets") ? "active" : ""}`
+            }
+          >
+            <Headphones className="vendor-nav-icon" size={18} />
+            <span>Support &amp; Tickets</span>
           </NavLink>
 
           <div className="vendor-nav-label">BUSINESS INTELLIGENCE</div>
@@ -472,6 +510,22 @@ function VendorLayout() {
         onDismiss={handleDismissNotif}
         onClearAll={handleClearAllNotifs}
         isLoading={notifLoading}
+      />
+
+      {/* Atlas Vendor AI Wide Modal */}
+      <VendorAiDrawer
+        isOpen={isVendorAiOpen}
+        onClose={() => {
+          setIsVendorAiOpen(false);
+          setAiInitialQuery("");
+        }}
+        initialQuery={aiInitialQuery}
+      />
+
+      {/* Atlas Floating Action Pill */}
+      <VendorAiFab
+        onClick={() => setIsVendorAiOpen(true)}
+        isOpen={isVendorAiOpen}
       />
     </div>
   );

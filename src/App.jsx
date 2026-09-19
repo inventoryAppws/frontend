@@ -18,6 +18,14 @@ import CustomerOrders from "./pages/customer/CustomerOrders";
 import CustomerDetails from "./pages/customer/CustomerDetails";
 import ProductDetails from "./pages/customer/ProductDetails";
 import TrackOrder from "./pages/customer/TrackOrder";
+import CompareProducts from "./pages/customer/CompareProducts";
+import RepeatDelivery from "./pages/customer/RepeatDelivery";
+import VirtualAvatar from "./pages/customer/VirtualAvatar";
+import PriceHistoryPage from "./pages/customer/PriceHistoryPage";
+import SharedCartPage from "./pages/customer/SharedCartPage";
+import WarrantyVault from "./pages/customer/WarrantyVault";
+import RewardsWallet from "./pages/customer/RewardsWallet";
+import RecommendedProducts from "./pages/customer/RecommendedProducts";
 
 // =========================
 // Customer Checkout Pages
@@ -36,11 +44,14 @@ import VendorLogin from "./pages/vendor/VendorLogin";
 import VendorRegister from "./pages/vendor/VendorRegister";
 import VendorDashboard from "./pages/vendor/VendorDashboard";
 import VendorProducts from "./pages/vendor/VendorProducts";
+import VendorProductDetails from "./pages/vendor/VendorProductDetails";
 import VendorOrders from "./pages/vendor/VendorOrders";
 import VendorReturns from "./pages/vendor/VendorReturns";
 import VendorAnalytics from "./pages/vendor/VendorAnalytics";
 import VendorPayments from "./pages/vendor/VendorPayments";
 import VendorSettings from "./pages/vendor/VendorSettings";
+import VendorTickets from "./pages/vendor/VendorTickets";
+import VendorWarrantyClaims from "./pages/vendor/VendorWarrantyClaims";
 
 // =========================
 // Layouts
@@ -53,11 +64,13 @@ import VendorLayout from "./layouts/VendorLayout";
 // =========================
 import ProtectedRoute from "./components/ProtectedRoute";
 import ToastContainer from "./components/Toast";
+import GestureNavigation from "./components/GestureNavigation";
 
 function App() {
   return (
     <BrowserRouter>
       <ToastContainer />
+      <GestureNavigation />
       <Routes>
 
         {/* =====================================================
@@ -144,9 +157,28 @@ function App() {
 
             <Route path="orders/:orderId/track" element={<TrackOrder />} />
 
+            {/* Compare Products */}
+            <Route
+              path="compare"
+              element={<CompareProducts />}
+            />
+
             {/* Settings */}
             <Route path="settings" element={<CustomerDetails />} />
             <Route path="details" element={<Navigate to="/customer/settings" replace />} />
+
+            {/* 7 Extended Features */}
+            <Route path="repeat-delivery" element={<RepeatDelivery />} />
+            <Route path="avatar" element={<VirtualAvatar />} />
+            <Route path="price-history/:id" element={<PriceHistoryPage />} />
+            <Route path="price-history" element={<PriceHistoryPage />} />
+            <Route path="shared-cart" element={<SharedCartPage />} />
+            <Route path="shared-cart/:cartId" element={<SharedCartPage />} />
+            <Route path="warranties" element={<WarrantyVault />} />
+            <Route path="warranty-vault" element={<Navigate to="/customer/warranties" replace />} />
+            <Route path="rewards" element={<RewardsWallet />} />
+            <Route path="recommended" element={<RecommendedProducts />} />
+            <Route path="recommendations" element={<Navigate to="/customer/recommended" replace />} />
 
 
             {/* =================================================
@@ -230,6 +262,14 @@ function App() {
               path="products"
               element={<VendorProducts />}
             />
+            <Route
+              path="products/:id"
+              element={<VendorProductDetails />}
+            />
+            <Route
+              path="product/:id"
+              element={<VendorProductDetails />}
+            />
 
             {/* Vendor Orders */}
             <Route
@@ -241,6 +281,16 @@ function App() {
             <Route
               path="returns"
               element={<VendorReturns />}
+            />
+
+            {/* Vendor Warranty & RMA Claims */}
+            <Route
+              path="warranty-claims"
+              element={<VendorWarrantyClaims />}
+            />
+            <Route
+              path="claims"
+              element={<Navigate to="/vendor/warranty-claims" replace />}
             />
 
             {/* Vendor Analytics */}
@@ -263,6 +313,12 @@ function App() {
             <Route
               path="settings"
               element={<VendorSettings />}
+            />
+
+            {/* Vendor Support & Helpdesk Tickets */}
+            <Route
+              path="tickets"
+              element={<VendorTickets />}
             />
 
           </Route>

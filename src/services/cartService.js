@@ -59,6 +59,20 @@ export async function removeCartItem(itemId) {
   return response.data;
 }
 
+// Save for Later
+export async function saveForLater(itemId) {
+  const response = await api.patch(`/cart/${itemId}/save-for-later`);
+  notifyCartUpdated();
+  return response.data;
+}
+
+// Move to Cart
+export async function moveToCart(itemId) {
+  const response = await api.patch(`/cart/${itemId}/move-to-cart`);
+  notifyCartUpdated();
+  return response.data;
+}
+
 
 // Checkout
 export async function checkoutCart(itemsOrPayload, maybeDetails = {}) {

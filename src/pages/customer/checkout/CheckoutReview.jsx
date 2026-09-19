@@ -19,7 +19,8 @@ import {
   Shield,
   Lock,
   Percent,
-  Check
+  Check,
+  Gift
 } from "lucide-react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
@@ -55,6 +56,7 @@ function CheckoutReview() {
   const [couponOpen, setCouponOpen] = useState(false);
   const [availableCoupons, setAvailableCoupons] = useState([]);
   const [loadingCoupons, setLoadingCoupons] = useState(false);
+  const [useLoyaltyPoints, setUseLoyaltyPoints] = useState(false);
 
   const loadAvailableCoupons = async () => {
     setLoadingCoupons(true);
@@ -95,6 +97,16 @@ function CheckoutReview() {
       let currentAddr = null;
       if (savedAddress) {
         try { currentAddr = JSON.parse(savedAddress); } catch { currentAddr = null; }
+      }
+      if (!currentAddr || !currentAddr._id) {
+        // Check active navbar delivery address
+        const navStored = localStorage.getItem("selected_delivery_address");
+        if (navStored) {
+          try {
+            currentAddr = JSON.parse(navStored);
+            sessionStorage.setItem("checkoutAddress", JSON.stringify(currentAddr));
+          } catch {}
+        }
       }
       if (!currentAddr || !currentAddr._id) {
         try {
@@ -153,8 +165,9 @@ function CheckoutReview() {
   const isShippingCoupon = coupon?.code === "FREESHIP" || coupon?.discountType === "shipping" || coupon?.type === "shipping";
   const chargeableDeliveryFee = isShippingCoupon ? 0 : deliveryFee;
   const couponDiscount = coupon?.discount || 0;
+  const loyaltyDiscount = useLoyaltyPoints ? 100 : 0;
 
-  const total = Math.max(0, subtotal + chargeableDeliveryFee - couponDiscount);
+  const total = Math.max(0, subtotal + chargeableDeliveryFee - couponDiscount - loyaltyDiscount);
 
   const calculateCouponDiscount = (selected) => {
     const minimum = Number(selected.minOrderAmount ?? selected.minimum ?? 0);
@@ -433,7 +446,7 @@ function CheckoutReview() {
                   </div>
 
                   <div className="item-info-col">
-                    <strong className="item-name">{name}</strong>
+                    <strong className="item-name" title={name}>{name}</strong>
                     <div className="item-sub-tags">
                       {prod.category && <span className="cat-tag">{prod.category}</span>}
                       {prod.vendorName && <span className="vendor-tag">Sold by: {prod.vendorName}</span>}
@@ -512,6 +525,28 @@ function CheckoutReview() {
           )}
         </div>
 
+        {/* REWARDS POINTS CARD */}
+        <div className="sidebar-coupon-card" style={{ marginTop: '12px' }}>
+          <div className="coupon-card-header">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Gift size={16} style={{ color: '#f59e0b' }} />
+              <strong>Rewards Wallet</strong>
+            </div>
+            <span style={{ fontSize: '11px', color: '#15803d', fontWeight: '700', background: '#dcfce7', padding: '2px 8px', borderRadius: '10px' }}>
+              2,450 pts available
+            </span>
+          </div>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px', cursor: 'pointer', fontSize: '13px', color: '#334155' }}>
+            <input
+              type="checkbox"
+              checked={useLoyaltyPoints}
+              onChange={(e) => setUseLoyaltyPoints(e.target.checked)}
+              style={{ width: '16px', height: '16px', accentColor: '#f59e0b' }}
+            />
+            <span>Use 1,000 points (You save ₹100.00)</span>
+          </label>
+        </div>
+
         {/* PRICE BREAKDOWN CARD */}
         <div className="sidebar-summary-card">
           <h3 className="summary-title">Order Summary</h3>
@@ -535,6 +570,13 @@ function CheckoutReview() {
               <div className="summary-row discount">
                 <span>Coupon Discount ({coupon.code})</span>
                 <strong className="discount-tag">-₹{coupon.discount?.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</strong>
+              </div>
+            )}
+
+            {useLoyaltyPoints && (
+              <div className="summary-row discount">
+                <span>Rewards Points Discount (1,000 pts)</span>
+                <strong className="discount-tag">-₹100.00</strong>
               </div>
             )}
 

@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   X,
   Download,
@@ -14,7 +15,8 @@ import {
   Package,
   Mail,
   Phone,
-  CheckCircle2
+  CheckCircle2,
+  Headphones
 } from "lucide-react";
 import { downloadInvoicePdf } from "../utils/invoicePdf";
 import { formatDate as formatShortDate, formatDateTime as formatDate } from "../utils/dateFormatter";
@@ -47,6 +49,7 @@ function getStageIndex(status) {
 }
 
 function OrderDetailsSidepanel({ isOpen, order, onClose }) {
+  const navigate = useNavigate();
   useEffect(() => {
     if (!isOpen) return;
     const handleKeyDown = (e) => {
@@ -381,7 +384,18 @@ function OrderDetailsSidepanel({ isOpen, order, onClose }) {
                         <tr key={item.productId || index}>
                           <td className="inv-col-num">{index + 1}</td>
                           <td className="inv-col-product">
-                            <div className="inv-product-cell">
+                            <div
+                              className="inv-product-cell"
+                              onClick={() => {
+                                const pid = item.productId?._id || item.productId || item._id;
+                                if (pid) {
+                                  onClose?.();
+                                  navigate(`/customer/products/${pid}`);
+                                }
+                              }}
+                              style={{ cursor: "pointer" }}
+                              title="Click to view product details"
+                            >
                               {item.image ? (
                                 <img src={item.image} alt={item.name} className="inv-product-thumb" />
                               ) : (
@@ -622,6 +636,24 @@ function OrderDetailsSidepanel({ isOpen, order, onClose }) {
 
         {/* STICKY FOOTER ACTION BUTTONS */}
         <div className="sidepanel-sticky-footer">
+          <button
+            type="button"
+            className="btn-sidepanel-footer-action outline"
+            onClick={() => {
+              window.dispatchEvent(new CustomEvent('open-customer-tickets', {
+                detail: {
+                  orderId: order._id,
+                  orderDisplayId: order.orderId || order._id,
+                  category: 'order',
+                  subject: `Help with Order #${order.orderId || order._id}`
+                }
+              }));
+            }}
+            title="Need help with this order? Raise a support ticket"
+          >
+            <Headphones size={15} />
+            <span>Support</span>
+          </button>
           <button
             type="button"
             className="btn-sidepanel-footer-action outline"

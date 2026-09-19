@@ -1,0 +1,193 @@
+.product-specs-container {
+  margin: 0 0 20px;
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 16px;
+  padding: 24px 28px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.product-specs-header {
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color, #f1f5f9);
+  padding-bottom: 16px;
+}
+
+.specs-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.specs-main-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-primary, #0f172a);
+  margin: 0;
+}
+
+.specs-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #2563eb;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.specs-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary, #64748b);
+  margin: 6px 0 0;
+}
+
+.specs-accordions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.spec-accordion-card {
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+}
+
+.spec-accordion-card.open {
+  border-color: #cbd5e1;
+}
+
+.spec-accordion-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 18px;
+  background: var(--bg-surface, #f8fafc);
+  border: none;
+  cursor: pointer;
+  color: var(--text-primary, #1e293b);
+  font-size: 14px;
+  font-weight: 700;
+  transition: background 0.15s ease;
+}
+
+.spec-accordion-trigger:hover {
+  background: var(--bg-hover, #f1f5f9);
+}
+
+.spec-trigger-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.spec-icon {
+  color: #4f46e5;
+}
+
+.spec-item-count {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.spec-table-container {
+  padding: 8px 18px 14px;
+  background: var(--bg-card, #ffffff);
+}
+
+.spec-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.spec-table-row {
+  border-bottom: 1px solid var(--border-light, #f1f5f9);
+}
+
+.spec-table-row:last-child {
+  border-bottom: none;
+}
+
+.spec-table-label {
+  width: 38%;
+  padding: 9px 12px 9px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary, #64748b);
+  vertical-align: top;
+}
+
+.spec-table-value {
+  width: 62%;
+  padding: 9px 0;
+  font-size: 13px;
+  color: var(--text-primary, #0f172a);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* =========================================================
+   DARK THEME ADAPTABILITY
+========================================================= */
+[data-theme="dark"] .product-specs-container {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .product-specs-header {
+  border-bottom-color: #334155;
+}
+
+[data-theme="dark"] .specs-main-title {
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .specs-subtitle {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .specs-badge {
+  background: rgba(37, 99, 235, 0.15);
+  border-color: rgba(37, 99, 235, 0.3);
+  color: #93c5fd;
+}
+
+[data-theme="dark"] .spec-accordion-card {
+  border-color: #334155;
+}
+
+[data-theme="dark"] .spec-accordion-card.open {
+  border-color: #475569;
+}
+
+[data-theme="dark"] .spec-accordion-trigger {
+  background: #0f172a;
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .spec-accordion-trigger:hover {
+  background: #1e293b;
+}
+
+[data-theme="dark"] .spec-table-container {
+  background: #1e293b;
+}
+
+[data-theme="dark"] .spec-table-row {
+  border-bottom-color: #334155;
+}
+
+[data-theme="dark"] .spec-table-label {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .spec-table-value {
+  color: #f8fafc;
+}

@@ -84,20 +84,21 @@ function TrackOrder() {
     async function loadData() {
       try {
         const [ordersData, returnsData] = await Promise.allSettled([
-          getCustomerOrders(),
+          getCustomerOrders(1, 50, orderId),
           getReturns()
         ]);
 
-        const ordersList = ordersData.status === "fulfilled"
+        let ordersList = ordersData.status === "fulfilled"
           ? (Array.isArray(ordersData.value) ? ordersData.value : ordersData.value?.items || [])
           : [];
 
-        const returnsList = returnsData.status === "fulfilled"
-          ? (Array.isArray(returnsData.value?.items) ? returnsData.value.items : [])
-          : [];
+        if (!ordersList.length) {
+          const fallback = await getCustomerOrders(1, 100).catch(() => null);
+          ordersList = fallback ? (Array.isArray(fallback) ? fallback : fallback.items || []) : [];
+        }
 
         const foundOrder = ordersList.find(
-          (item) => String(item.orderId || item._id) === orderId
+          (item) => String(item.orderId || item._id).toLowerCase() === String(orderId || "").toLowerCase()
         );
 
         if (active && foundOrder) {
@@ -498,25 +499,36 @@ function TrackOrder() {
                 <h2>Items in this Order ({orderItems.length})</h2>
               </div>
             </div>
-            {orderItems.map((item, idx) => (
-              <div className="track-item-row" key={idx}>
-                <div className="track-product-icon">
-                  {item.image ? (
-                    <img src={item.image} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "6px" }} />
-                  ) : (
-                    <Package size={21} />
-                  )}
+            {orderItems.map((item, idx) => {
+              const prodId = item.productId?._id || item.productId || item._id || order.productId?._id || order.productId;
+              return (
+                <div
+                  className="track-item-row"
+                  key={idx}
+                  onClick={() => prodId && navigate(`/customer/products/${prodId}`)}
+                  style={{ cursor: prodId ? "pointer" : "default" }}
+                  title={prodId ? "Click to view product details" : ""}
+                >
+                  <div className="track-product-icon">
+                    {item.image ? (
+                      <img src={item.image} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "6px" }} />
+                    ) : (
+                      <Package size={21} />
+                    )}
+                  </div>
+                  <div>
+                    <strong style={{ color: prodId ? "#2563eb" : "inherit" }}>
+                      {item.name || "Product Item"}
+                    </strong>
+                    <small>Vendor: {item.vendorName || "Verified Merchant"}</small>
+                  </div>
+                  <span>Qty: {item.qty || 1}</span>
+                  <strong>
+                    ₹ {(Number(item.price || 0) * Number(item.qty || 1)).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </strong>
                 </div>
-                <div>
-                  <strong>{item.name || "Product Item"}</strong>
-                  <small>Vendor: {item.vendorName || "Verified Merchant"}</small>
-                </div>
-                <span>Qty: {item.qty || 1}</span>
-                <strong>
-                  ₹ {(Number(item.price || 0) * Number(item.qty || 1)).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </strong>
-              </div>
-            ))}
+              );
+            })}
           </section>
         </main>
 
@@ -591,7 +603,22 @@ function TrackOrder() {
                 ? "Need details on your wallet credit? We are happy to assist."
                 : "If you have questions about your delivery, please contact our support team."}
             </p>
-            <button className="btn btn-outline track-support-button">Contact Support</button>
+            <button
+              type="button"
+              className="btn btn-outline track-support-button"
+              onClick={() => {
+                window.dispatchEvent(new CustomEvent('open-customer-tickets', {
+                  detail: {
+                    orderId: order?._id,
+                    orderDisplayId: order?.orderId || id,
+                    category: 'order',
+                    subject: `Inquiry for Order #${order?.orderId || id}`
+                  }
+                }));
+              }}
+            >
+              Contact Support
+            </button>
           </section>
         </aside>
       </div>

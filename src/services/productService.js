@@ -74,6 +74,16 @@ export async function addProductReview(productId, reviewData) {
   return response.data;
 }
 
+export async function updateProductReview(productId, reviewId, reviewData) {
+  const response = await api.put(`/products/${productId}/reviews/${reviewId}`, reviewData);
+  return response.data;
+}
+
+export async function deleteProductReview(productId, reviewId) {
+  const response = await api.delete(`/products/${productId}/reviews/${reviewId}`);
+  return response.data;
+}
+
 export async function getProductSearchMeta(q = "") {
   const response = await api.get("/products/search-meta", {
     params: {

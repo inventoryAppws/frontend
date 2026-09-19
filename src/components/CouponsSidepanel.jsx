@@ -18,6 +18,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import CustomSelect from "./CustomSelect";
+import Bone from "./skeletons/Skeleton";
 
 const SORT_OPTIONS = [
   {
@@ -421,9 +422,21 @@ export default function CouponsSidepanel({
         {/* COUPONS LIST BODY */}
         <div className="coupons-sidepanel-body">
           {loading ? (
-            <div className="coupons-loading-state">
-              <div className="coupons-spinner" />
-              <p>Fetching active platform deals...</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px", padding: "16px" }}>
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} style={{ display: "flex", flexDirection: "column", gap: "10px", padding: "16px", background: "#f8fafc", borderRadius: "12px", border: "1px dashed #cbd5e1" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <Bone height={20} width={120} radius={6} />
+                    <Bone height={20} width={80} radius={999} />
+                  </div>
+                  <Bone height={14} width="85%" />
+                  <Bone height={12} width="60%" />
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "6px", paddingTop: "8px", borderTop: "1px solid #f1f5f9" }}>
+                    <Bone height={12} width={100} />
+                    <Bone height={30} width={75} radius={6} />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : filteredAndSortedCoupons.length === 0 ? (
             <div className="coupons-empty-state">

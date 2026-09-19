@@ -21,8 +21,11 @@ import {
   RotateCcw,
   X,
   Plus,
-  Bell
+  Bell,
+  Compass,
+  Headphones
 } from "lucide-react";
+import { getGestureNavEnabled, setGestureNavEnabled } from "../../hooks/useGestureNavigation";
 import { getCustomerOrders } from "../../services/orderService";
 import { formatDate, formatDateTime } from "../../utils/dateFormatter";
 import Modal from "../../components/Modal";
@@ -82,10 +85,12 @@ function CustomerDetails() {
     openAddressesModal,
     openPaymentModal,
     openWalletModal,
+    openAccountSidepanel,
     openPasswordModal,
     openLogoutModal,
     openNotificationSidepanel,
     openPaymentsSidepanel,
+    openTicketsSidepanel,
     unreadNotifCount = 0
   } = context;
 
@@ -98,6 +103,7 @@ function CustomerDetails() {
   const [selectedInvoiceOrder, setSelectedInvoiceOrder] = useState(null);
   const [selectedTrackingOrder, setSelectedTrackingOrder] = useState(null);
   const [isRequestsDrawerOpen, setIsRequestsDrawerOpen] = useState(false);
+  const [isGestureNavEnabled, setIsGestureNavEnabled] = useState(getGestureNavEnabled);
 
   const loadOrders = async () => {
     setLoading(true);
@@ -161,7 +167,17 @@ function CustomerDetails() {
       <div className="account-profile-banner">
         <div className="account-profile-banner-left">
           <div className="account-banner-avatar-wrap">
-            <div className="account-banner-avatar">{userInitial}</div>
+            <div className="account-banner-avatar">
+              {profile?.avatar ? (
+                <img
+                  src={profile.avatar}
+                  alt={profile.name || "Customer"}
+                  className="account-banner-avatar-img"
+                />
+              ) : (
+                userInitial
+              )}
+            </div>
             <span className="account-banner-online-dot" title="Account active" />
           </div>
 
@@ -207,7 +223,13 @@ function CustomerDetails() {
           <button
             type="button"
             className="account-edit-profile-btn"
-            onClick={openProfileModal}
+            onClick={() => {
+              if (typeof openAccountSidepanel === "function") {
+                openAccountSidepanel("profile");
+              } else if (typeof openProfileModal === "function") {
+                openProfileModal();
+              }
+            }}
           >
             <Pencil size={15} />
             <span>Edit Profile</span>
@@ -532,6 +554,92 @@ function CustomerDetails() {
               )}
             </span>
             <ChevronRight size={18} className="account-setting-chevron" />
+          </div>
+        </div>
+
+        {/* Row: Help & Support Tickets */}
+        <div
+          className="account-setting-row"
+          onClick={() => {
+            if (openTicketsSidepanel) openTicketsSidepanel();
+          }}
+          role="button"
+          tabIndex={0}
+        >
+          <div className="account-setting-left">
+            <div className="account-setting-icon-box teal-theme">
+              <Headphones size={18} />
+            </div>
+            <div className="account-setting-info">
+              <h4>Help &amp; Support Tickets</h4>
+              <p>Create support tickets, track issues, live chat with support &amp; get fast resolution</p>
+            </div>
+          </div>
+
+          <div className="account-setting-right">
+            <span className="account-setting-meta-text" style={{ color: "#0d9488", fontWeight: 600 }}>
+              Help Center &amp; Tickets
+            </span>
+            <ChevronRight size={18} className="account-setting-chevron" />
+          </div>
+        </div>
+
+        {/* Row: Gesture Navigation Toggle */}
+        <div
+          className="account-setting-row"
+          style={{ cursor: "default" }}
+        >
+          <div className="account-setting-left">
+            <div className="account-setting-icon-box purple-theme">
+              <Compass size={18} />
+            </div>
+            <div className="account-setting-info">
+              <h4>Gesture Navigation</h4>
+              <p>Drag with mouse from screen edges to navigate back &amp; forward like mobile gestures</p>
+            </div>
+          </div>
+
+          <div className="account-setting-right" onClick={(e) => e.stopPropagation()}>
+            <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer", userSelect: "none" }}>
+              <span style={{ fontSize: "12px", color: isGestureNavEnabled ? "#16a34a" : "#64748b", fontWeight: 700 }}>
+                {isGestureNavEnabled ? "Enabled" : "Disabled"}
+              </span>
+              <input
+                type="checkbox"
+                checked={isGestureNavEnabled}
+                onChange={(e) => {
+                  const val = e.target.checked;
+                  setIsGestureNavEnabled(val);
+                  setGestureNavEnabled(val);
+                }}
+                style={{ display: "none" }}
+              />
+              <div
+                style={{
+                  width: "44px",
+                  height: "24px",
+                  borderRadius: "999px",
+                  background: isGestureNavEnabled ? "#2563eb" : "#cbd5e1",
+                  position: "relative",
+                  transition: "background 0.2s ease",
+                  boxShadow: "inset 0 1px 3px rgba(0,0,0,0.15)"
+                }}
+              >
+                <div
+                  style={{
+                    width: "18px",
+                    height: "18px",
+                    borderRadius: "50%",
+                    background: "#ffffff",
+                    position: "absolute",
+                    top: "3px",
+                    left: isGestureNavEnabled ? "23px" : "3px",
+                    transition: "left 0.2s ease",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.25)"
+                  }}
+                />
+              </div>
+            </label>
           </div>
         </div>
 

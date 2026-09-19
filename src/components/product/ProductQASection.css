@@ -1,0 +1,1034 @@
+/* ==========================================================================
+   Product Details Section Navigation Tabs (Overview | Specs | Reviews | Q&A | Price | Similar)
+   ========================================================================== */
+
+.product-details-nav-tabs-bar {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0 20px;
+  margin: 0;
+  position: sticky;
+  top: 70px;
+  z-index: 15;
+  overflow-x: auto;
+  scrollbar-width: none;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+.product-details-nav-tabs-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.pd-nav-tab-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 14px 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  margin-bottom: -1px;
+}
+
+.pd-nav-tab-btn:hover {
+  color: #0f172a;
+}
+
+.pd-nav-tab-btn.active {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   Product Q&A Section - Flipkart & Amazon Reference Style (media_1789819686877)
+   ========================================================================== */
+
+.qa-section-container {
+  margin: 0 0 24px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid var(--border-color, #e2e8f0);
+  padding: 24px 28px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+/* --- Section Header --- */
+.qa-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.qa-main-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-main, #0f172a);
+  margin: 0 0 4px 0;
+  letter-spacing: -0.02em;
+}
+
+.qa-main-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary, #64748b);
+  margin: 0;
+}
+
+.qa-ask-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  transition: all 0.2s ease;
+}
+
+.qa-ask-btn-primary:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+}
+
+/* --- Search & Toolbar Card --- */
+.qa-toolbar-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.qa-search-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.qa-search-input-wrap {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.qa-search-icon {
+  position: absolute;
+  left: 14px;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.qa-search-input {
+  width: 100%;
+  padding: 11px 36px 11px 42px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.qa-search-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.qa-search-clear-btn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.qa-search-submit-btn {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 0 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.qa-search-submit-btn:hover {
+  background: #e2e8f0;
+}
+
+/* Filter chips & sort row */
+.qa-filters-sort-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.qa-filter-chips-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.qa-chip-btn {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.qa-chip-btn:hover {
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+
+.qa-chip-btn.active {
+  background: #eff6ff;
+  border-color: #2563eb;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.qa-sort-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: #475569;
+}
+
+.qa-sort-label {
+  font-weight: 500;
+}
+
+.qa-sort-select {
+  padding: 6px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  font-size: 13.5px;
+  color: #0f172a;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+}
+
+/* --- Content Grid: Left Questions (70%) & Right Sidebar (30%) --- */
+.qa-content-grid {
+  display: grid;
+  grid-template-columns: 1fr 310px;
+  gap: 32px;
+  align-items: start;
+}
+
+@media (max-width: 992px) {
+  .qa-content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Left Column: Question Cards List --- */
+.qa-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.qa-item-card {
+  display: block;
+  padding: 22px 24px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.qa-item-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+}
+
+/* Question + Answer details column */
+.qa-details-col {
+  width: 100%;
+}
+
+.qa-question-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+  position: relative;
+}
+
+.qa-question-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.4;
+  display: flex;
+  gap: 6px;
+  flex: 1;
+}
+
+.qa-q-prefix {
+  color: #0f172a;
+  font-weight: 800;
+}
+
+/* Options dropdown menu */
+.qa-options-menu-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.qa-options-menu-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #64748b;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.qa-options-menu-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #e2e8f0;
+}
+
+.qa-options-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 195px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.06);
+  padding: 6px 0;
+  z-index: 50;
+  animation: qaFadeIn 0.15s ease-out;
+}
+
+@keyframes qaFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.qa-dropdown-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #334155;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.qa-dropdown-item:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.qa-dropdown-item.danger {
+  color: #dc2626;
+}
+
+.qa-dropdown-item.danger:hover {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.qa-author-meta {
+  font-size: 12.5px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.qa-meta-dot {
+  color: #cbd5e1;
+}
+
+.qa-author-verified-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: #15803d;
+  font-weight: 600;
+  background: #dcfce7;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+/* Answer Box (Soft green tint matching reference mockup) */
+.qa-answer-box {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+
+.qa-answer-text-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.qa-a-prefix {
+  font-weight: 800;
+  color: #16a34a;
+  font-size: 15px;
+}
+
+.qa-a-prefix.secondary {
+  color: #2563eb;
+}
+
+.qa-answer-body {
+  font-size: 14.5px;
+  color: #1e293b;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.qa-answer-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-top: 1px dashed #dcfce7;
+  padding-top: 8px;
+}
+
+.qa-answerer-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #475569;
+  flex-wrap: wrap;
+}
+
+.qa-answerer-name {
+  font-weight: 600;
+  color: #334155;
+}
+
+.qa-answer-time {
+  color: #64748b;
+}
+
+/* Badges */
+.qa-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.qa-badge.verified-spec {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.qa-badge.verified-seller {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
+}
+
+.qa-badge.verified-buyer {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+.qa-badge.default-badge {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+/* Unanswered placeholder */
+.qa-unanswered-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fffbeb;
+  border: 1px solid #fef3c7;
+  color: #b45309;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  margin-bottom: 12px;
+}
+
+/* Action bar below answer */
+.qa-actions-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.qa-reaction-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.qa-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+
+.qa-action-btn:hover {
+  color: #0f172a;
+  background: #f1f5f9;
+}
+
+.qa-action-btn.reply-btn.active {
+  color: #2563eb;
+  background: #eff6ff;
+}
+
+.qa-view-more-answers-link {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.qa-view-more-answers-link:hover {
+  text-decoration: underline;
+}
+
+/* Inline reply box */
+.qa-inline-reply-box {
+  margin-top: 14px;
+  padding: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.qa-reply-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 13.5px;
+  outline: none;
+  resize: vertical;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.qa-reply-textarea:focus {
+  border-color: #2563eb;
+}
+
+.qa-reply-actions-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.qa-reply-cancel-btn {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.qa-reply-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.qa-reply-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Additional answers */
+.qa-more-answers-container {
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.qa-additional-answer-item {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.qa-helpful-inline-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: 1px solid #e2e8f0;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.qa-helpful-inline-btn:hover {
+  background: #ffffff;
+  color: #2563eb;
+}
+
+/* Load more button */
+.qa-load-more-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.qa-load-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px 24px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.qa-load-more-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+/* --- Right Column: Sidebar Cards --- */
+.qa-sidebar-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.qa-sidebar-card {
+  border-radius: 12px;
+  padding: 18px 20px;
+  border: 1px solid #e2e8f0;
+}
+
+/* Top Questions Card */
+.top-questions-card {
+  background: #ffffff;
+  border-color: #e2e8f0;
+}
+
+.qa-sidebar-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 14px 0;
+}
+
+.qa-top-questions-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.qa-top-question-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #f1f5f9;
+  padding: 11px 4px;
+  font-size: 13.5px;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.qa-top-question-item:last-child {
+  border-bottom: none;
+}
+
+.qa-top-question-item:hover {
+  color: #2563eb;
+  padding-left: 8px;
+}
+
+.qa-top-question-text {
+  flex: 1;
+  padding-right: 8px;
+}
+
+.qa-chevron-icon {
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+/* Ask Promo Card (Soft blue) */
+.ask-promo-card {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.qa-promo-icon-box {
+  width: 48px;
+  height: 48px;
+  background: #dbeafe;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.qa-promo-icon {
+  color: #2563eb;
+}
+
+.qa-promo-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 6px 0;
+}
+
+.qa-promo-desc {
+  font-size: 13px;
+  color: #475569;
+  margin: 0 0 16px 0;
+  line-height: 1.45;
+}
+
+.qa-promo-btn {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #2563eb;
+  color: #2563eb;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 9px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.qa-promo-btn:hover {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+/* Moderation Notice Card */
+.moderation-card {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.qa-mod-icon-wrap {
+  color: #2563eb;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.qa-mod-text {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* --- Modal Styling --- */
+.qa-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.qa-modal-subheading {
+  font-size: 13.5px;
+  color: #475569;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.qa-modal-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  background: #ffffff;
+  color: #0f172a;
+  resize: vertical;
+}
+
+.qa-modal-textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.qa-instant-check-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: #64748b;
+  padding: 8px 0;
+}
+
+.qa-instant-match-card {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.qa-instant-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #15803d;
+  font-size: 13.5px;
+  margin-bottom: 6px;
+}
+
+.qa-sparkle-icon {
+  color: #eab308;
+}
+
+.qa-instant-answer-text {
+  font-size: 14px;
+  color: #166534;
+  margin: 0 0 10px 0;
+  line-height: 1.5;
+}
+
+.qa-instant-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.qa-instant-hint {
+  font-size: 11.5px;
+  color: #15803d;
+}
+
+.qa-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.qa-empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px dashed #cbd5e1;
+}
+
+.qa-empty-state h3 {
+  font-size: 17px;
+  color: #1e293b;
+  margin: 12px 0 6px;
+}
+
+.qa-empty-state p {
+  font-size: 13.5px;
+  color: #64748b;
+  margin: 0 0 16px;
+}
+
+.qa-ask-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  border: 1px solid #2563eb;
+  color: #2563eb;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.qa-loading-skeleton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 60px 20px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* ==========================================================================
+   Product Details Tab Content Panes
+   ========================================================================== */
+.product-details-tabs-content {
+  margin-top: 0;
+  width: 100%;
+}
+
+.pd-tab-pane {
+  animation: pdTabFadeIn 0.2s ease-in-out;
+}
+
+.pd-tab-pane > *:first-child,
+.pd-tab-pane .product-price-history-tab-pane,
+.pd-tab-pane .qa-section-container,
+.pd-tab-pane .product-reviews-container,
+.pd-tab-pane .product-specs-container,
+.pd-tab-pane .fbt-bundle-container,
+.pd-tab-pane .byv-rail-container,
+.pd-tab-pane .ctl-rail-container,
+.pd-tab-pane .similar-products-section {
+  margin-top: 0 !important;
+}
+
+@keyframes pdTabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pd-tab-empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px dashed #cbd5e1;
+  color: #64748b;
+  margin: 16px 0;
+}
+
+.pd-tab-empty-state h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 12px 0 6px;
+}
+
+.pd-tab-empty-state p {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+

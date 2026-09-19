@@ -1,0 +1,3234 @@
+/* ==========================================================================
+   DARWIN AI SHOPPING ASSISTANT DESIGN SYSTEM
+   ========================================================================== */
+
+/* ── FLOATING ACTION BUTTON (FAB) ── */
+.darwin-fab-btn {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 998;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 6px 18px 6px 6px;
+  background: #ffffff;
+  color: #0f172a;
+  border: 1.5px solid #dbeafe;
+  border-radius: 9999px;
+  box-shadow: 0 10px 28px -4px rgba(37, 99, 235, 0.16), 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  backdrop-filter: blur(12px);
+}
+
+.darwin-fab-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  border-color: #60a5fa;
+  box-shadow: 0 16px 36px -4px rgba(37, 99, 235, 0.24), 0 6px 14px -2px rgba(15, 23, 42, 0.1);
+  background: #ffffff;
+}
+
+.darwin-fab-btn:active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+.darwin-fab-icon-wrap {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #eff6ff;
+  border: 2px solid #38bdf8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.28);
+  flex-shrink: 0;
+}
+
+.darwin-fab-avatar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.darwin-fab-fallback-icon {
+  color: #0284c7;
+}
+
+.darwin-fab-status-dot {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #10b981;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
+  animation: pulseStatus 2s infinite;
+}
+
+@keyframes pulseStatus {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.darwin-fab-label-area {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.darwin-fab-sparkle {
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+}
+
+.darwin-fab-text {
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.darwin-fab-ask {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.darwin-fab-name {
+  background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+
+/* ── DRAWER BACKDROP & PANEL ── */
+.darwin-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+  animation: fadeInBackdrop 0.2s ease-out;
+}
+
+@keyframes fadeInBackdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.darwin-drawer-panel {
+  width: 480px;
+  max-width: 100vw;
+  height: 100%;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.15);
+  animation: slideDrawer 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+@keyframes slideDrawer {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* ── DRAWER HEADER ── */
+.darwin-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.darwin-header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.darwin-header-avatar-wrap {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #eff6ff;
+  border: 2px solid #38bdf8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.25);
+  flex-shrink: 0;
+}
+
+.darwin-header-avatar-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.darwin-header-fallback-icon {
+  color: #2563eb;
+}
+
+.darwin-online-indicator {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #10b981;
+  border: 2px solid #ffffff;
+  transition: background 0.2s ease;
+}
+
+.darwin-online-indicator.mode-gemini {
+  background: #10b981;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.7);
+}
+
+.darwin-online-indicator.mode-openrouter {
+  background: #f59e0b;
+  box-shadow: 0 0 6px rgba(245, 158, 11, 0.7);
+}
+
+.darwin-online-indicator.mode-nlp {
+  background: #0284c7;
+  box-shadow: 0 0 6px rgba(2, 132, 199, 0.7);
+}
+
+.darwin-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.darwin-title-row h3 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.darwin-mode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  line-height: 1.2;
+}
+
+.darwin-mode-badge.gemini {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.darwin-mode-badge.openrouter {
+  background: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.darwin-mode-badge.nlp {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.darwin-mode-badge.groq {
+  background: #ffedd5;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+}
+
+.darwin-mode-badge.cerebras {
+  background: #f3e8ff;
+  color: #7e22ce;
+  border: 1px solid #e9d5ff;
+}
+
+.darwin-model-picker-container {
+  position: relative;
+  display: inline-flex;
+}
+
+.darwin-mode-badge.clickable {
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+  user-select: none;
+  font-family: inherit;
+}
+
+.darwin-mode-badge.clickable:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.darwin-mode-badge.clickable:active {
+  transform: translateY(0);
+}
+
+.mode-chevron {
+  transition: transform 0.2s ease;
+  opacity: 0.7;
+}
+
+.mode-chevron.rotated {
+  transform: rotate(180deg);
+}
+
+/* Model Switcher Popover */
+.darwin-model-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 290px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16), 0 2px 6px rgba(15, 23, 42, 0.06);
+  z-index: 100;
+  padding: 6px;
+  animation: popoverFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes popoverFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.model-popover-header {
+  padding: 8px 10px 6px;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 4px;
+}
+
+.model-popover-title {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.model-popover-sub {
+  display: block;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.model-popover-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.model-popover-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.model-popover-item:hover {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.model-popover-item.active {
+  background: #f0f9ff;
+  border-color: #bae6fd;
+}
+
+.model-popover-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.model-popover-item.active .model-popover-icon {
+  background: #e0f2fe;
+}
+
+.model-popover-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.model-popover-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.model-popover-name-row strong {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.model-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.model-popover-item.active .model-badge {
+  background: #bfdbfe;
+  color: #1e40af;
+}
+
+.model-popover-info p {
+  margin: 2px 0 0;
+  font-size: 10.5px;
+  color: #64748b;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.model-check-icon {
+  color: #0284c7;
+  flex-shrink: 0;
+}
+
+.mode-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.mode-dot.green {
+  background: #10b981;
+}
+
+.mode-dot.amber {
+  background: #f59e0b;
+}
+
+.mode-dot.blue {
+  background: #0284c7;
+}
+
+.mode-dot.orange {
+  background: #f97316;
+}
+
+.mode-dot.purple {
+  background: #8b5cf6;
+}
+
+.darwin-badge-online {
+  font-size: 11px;
+  font-weight: 700;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 2px 7px;
+  border-radius: 999px;
+  line-height: 1;
+}
+
+.darwin-header-subtitle {
+  font-size: 12px;
+  color: #64748b;
+  margin: 2px 0 0 0;
+}
+
+.darwin-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.darwin-head-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.darwin-head-btn:hover {
+  background: #f8fafc;
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
+
+.darwin-head-btn.active {
+  background: #eff6ff;
+  color: #2563eb;
+  border-color: #93c5fd;
+}
+
+.darwin-head-btn.close:hover {
+  background: #fee2e2;
+  color: #ef4444;
+  border-color: #fca5a5;
+}
+
+/* ── MODE NOTICE BANNERS ── */
+.darwin-mode-notice-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.darwin-mode-notice-banner svg {
+  flex-shrink: 0;
+}
+
+.darwin-mode-notice-banner.openrouter {
+  background: #fffbeb;
+  border-bottom: 1px solid #fef3c7;
+  color: #92400e;
+}
+
+.darwin-mode-notice-banner.openrouter svg {
+  color: #d97706;
+}
+
+.darwin-mode-notice-banner.nlp {
+  background: #f0f9ff;
+  border-bottom: 1px solid #bae6fd;
+  color: #0369a1;
+}
+
+.darwin-mode-notice-banner.nlp svg {
+  color: #0284c7;
+}
+
+/* ── DRAWER BODY & MESSAGE STREAM ── */
+.darwin-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  background: #f8fafc;
+}
+
+.darwin-messages-stream {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.darwin-msg-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.darwin-msg-row.user-msg-row {
+  flex-direction: row-reverse;
+}
+
+.darwin-msg-avatar-box {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.darwin-user-avatar {
+  width: 100%;
+  height: 100%;
+  background: #e2e8f0;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.darwin-user-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.darwin-bot-avatar {
+  width: 100%;
+  height: 100%;
+  background: #eff6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.darwin-bot-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.darwin-bot-fallback-icon {
+  color: #2563eb;
+}
+
+.darwin-msg-content-wrapper {
+  max-width: 86%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.darwin-msg-row.user-msg-row .darwin-msg-content-wrapper {
+  align-items: flex-end;
+}
+
+.darwin-msg-bubble {
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 13.5px;
+  line-height: 1.48;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  position: relative;
+}
+
+.darwin-bubble {
+  background: #ffffff;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+  border-top-left-radius: 4px;
+}
+
+.user-bubble {
+  background: #2563eb;
+  color: #ffffff;
+  border-top-right-radius: 4px;
+}
+
+.darwin-msg-time {
+  display: block;
+  font-size: 10px;
+  margin-top: 5px;
+  opacity: 0.65;
+  text-align: right;
+}
+
+/* Markdown Inline Link */
+.darwin-inline-link {
+  color: #2563eb;
+  text-decoration: underline;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.darwin-inline-link:hover {
+  color: #1d4ed8;
+}
+
+/* Markdown Table in Chat */
+.darwin-markdown-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+.darwin-markdown-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  text-align: left;
+}
+
+.darwin-markdown-table th {
+  background: #f8fafc;
+  color: #334155;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-bottom: 2px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.darwin-markdown-table td {
+  padding: 7px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #475569;
+  vertical-align: top;
+}
+
+.darwin-markdown-table tr:last-child td {
+  border-bottom: none;
+}
+
+.darwin-markdown-table tr:nth-child(even) td {
+  background: #fafafa;
+}
+
+
+/* Typing Indicator */
+.darwin-typing-bubble {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 12px 18px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  border-top-left-radius: 4px;
+  width: fit-content;
+}
+
+.darwin-typing-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #94a3b8;
+  animation: typingBounce 1.4s infinite ease-in-out;
+}
+
+.darwin-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.darwin-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBounce {
+  0%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-6px); }
+}
+
+/* ── WELCOME STATE ── */
+.darwin-welcome-view {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.darwin-welcome-hero-card {
+  background: linear-gradient(135deg, rgba(238, 242, 255, 0.92) 0%, rgba(245, 243, 255, 0.95) 100%), url('/darwin-bg.png') center/cover no-repeat;
+  border: 1px solid #c7d2fe;
+  border-radius: 18px;
+  padding: 22px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 6px 24px -4px rgba(99, 102, 241, 0.14);
+}
+
+.darwin-hero-avatar-wrap {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2.5px solid #38bdf8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(56, 189, 248, 0.35);
+}
+
+.darwin-hero-mascot-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.darwin-hero-fallback-icon {
+  color: #6366f1;
+}
+
+.darwin-hero-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #6366f1;
+  letter-spacing: 0.06em;
+  display: block;
+}
+
+.darwin-hero-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 2px 0 4px;
+}
+
+.darwin-hero-subtitle {
+  font-size: 12.5px;
+  color: #475569;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.darwin-welcome-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.darwin-section-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.darwin-quick-pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.darwin-quick-prompt-pill {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.darwin-quick-prompt-pill:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #2563eb;
+  transform: translateY(-1px);
+}
+
+/* Contextual Decisions Section */
+.darwin-context-section {
+  background: #ffffff;
+  border: 1.5px solid #e0e7ff;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.05);
+}
+
+.darwin-context-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.darwin-context-badge {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #4f46e5;
+  background: #eef2ff;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  border: 1px solid #c7d2fe;
+}
+
+.darwin-context-decisions-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.darwin-decision-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-align: left;
+}
+
+.darwin-decision-card:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  transform: translateY(-1px);
+}
+
+.darwin-decision-text strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.darwin-decision-text p {
+  margin: 2px 0 0 0;
+  font-size: 11.5px;
+  color: #64748b;
+  line-height: 1.35;
+}
+
+.darwin-decision-sparkle {
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
+/* 8-Card Use Cases Grid (Screen 10) */
+.darwin-usecases-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.darwin-usecase-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.18s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.darwin-usecase-card:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.darwin-usecase-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.darwin-usecase-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.25;
+}
+
+/* ── HORIZONTAL PRODUCT CARDS (Screen 3) ── */
+.darwin-product-cards-container {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.darwin-cards-scroll-track {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+}
+
+.darwin-cards-scroll-track::-webkit-scrollbar {
+  height: 5px;
+}
+
+.darwin-cards-scroll-track::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.darwin-product-card {
+  width: 220px;
+  flex-shrink: 0;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  transition: all 0.18s ease;
+}
+
+.darwin-product-card:hover {
+  border-color: #94a3b8;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+}
+
+.darwin-badge-best-match {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  font-size: 9.5px;
+  font-weight: 800;
+  padding: 3px 7px;
+  border-radius: 5px;
+  letter-spacing: 0.03em;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.darwin-card-top-row {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+}
+
+.darwin-card-wishlist-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.darwin-card-wishlist-btn:hover {
+  background: #ffffff;
+  transform: scale(1.1);
+}
+
+.darwin-card-media {
+  width: 100%;
+  height: 130px;
+  background: #f1f5f9;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.darwin-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.darwin-product-card:hover .darwin-card-media img {
+  transform: scale(1.04);
+}
+
+.darwin-card-no-img {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.darwin-card-content {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.darwin-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 6px;
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.darwin-card-title:hover {
+  color: #2563eb;
+}
+
+.darwin-card-rating-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.darwin-card-stars {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.darwin-card-rating-count {
+  font-weight: 500;
+  color: #64748b;
+  font-size: 10.5px;
+}
+
+.darwin-card-stock-out {
+  font-size: 10px;
+  font-weight: 700;
+  color: #dc2626;
+  background: #fee2e2;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.darwin-card-pricing-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.darwin-card-price {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.darwin-card-mrp {
+  font-size: 11px;
+  color: #94a3b8;
+  text-decoration: line-through;
+}
+
+.darwin-card-discount-tag {
+  font-size: 10px;
+  font-weight: 700;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+.darwin-badge-best-value {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #ffffff;
+  font-size: 9.5px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 5px rgba(217, 119, 6, 0.35);
+  z-index: 2;
+}
+
+.darwin-card-smartbuy-pill {
+  background: #fffbeb;
+  border: 1px dashed #f59e0b;
+  border-radius: 6px;
+  padding: 3px 6px;
+  font-size: 10px;
+  color: #92400e;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.darwin-card-smartbuy-pill strong {
+  color: #b45309;
+}
+
+.darwin-card-specs-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px;
+  font-size: 10.5px;
+  color: #64748b;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.darwin-card-specs-list li {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.darwin-card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.darwin-btn-view-details {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  padding: 6px 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.darwin-btn-view-details:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.darwin-btn-smart-buy {
+  grid-column: span 2;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 1px solid #f59e0b;
+  border-radius: 7px;
+  padding: 6.5px 0;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #92400e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(245, 158, 11, 0.15);
+}
+
+.darwin-btn-smart-buy:hover:not(:disabled) {
+  background: linear-gradient(135deg, #fde68a 0%, #fcd34d 100%);
+  border-color: #d97706;
+  color: #78350f;
+  box-shadow: 0 2px 6px rgba(217, 119, 6, 0.25);
+  transform: translateY(-1px);
+}
+
+.darwin-btn-smart-buy:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.darwin-btn-add-cart {
+  background: #2563eb;
+  border: none;
+  border-radius: 7px;
+  padding: 6px 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.darwin-btn-add-cart:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.darwin-btn-add-cart:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.darwin-cards-footer-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.darwin-footer-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #2563eb;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.darwin-footer-chip:hover {
+  background: #dbeafe;
+}
+
+.darwin-footer-chip.secondary {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #475569;
+}
+
+/* ── COMPARISON TABLE (Screen 4) ── */
+.darwin-comparison-box {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-top: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.darwin-comparison-table-wrapper {
+  overflow-x: auto;
+}
+
+.darwin-comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.darwin-comparison-table th,
+.darwin-comparison-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  text-align: left;
+}
+
+.darwin-comp-attr-head {
+  background: #f8fafc;
+  color: #64748b;
+  font-weight: 700;
+  width: 110px;
+}
+
+.darwin-comp-prod-head {
+  min-width: 140px;
+  vertical-align: top;
+  text-align: center;
+  background: #f8fafc;
+}
+
+.darwin-comp-thumb-box {
+  width: 54px;
+  height: 54px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  margin: 0 auto 6px;
+}
+
+.darwin-comp-thumb-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.darwin-comp-prod-name {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  margin-bottom: 2px;
+}
+
+.darwin-comp-prod-price {
+  font-size: 13px;
+  font-weight: 800;
+  color: #2563eb;
+}
+
+.darwin-comp-attr-label {
+  font-weight: 600;
+  color: #64748b;
+  background: #ffffff;
+}
+
+.darwin-comp-val-cell {
+  color: #1e293b;
+  font-weight: 500;
+  text-align: center;
+}
+
+.darwin-comp-rating-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-weight: 700;
+  color: #b45309;
+}
+
+.darwin-comp-cart-btn {
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.darwin-comparison-insight-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background: #fffbeb;
+  border-top: 1px solid #fef3c7;
+}
+
+.darwin-insight-icon-box {
+  color: #d97706;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.darwin-insight-text strong {
+  display: block;
+  font-size: 12px;
+  color: #92400e;
+  margin-bottom: 2px;
+}
+
+.darwin-insight-text p {
+  font-size: 11.5px;
+  color: #78350f;
+  margin: 0;
+  line-height: 1.35;
+}
+
+/* ── ORDER TRACKER (Screen 9) ── */
+.darwin-order-tracker-card {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-top: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.darwin-tracker-top-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #f0fdf4;
+  border-bottom: 1px solid #bbf7d0;
+}
+
+.darwin-tracker-truck-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: #dcfce7;
+  color: #16a34a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.darwin-tracker-est-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #15803d;
+  display: block;
+}
+
+.darwin-tracker-est-date {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.darwin-tracker-order-badge {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  background: #ffffff;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+}
+
+.darwin-tracker-item-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.darwin-tracker-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+.darwin-tracker-item-info {
+  flex: 1;
+}
+
+.darwin-tracker-item-info strong {
+  display: block;
+  font-size: 12.5px;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px;
+}
+
+.darwin-tracker-item-info p {
+  font-size: 11px;
+  color: #64748b;
+  margin: 2px 0;
+}
+
+.darwin-tracker-total {
+  font-size: 12px;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.darwin-tracker-timeline {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.darwin-timeline-step {
+  display: flex;
+  gap: 12px;
+  min-height: 40px;
+}
+
+.darwin-step-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 18px;
+  flex-shrink: 0;
+}
+
+.marker-icon.completed { color: #16a34a; }
+.marker-icon.current { color: #2563eb; animation: spinClock 4s linear infinite; }
+.marker-dot { width: 10px; height: 10px; border-radius: 50%; background: #cbd5e1; margin-top: 3px; }
+
+.darwin-step-line {
+  width: 2px;
+  flex: 1;
+  background: #e2e8f0;
+  margin: 3px 0;
+}
+
+.darwin-timeline-step.completed .darwin-step-line {
+  background: #86efac;
+}
+
+.darwin-step-content {
+  flex: 1;
+  padding-bottom: 10px;
+}
+
+.darwin-step-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+  display: block;
+}
+
+.darwin-timeline-step.pending .darwin-step-title {
+  color: #94a3b8;
+}
+
+.darwin-step-time {
+  font-size: 10.5px;
+  color: #64748b;
+}
+
+.darwin-tracker-view-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: #f8fafc;
+  border: none;
+  border-top: 1px solid #f1f5f9;
+  font-size: 12px;
+  font-weight: 700;
+  color: #2563eb;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.darwin-tracker-view-btn:hover {
+  background: #eff6ff;
+}
+
+/* ── CONVERSATIONAL CHECKOUT (Screens 7 & 8) ── */
+.darwin-checkout-card {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px;
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.darwin-checkout-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.darwin-checkout-shield {
+  color: #16a34a;
+}
+
+.darwin-checkout-head h4 {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.darwin-checkout-head p {
+  font-size: 11px;
+  color: #64748b;
+  margin: 1px 0 0;
+}
+
+.darwin-smart-buy-banner {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 1px solid #fcd34d;
+  border-radius: 9px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.darwin-smart-buy-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 700;
+  font-size: 11.5px;
+  color: #b45309;
+}
+
+.darwin-smart-buy-desc {
+  font-size: 11px;
+  color: #78350f;
+  line-height: 1.35;
+}
+
+.darwin-checkout-block {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.darwin-block-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.darwin-block-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+}
+
+.darwin-block-change-link {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}
+
+.darwin-block-body strong {
+  display: block;
+  font-size: 12.5px;
+  color: #0f172a;
+}
+
+.darwin-block-body p {
+  font-size: 11px;
+  color: #64748b;
+  margin: 2px 0;
+}
+
+.darwin-block-body small {
+  font-size: 10.5px;
+  color: #94a3b8;
+}
+
+.darwin-secure-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+.darwin-delivery-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.darwin-checkout-items {
+  border-top: 1px solid #f1f5f9;
+  padding-top: 8px;
+}
+
+.darwin-items-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.darwin-item-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11.5px;
+  margin-bottom: 4px;
+}
+
+.darwin-item-name {
+  color: #334155;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px;
+}
+
+.darwin-item-price {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.darwin-checkout-totals {
+  border-top: 1px solid #f1f5f9;
+  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.darwin-total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: #64748b;
+}
+
+.darwin-total-row.darwin-discount-row {
+  color: #16a34a;
+  font-weight: 600;
+  background: #f0fdf4;
+  padding: 3px 6px;
+  border-radius: 5px;
+}
+
+.darwin-coupon-tag-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #15803d;
+}
+
+.darwin-discount-value {
+  color: #16a34a;
+  font-weight: 700;
+}
+
+.darwin-total-row.final {
+  font-size: 14px;
+  color: #0f172a;
+  padding-top: 4px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.darwin-final-amount {
+  color: #2563eb;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.darwin-checkout-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.darwin-btn-confirm-order {
+  flex: 1;
+  background: #16a34a;
+  color: #ffffff;
+  border: none;
+  border-radius: 9px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
+}
+
+.darwin-btn-confirm-order:hover:not(:disabled) {
+  background: #15803d;
+  transform: translateY(-1px);
+}
+
+.darwin-btn-confirm-order:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.darwin-btn-cancel-checkout {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Screen 8: Order Placed Successfully */
+.darwin-order-success-box {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #bbf7d0;
+  border-radius: 16px;
+  padding: 24px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  box-shadow: 0 8px 24px rgba(22, 163, 74, 0.08);
+}
+
+.darwin-success-mascot-wrap {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #f0fdf4;
+  border: 2px solid #86efac;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.darwin-success-mascot {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.darwin-success-confetti-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 20px;
+}
+
+.darwin-success-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.darwin-success-order-id {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2563eb;
+  background: #eff6ff;
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin: 0;
+}
+
+.darwin-success-delivery-notice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #15803d;
+}
+
+.darwin-success-note {
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 11.5px;
+  color: #475569;
+  line-height: 1.4;
+  margin: 4px 0;
+}
+
+.darwin-success-buttons {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.darwin-success-track-btn {
+  flex: 1;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 0;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.darwin-success-continue-btn {
+  flex: 1;
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 9px 0;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ── ACTION SUCCESS MINI CARD (e.g. Added to Cart) ── */
+.darwin-action-success-card {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.darwin-action-success-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #15803d;
+}
+
+.darwin-action-check-icon {
+  color: #16a34a;
+  flex-shrink: 0;
+}
+
+.darwin-action-prod-mini {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #dcfce7;
+}
+
+.darwin-action-prod-mini img {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.darwin-action-prod-mini div {
+  flex: 1;
+  min-width: 0;
+}
+
+.darwin-action-prod-mini strong {
+  display: block;
+  font-size: 11.5px;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.darwin-action-prod-mini span {
+  font-size: 11px;
+  font-weight: 700;
+  color: #16a34a;
+}
+
+.darwin-action-view-cart-btn {
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* ── QUICK SUGGESTION PILLS BELOW MESSAGE ── */
+.darwin-msg-suggestions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.darwin-msg-sug-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  padding: 5px 11px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.darwin-msg-sug-pill:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #2563eb;
+  transform: translateY(-1px);
+}
+
+/* ── SUBPANELS (HISTORY & SETTINGS) ── */
+.darwin-subpanel-view {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+}
+
+.darwin-subpanel-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 16px;
+}
+
+.darwin-subpanel-back-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #475569;
+}
+
+.darwin-subpanel-header h3 {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  flex: 1;
+}
+
+.darwin-new-chat-top-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 7px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.darwin-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.darwin-history-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.darwin-history-item:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.darwin-history-item.active {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+.darwin-history-icon {
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.darwin-history-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.darwin-history-title {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.darwin-history-date {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10.5px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.darwin-history-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.darwin-history-actions button {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  padding: 4px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.darwin-history-actions button:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+/* Settings View */
+.darwin-settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.darwin-settings-section {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.darwin-settings-sec-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.darwin-settings-sec-desc {
+  font-size: 11.5px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.darwin-form-group label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 4px;
+}
+
+.darwin-form-select,
+.darwin-form-input {
+  width: 100%;
+  height: 38px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0 10px;
+  font-size: 12.5px;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+/* ── CUSTOM SLEEK DARWIN DROPDOWN ── */
+.darwin-dropdown-container {
+  position: relative;
+  width: 100%;
+}
+
+.darwin-dropdown-trigger {
+  width: 100%;
+  min-height: 46px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: left;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.darwin-dropdown-trigger:hover {
+  border-color: #818cf8;
+  background: #fdfdfd;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1);
+}
+
+.darwin-dropdown-trigger.active {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  background: #ffffff;
+}
+
+.darwin-dropdown-selected-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.darwin-dropdown-item-icon {
+  color: #6366f1;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.darwin-dropdown-text-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.darwin-dropdown-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.darwin-dropdown-label.placeholder {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.darwin-dropdown-sublabel {
+  font-size: 11px;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+.darwin-dropdown-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: #eef2ff;
+  color: #4f46e5;
+  border: 1px solid #e0e7ff;
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
+}
+
+.darwin-dropdown-chevron {
+  color: #64748b;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.darwin-dropdown-chevron.rotated {
+  transform: rotate(180deg);
+  color: #4f46e5;
+}
+
+.darwin-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px -4px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(0, 0, 0, 0.06);
+  max-height: 240px;
+  overflow-y: auto;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  animation: dropdownOpen 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dropdownOpen {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.darwin-dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  gap: 10px;
+}
+
+.darwin-dropdown-item:hover {
+  background: #f8fafc;
+}
+
+.darwin-dropdown-item.selected {
+  background: #eef2ff;
+}
+
+.darwin-dropdown-item.selected .darwin-dropdown-item-title {
+  color: #4f46e5;
+  font-weight: 800;
+}
+
+.darwin-dropdown-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.darwin-dropdown-item-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.darwin-dropdown-item-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.darwin-dropdown-item-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.darwin-dropdown-item-sub {
+  font-size: 11px;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+.darwin-dropdown-check-icon {
+  color: #4f46e5;
+  flex-shrink: 0;
+}
+
+.darwin-dropdown-empty {
+  padding: 14px;
+  text-align: center;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.darwin-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+}
+
+.darwin-toggle-row:last-child {
+  border-bottom: none;
+}
+
+.darwin-toggle-info strong {
+  display: block;
+  font-size: 12px;
+  color: #0f172a;
+}
+
+.darwin-toggle-info span {
+  font-size: 10.5px;
+  color: #64748b;
+}
+
+.darwin-save-settings-btn {
+  width: 100%;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 9px;
+  padding: 10px 0;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+/* ── DRAWER FOOTER INPUT ── */
+.darwin-drawer-footer {
+  padding: 12px 16px 16px;
+  background: #ffffff;
+  border-top: 1px solid #f1f5f9;
+  flex-shrink: 0;
+}
+
+.darwin-input-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 6px 8px 6px 14px;
+  transition: all 0.2s ease;
+}
+
+.darwin-input-container:focus-within {
+  border-color: #3b82f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.darwin-chat-textarea {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 13.5px;
+  color: #0f172a;
+  outline: none;
+  resize: none;
+  max-height: 100px;
+  line-height: 1.4;
+  font-family: inherit;
+  padding: 4px 0;
+}
+
+.darwin-input-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.darwin-mic-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.darwin-mic-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.darwin-mic-btn.listening {
+  background: #fee2e2;
+  color: #ef4444;
+  animation: pulseMic 1.2s infinite;
+}
+
+@keyframes pulseMic {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.darwin-send-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: none;
+  background: #2563eb;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.darwin-send-btn:hover:not(:disabled) {
+  background: #1d4ed8;
+  transform: scale(1.04);
+}
+
+.darwin-send-btn:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+}
+
+/* ── MOBILE RESPONSIVE (<640px) ── */
+@media (max-width: 640px) {
+  .darwin-fab-btn {
+    bottom: 20px;
+    right: 20px;
+    padding: 6px 12px 6px 6px;
+  }
+  .darwin-drawer-panel {
+    width: 100vw;
+    border-radius: 0;
+  }
+  .darwin-usecases-grid {
+    grid-template-columns: 1fr;
+  }
+  .darwin-product-card {
+    width: 200px;
+  }
+}
+
+/* ── PARSED MARKDOWN IN MESSAGES ── */
+.darwin-msg-paragraph {
+  margin: 0 0 6px;
+  line-height: 1.45;
+}
+
+.darwin-msg-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.darwin-msg-ul,
+.darwin-msg-ol {
+  margin: 4px 0 6px 18px;
+  padding: 0;
+  line-height: 1.45;
+}
+
+.darwin-msg-ul li,
+.darwin-msg-ol li {
+  margin-bottom: 3px;
+  font-size: 13px;
+}
+
+.darwin-inline-code {
+  background: rgba(0, 0, 0, 0.06);
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 11.5px;
+}
+
+/* ── COMPARISON TABLE WINNER & VALUE HIGHLIGHTS ── */
+.darwin-comparison-header-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #f8fafc;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.darwin-comp-prod-head.winner-col {
+  background: linear-gradient(180deg, #ecfdf5 0%, #f0fdf4 100%);
+  border-left: 1.5px solid #a7f3d0;
+  border-right: 1.5px solid #a7f3d0;
+}
+
+.darwin-comp-val-cell.winner-col {
+  background: #f0fdf4;
+  border-left: 1.5px solid #a7f3d0;
+  border-right: 1.5px solid #a7f3d0;
+  font-weight: 600;
+}
+
+.darwin-comp-winner-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  font-size: 9.5px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 999px;
+  margin-bottom: 6px;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
+  letter-spacing: 0.02em;
+}
+
+.darwin-comp-value-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: #ffffff;
+  font-size: 9.5px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 999px;
+  margin-bottom: 6px;
+  letter-spacing: 0.02em;
+}
+
+.darwin-comp-cart-btn.primary-pick {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
+}
+
+.darwin-comp-cart-btn.primary-pick:hover {
+  background: #047857;
+}
+
+/* ── CHECKOUT PAYMENT METHOD SELECTOR ── */
+.darwin-payment-method-selector {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.darwin-pay-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1.5px solid #e2e8f0;
+  background: #ffffff;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.darwin-pay-pill:hover {
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+
+.darwin-pay-pill.active {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #1d4ed8;
+  box-shadow: 0 0 0 1px #2563eb;
+}
+
+/* ── RECENT ORDERS LIST CARDS ── */
+.darwin-orders-list-container {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.darwin-orders-list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding: 0 4px;
+}
+
+.darwin-orders-head-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.darwin-orders-view-all-btn {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: transparent;
+  border: none;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #2563eb;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+
+.darwin-orders-view-all-btn:hover {
+  text-decoration: underline;
+}
+
+.darwin-orders-cards-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.darwin-order-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+  transition: all 0.15s ease;
+}
+
+.darwin-order-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+.darwin-order-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 8px;
+}
+
+.darwin-order-id-group {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.darwin-order-number {
+  font-size: 12px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.darwin-order-date {
+  font-size: 11px;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.darwin-order-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.darwin-order-status-pill.status-placed {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #dbeafe;
+}
+
+.darwin-order-status-pill.status-packed {
+  background: #eef2ff;
+  color: #4f46e5;
+  border: 1px solid #e0e7ff;
+}
+
+.darwin-order-status-pill.status-shipped {
+  background: #faf5ff;
+  color: #9333ea;
+  border: 1px solid #f3e8ff;
+}
+
+.darwin-order-status-pill.status-out {
+  background: #fffbeb;
+  color: #d97706;
+  border: 1px solid #fef3c7;
+}
+
+.darwin-order-status-pill.status-delivered {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #d1fae5;
+}
+
+.darwin-order-status-pill.status-cancelled {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fee2e2;
+}
+
+.darwin-order-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.darwin-order-item-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.darwin-order-item-thumb {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.darwin-order-item-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.darwin-order-thumb-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+}
+
+.darwin-order-item-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.darwin-order-item-name {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.darwin-order-item-meta {
+  font-size: 10.5px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.darwin-order-item-meta .meta-dot {
+  color: #cbd5e1;
+}
+
+.darwin-order-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+  border-top: 1px dashed #f1f5f9;
+}
+
+.darwin-order-total-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.darwin-order-total-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.darwin-order-total-val {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.darwin-order-pay-method {
+  font-size: 9.5px;
+  color: #64748b;
+}
+
+.darwin-order-actions-block {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.darwin-order-track-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.darwin-order-track-btn:hover {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #2563eb;
+}
+
+.darwin-order-details-link {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.darwin-order-details-link:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+/* ── EMAIL DRAFT CARD & PREVIEW ── */
+.darwin-email-draft-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.darwin-email-intro-text {
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.darwin-email-preview-box {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.darwin-email-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.darwin-email-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.darwin-email-icon-box {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: #eff6ff;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.darwin-email-header-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.darwin-email-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #475569;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.darwin-email-copy-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+.darwin-email-copy-btn.copied {
+  background: #ecfdf5;
+  color: #059669;
+  border-color: #a7f3d0;
+}
+
+.darwin-email-field-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 12px 0 12px;
+  font-size: 12.5px;
+}
+
+.darwin-email-field-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #64748b;
+  min-width: 52px;
+}
+
+.darwin-email-field-subject {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.darwin-email-field-val {
+  font-size: 12.5px;
+  color: #334155;
+}
+
+.darwin-email-divider {
+  height: 1px;
+  background: #f1f5f9;
+  margin: 8px 12px;
+}
+
+.darwin-email-body {
+  padding: 0 12px 12px 12px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #1e293b;
+}
+
+.darwin-email-body-para {
+  margin: 0 0 10px;
+}
+
+.darwin-email-body-para:last-child {
+  margin-bottom: 0;
+}
+
+/* ── PRETTY JSON CODE BLOCK ── */
+.darwin-json-preview-wrapper {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  overflow-x: auto;
+  font-size: 12px;
+  line-height: 1.45;
+  margin-top: 4px;
+}
+
+.darwin-json-code {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+
+

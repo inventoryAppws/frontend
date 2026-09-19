@@ -9,7 +9,8 @@ import {
   Mail,
   MapPin,
   Calendar,
-  CreditCard
+  CreditCard,
+  Gift
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -153,6 +154,55 @@ function OrderSuccess() {
             <strong>Invoice &amp; Receipt Dispatched</strong>
             <p>A full digital tax invoice and live BlueDart tracking link have been dispatched to your email.</p>
           </div>
+        </div>
+
+        {/* REWARDS POINTS EARNED CELEBRATION BANNER */}
+        <div className="success-rewards-earned-banner" style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+          border: '1px solid #f59e0b',
+          borderRadius: '12px',
+          padding: '16px 20px',
+          margin: '20px 0',
+          color: '#78350f',
+          flexWrap: 'wrap',
+          gap: '12px'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#d97706', boxShadow: '0 2px 6px rgba(0,0,0,0.08)' }}>
+              <Gift size={22} />
+            </div>
+            <div>
+              <strong style={{ fontSize: '15px', display: 'block', color: '#92400e' }}>
+                🎉 You earned +25 Rewards Points for this order!
+              </strong>
+              <span style={{ fontSize: '13px', color: '#b45309' }}>
+                Your updated wallet balance is 2,475 points (worth ₹247.50).
+              </span>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate('/customer/rewards')}
+            style={{
+              background: '#92400e',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '8px 16px',
+              fontSize: '13px',
+              fontWeight: '700',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            <span>View Rewards</span>
+            <ArrowRight size={14} />
+          </button>
         </div>
 
         {/* CALL TO ACTIONS */}

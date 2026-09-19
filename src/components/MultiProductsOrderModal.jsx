@@ -1,14 +1,18 @@
 import { Package, X, Store, Tag, ShoppingBag, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { formatDateTime } from "../utils/dateFormatter";
 
 function MultiProductsOrderModal({ order, isOpen, onClose, onOpenFullDetails }) {
+  const navigate = useNavigate();
   if (!isOpen || !order) return null;
 
   const rawItems = Array.isArray(order.items) && order.items.length > 0 ? order.items : [];
   const items = rawItems.map((item) => {
     const prod = (typeof item.productId === "object" && item.productId !== null) ? item.productId : (typeof item.product === "object" && item.product !== null ? item.product : {});
     const vend = (typeof item.vendorId === "object" && item.vendorId !== null) ? item.vendorId : (typeof item.vendor === "object" && item.vendor !== null ? item.vendor : {});
+    const prodId = prod._id || (typeof item.productId === "string" ? item.productId : item._id);
     return {
+      productId: prodId,
       name: item.name || prod.name || order.name || "Product Item",
       description: item.description || prod.description || "",
       image: item.image || prod.image || (Array.isArray(prod.images) ? prod.images[0] : "") || order.image || "",
@@ -60,6 +64,13 @@ function MultiProductsOrderModal({ order, isOpen, onClose, onOpenFullDetails }) 
               return (
                 <div
                   key={idx}
+                  onClick={() => {
+                    if (item.productId) {
+                      onClose();
+                      navigate(`/customer/products/${item.productId}`);
+                    }
+                  }}
+                  title="Click to view product details"
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -69,7 +80,8 @@ function MultiProductsOrderModal({ order, isOpen, onClose, onOpenFullDetails }) 
                     border: "1.5px solid #e2e8f0",
                     borderRadius: "12px",
                     gap: "14px",
-                    transition: "border-color 0.15s, transform 0.15s",
+                    cursor: item.productId ? "pointer" : "default",
+                    transition: "border-color 0.15s, transform 0.15s, box-shadow 0.15s",
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: "14px", flex: 1, minWidth: 0 }}>

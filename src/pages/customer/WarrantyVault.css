@@ -1,0 +1,1364 @@
+.wv-page-container {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+.wv-hero-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 850px) {
+  .wv-hero-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.wv-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #4f46e5;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+}
+
+.wv-hero-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 8px;
+}
+
+.wv-hero-desc {
+  font-size: 14px;
+  color: #475569;
+  max-width: 540px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.wv-stats-grid {
+  display: flex;
+  gap: 16px;
+}
+
+.wv-stat-box {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 14px 20px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.wv-stat-val {
+  display: block;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.wv-stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+/* Tabs */
+.wv-tabs-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 2px solid #f1f5f9;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.wv-tabs-left {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.wv-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 12px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+  margin-bottom: -2px;
+  transition: all 0.15s;
+}
+
+.wv-tab-btn:hover {
+  color: #0f172a;
+}
+
+.wv-tab-btn.active {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+}
+
+/* Cards Grid */
+.wv-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.wv-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.wv-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.wv-card-top {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.wv-thumb {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.wv-card-title-block {
+  flex: 1;
+}
+
+.wv-card-tags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.wv-status-tag {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.wv-status-tag.active {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.wv-status-tag.expired {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.wv-duration-pill {
+  font-size: 11px;
+  color: #475569;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 1px 6px;
+  border-radius: 6px;
+}
+
+.wv-product-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 6px;
+}
+
+.wv-serial-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.wv-serial-row code {
+  background: #f1f5f9;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 11px;
+  color: #0f172a;
+}
+
+/* Dates Box */
+.wv-card-dates-box {
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 18px;
+}
+
+.wv-date-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.wv-date-row:last-child {
+  margin-bottom: 0;
+}
+
+.wv-date-label {
+  color: #64748b;
+}
+
+.wv-date-val {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.wv-date-val.highlight {
+  color: #4f46e5;
+}
+
+.wv-days-badge {
+  color: #059669;
+  font-size: 11px;
+  margin-left: 6px;
+}
+
+/* Actions */
+.wv-card-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.wv-cert-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.wv-cert-btn:hover {
+  background: #e2e8f0;
+}
+
+.wv-claim-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #4f46e5;
+  border: none;
+  color: #ffffff;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.wv-claim-btn:hover {
+  background: #4338ca;
+}
+
+/* Claims list */
+.wv-claims-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.wv-claim-card {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+  margin-bottom: 14px;
+}
+
+.wv-claim-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+}
+
+.wv-claim-card.expanded {
+  border-color: #c7d2fe;
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.08);
+}
+
+/* Compact summary bar */
+.wv-claim-summary-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  cursor: pointer;
+  background: #ffffff;
+  transition: background 0.15s ease;
+  gap: 16px;
+  user-select: none;
+}
+
+.wv-claim-summary-bar:hover {
+  background: #f8fafc;
+}
+
+.wv-claim-card.expanded .wv-claim-summary-bar {
+  border-bottom: 1px solid #f1f5f9;
+  background: #fcfcfd;
+}
+
+.wv-claim-summary-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  flex: 1;
+}
+
+.wv-claim-prod-thumb-compact {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  flex-shrink: 0;
+}
+
+.wv-claim-summary-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.wv-claim-summary-row1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.wv-claim-type-tag {
+  font-size: 11px;
+  font-weight: 800;
+  color: #4f46e5;
+  background: #eef2ff;
+  padding: 2px 7px;
+  border-radius: 5px;
+  letter-spacing: 0.3px;
+}
+
+.wv-claim-date-inline {
+  font-size: 11.5px;
+  color: #94a3b8;
+}
+
+.wv-claim-summary-row2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.wv-claim-summary-prod-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.wv-claim-summary-row3 {
+  display: flex;
+  align-items: center;
+}
+
+.wv-claim-preview-desc {
+  font-size: 12px;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 600px;
+}
+
+.wv-claim-preview-desc strong {
+  color: #475569;
+}
+
+.wv-claim-summary-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.wv-claim-toggle-expand-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.wv-claim-toggle-expand-btn:hover {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+  color: #4f46e5;
+}
+
+.wv-claim-chevron {
+  transition: transform 0.2s ease;
+  color: #64748b;
+}
+
+.wv-claim-chevron.rotated {
+  transform: rotate(180deg);
+  color: #4f46e5;
+}
+
+/* Expanded Content */
+.wv-claim-expanded-content {
+  padding: 20px 24px 24px 24px;
+  animation: claimExpandFadeIn 0.2s ease-out;
+}
+
+@keyframes claimExpandFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Report Box in Expanded State */
+.wv-claim-report-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.wv-claim-report-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.wv-claim-report-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: #0f172a;
+}
+
+.wv-claim-report-cat-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #b45309;
+  background: #fef3c7;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.wv-claim-report-slot {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1e293b;
+  background: #eff6ff;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
+/* Photos row */
+.wv-claim-photos-strip {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.wv-claim-photos-title {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 8px;
+}
+
+.wv-claim-photos-list {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.wv-claim-photo-link {
+  display: inline-block;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.wv-claim-photo-link:hover {
+  transform: scale(1.05);
+  border-color: #4f46e5;
+}
+
+.wv-claim-photo-img {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Bottom Collapse Footer */
+.wv-claim-collapse-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.wv-claim-collapse-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.wv-claim-collapse-btn:hover {
+  background: #eef2ff;
+  color: #4f46e5;
+  border-color: #c7d2fe;
+}
+
+.wv-claims-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.wv-claims-sec-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 4px;
+}
+
+.wv-claims-sec-sub {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+.wv-claims-refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 7px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.wv-claims-refresh-btn:hover {
+  background: #dbeafe;
+}
+
+.wv-claim-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.wv-claim-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wv-claim-id-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wv-claim-id-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  color: #4f46e5;
+  background: #eef2ff;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-family: monospace;
+  letter-spacing: 0.5px;
+}
+
+.wv-copy-id-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 11px;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.wv-copy-id-btn:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.wv-claim-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wv-claim-date {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.wv-claim-status-pill-custom {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Product & Issue Banner */
+.wv-claim-prod-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+}
+
+.wv-claim-prod-thumb {
+  width: 54px;
+  height: 54px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.wv-claim-prod-info {
+  flex: 1;
+}
+
+.wv-claim-prod-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 4px;
+}
+
+.wv-claim-prod-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.wv-claim-serial {
+  font-size: 11px;
+  font-family: monospace;
+  color: #475569;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.wv-claim-issue-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: #b45309;
+  background: #fef3c7;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.wv-claim-desc-text {
+  font-size: 13px;
+  color: #475569;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Multi-Step Stepper */
+.wv-claim-stepper-wrap {
+  margin: 20px 0 24px;
+  padding: 16px 20px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.wv-stepper-track {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  position: relative;
+  gap: 12px;
+}
+
+.wv-stepper-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+  position: relative;
+}
+
+.wv-stepper-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 55%;
+  width: 90%;
+  height: 2px;
+  background: #e2e8f0;
+  z-index: 1;
+}
+
+.wv-stepper-step.completed:not(:last-child)::after {
+  background: #10b981;
+}
+
+.wv-step-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  border: 2px solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.wv-stepper-step.completed .wv-step-dot {
+  background: #ecfdf5;
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.wv-stepper-step.current .wv-step-dot {
+  background: #2563eb;
+  border-color: #1d4ed8;
+  color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+}
+
+.wv-step-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.wv-step-pulse-ring {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.wv-step-content {
+  max-width: 130px;
+}
+
+.wv-step-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.wv-stepper-step.completed .wv-step-label {
+  color: #059669;
+}
+
+.wv-stepper-step.current .wv-step-label {
+  color: #2563eb;
+}
+
+.wv-step-sub {
+  font-size: 10.5px;
+  color: #94a3b8;
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
+/* Detail Cards Grid */
+.wv-claim-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .wv-claim-details-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.wv-claim-subcard {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.wv-subcard-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.wv-subcard-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wv-subcard-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  font-size: 12.5px;
+  gap: 8px;
+}
+
+.wv-subcard-k {
+  color: #64748b;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.wv-subcard-v {
+  color: #0f172a;
+  text-align: right;
+}
+
+.wv-tech-name-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #ecfdf5;
+  color: #047857;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.wv-tech-phone-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #2563eb;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.wv-tech-phone-link:hover {
+  text-decoration: underline;
+}
+
+/* Inspection & Diagnostics Box */
+.wv-inspection-report-box {
+  background: #faf5ff;
+  border: 1px solid #e9d5ff;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.wv-inspection-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #7c3aed;
+  margin-bottom: 6px;
+}
+
+.wv-inspection-notes-text {
+  font-size: 13px;
+  color: #4c1d95;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.wv-inspection-pending {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+  color: #7c3aed;
+  padding: 8px 0;
+}
+
+.wv-inspection-waiting {
+  font-size: 12.5px;
+  color: #94a3b8;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Resolution Banner */
+.wv-resolution-tag-box {
+  margin-top: 10px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.wv-resolution-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #047857;
+  margin-bottom: 4px;
+}
+
+.wv-resolution-notes {
+  font-size: 12.5px;
+  color: #065f46;
+  margin: 0;
+}
+
+/* Timeline Accordion */
+.wv-claim-timeline-section {
+  border-top: 1px solid #f1f5f9;
+  padding-top: 14px;
+}
+
+.wv-timeline-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.wv-timeline-toggle-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.wv-claim-timeline-list {
+  margin-top: 12px;
+  padding-left: 10px;
+  position: relative;
+}
+
+.wv-timeline-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  position: relative;
+  padding-bottom: 14px;
+}
+
+.wv-timeline-row:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 12px;
+  bottom: 0;
+  width: 2px;
+  background: #e2e8f0;
+}
+
+.wv-timeline-bullet {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #3b82f6;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 2px #bfdbfe;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.wv-timeline-body {
+  flex: 1;
+}
+
+.wv-timeline-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.wv-timeline-status-badge {
+  font-size: 11px;
+  font-weight: 800;
+  color: #1e40af;
+  background: #eff6ff;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.wv-timeline-time {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.wv-timeline-note {
+  font-size: 12.5px;
+  color: #334155;
+  margin: 0;
+}
+
+.wv-empty-claims {
+  background: #ffffff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 16px;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.wv-empty-claims h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 12px 0 6px;
+}
+
+.wv-empty-claims p {
+  font-size: 13.5px;
+  color: #64748b;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* Dark Theme Adaptations */
+[data-theme="dark"] .wv-top-banner,
+[data-theme="dark"] .wv-stat-card,
+[data-theme="dark"] .wv-warranty-card,
+[data-theme="dark"] .wv-claim-card,
+[data-theme="dark"] .wv-empty-claims,
+[data-theme="dark"] .wv-empty-vault {
+  background: #0f172a;
+  border-color: #1e293b;
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .wv-title,
+[data-theme="dark"] .wv-stat-val,
+[data-theme="dark"] .wv-prod-name,
+[data-theme="dark"] .wv-claim-title,
+[data-theme="dark"] .wv-empty-claims h3 {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .wv-details-grid,
+[data-theme="dark"] .wv-claim-details {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+[data-theme="dark"] .wv-tab-btn {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .wv-cert-btn {
+  background: #1e293b;
+  border-color: #475569;
+  color: #cbd5e1;
+}
+
+/* Register Button in Header/Tabs */
+.wv-register-top-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+  transition: all 0.15s ease;
+  margin-bottom: 6px;
+}
+
+.wv-register-top-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+
+/* Empty Warranties State */
+.wv-empty-warranties-card {
+  text-align: center;
+  padding: 60px 24px;
+  background: #ffffff;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 12px 0 24px;
+}
+
+.wv-empty-warranties-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 16px 0 8px;
+}
+
+.wv-empty-warranties-card p {
+  font-size: 14px;
+  color: #64748b;
+  max-width: 460px;
+  line-height: 1.5;
+  margin: 0 0 20px;
+}
+
+.wv-add-device-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+  transition: all 0.15s ease;
+}
+
+.wv-add-device-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+}
+
+[data-theme="dark"] .wv-empty-warranties-card {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .wv-empty-warranties-card h3 {
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .wv-empty-warranties-card p {
+  color: #94a3b8;
+}
+
+/* Dark Theme for Claims Compact & Expanded Elements */
+[data-theme="dark"] .wv-claim-summary-bar {
+  background: #0f172a;
+}
+
+[data-theme="dark"] .wv-claim-summary-bar:hover {
+  background: #1e293b;
+}
+
+[data-theme="dark"] .wv-claim-card.expanded .wv-claim-summary-bar {
+  background: #0f172a;
+  border-bottom-color: #1e293b;
+}
+
+[data-theme="dark"] .wv-claim-summary-prod-name,
+[data-theme="dark"] .wv-claim-report-title {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .wv-claim-preview-desc {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .wv-claim-preview-desc strong {
+  color: #cbd5e1;
+}
+
+[data-theme="dark"] .wv-claim-toggle-expand-btn,
+[data-theme="dark"] .wv-claim-collapse-btn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+[data-theme="dark"] .wv-claim-toggle-expand-btn:hover,
+[data-theme="dark"] .wv-claim-collapse-btn:hover {
+  background: #243049;
+  color: #818cf8;
+  border-color: #6366f1;
+}
+
+[data-theme="dark"] .wv-claim-report-box {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .wv-claim-report-slot {
+  background: #172554;
+  color: #93c5fd;
+}
+
+[data-theme="dark"] .wv-claim-collapse-footer {
+  border-top-color: #1e293b;
+}
+
+/* Responsive adjustments for claim summary */
+@media (max-width: 640px) {
+  .wv-claim-summary-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .wv-claim-summary-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .wv-claim-preview-desc {
+    max-width: 280px;
+  }
+}

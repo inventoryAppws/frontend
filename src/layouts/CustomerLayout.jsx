@@ -13,6 +13,7 @@ import {
   Settings,
   Headphones,
   ChevronDown,
+  ChevronLeft,
   ChevronRight,
   Pencil,
   X,
@@ -28,8 +29,21 @@ import {
   EyeOff,
   Calendar,
   ArrowLeft,
-  Bell
+  Bell,
+  Search,
+  Maximize2,
+  Minimize2,
+  Tag,
+  Store,
+  Mic,
+  Camera,
+  Repeat,
+  Users,
+  Sparkles,
+  Gift
 } from "lucide-react";
+import VoiceSearchModal from "../components/voice/VoiceSearchModal";
+import VisualSearchModal from "../components/visual-search/VisualSearchModal";
 import { useAuth } from "../context/AuthContext";
 import { getMyProfile, updateMyProfile, changeMyPassword } from "../services/customerService";
 import { getCart } from "../services/cartService";
@@ -37,6 +51,7 @@ import { getWishlist } from "../services/wishlistService";
 import { getWallet, topUpWallet } from "../services/walletService";
 import { getPaymentMethods, createPaymentMethod, updatePaymentMethod, deletePaymentMethod } from "../services/paymentMethodService";
 import { getAddresses, createAddress, updateAddress, deleteAddress } from "../services/addressService";
+import { getProductSearchMeta } from "../services/productService";
 import {
   getNotifications,
   markNotificationAsRead,
@@ -46,6 +61,14 @@ import {
 } from "../services/notificationService";
 import NotificationSidepanel from "../components/NotificationSidepanel";
 import PaymentsSidepanel from "../components/PaymentsSidepanel";
+import CustomerTicketsSidepanel from "../components/CustomerTicketsSidepanel";
+import CustomerAccountSidepanel from "../components/CustomerAccountSidepanel";
+import CompareFloatingBar from "../components/CompareFloatingBar";
+import NavbarAddressDropdown from "../components/location/NavbarAddressDropdown";
+import AddressMapModal from "../components/location/AddressMapModal";
+import LocationSettingsModal from "../components/location/LocationSettingsModal";
+import DarwinFab from "../components/darwin/DarwinFab";
+import DarwinChatDrawer from "../components/darwin/DarwinChatDrawer";
 import Modal from "../components/Modal";
 import ConfirmModal from "../components/ConfirmModal";
 import CustomSelect from "../components/CustomSelect";
@@ -53,7 +76,7 @@ import { toast } from "../components/Toast";
 import { formatDate } from "../utils/dateFormatter";
 import { getErrorMessage } from "../utils/errorHandler";
 
-function getBreadcrumbs(pathname) {
+function getBreadcrumbs(pathname, customTitle = null) {
   const crumbs = [{ label: "Dashboard", to: "/customer" }];
 
   if (pathname === "/customer" || pathname === "/customer/") {
@@ -65,9 +88,12 @@ function getBreadcrumbs(pathname) {
     if (pathname.includes("/track")) {
       crumbs.push({ label: "Track Order", to: null });
     }
-  } else if (pathname.startsWith("/customer/products/")) {
+  } else if (
+    pathname.startsWith("/customer/products/") ||
+    pathname.startsWith("/customer/product/")
+  ) {
     crumbs.push({ label: "Catalog", to: "/customer" });
-    crumbs.push({ label: "Product Details", to: null });
+    crumbs.push({ label: customTitle || "Product Details", to: null });
   } else if (pathname.startsWith("/customer/details")) {
     crumbs.push({ label: "My Details", to: null });
   } else if (pathname.startsWith("/customer/settings")) {
@@ -76,13 +102,27 @@ function getBreadcrumbs(pathname) {
     crumbs.push({ label: "Cart", to: null });
   } else if (pathname.startsWith("/customer/wishlist")) {
     crumbs.push({ label: "Wishlist", to: null });
+  } else if (pathname.startsWith("/customer/recommended")) {
+    crumbs.push({ label: "Recommended for You", to: null });
   } else if (pathname.startsWith("/customer/checkout")) {
     crumbs.push({ label: "Cart", to: "/customer/cart" });
     crumbs.push({ label: "Checkout", to: null });
   } else {
-    const clean = pathname.replace("/customer/", "").replace(/-/g, " ");
-    const formatted = clean.charAt(0).toUpperCase() + clean.slice(1);
-    crumbs.push({ label: formatted, to: null });
+    // Strip customer prefix and any 24-char hex MongoDB ObjectIds
+    const segments = pathname
+      .replace(/^\/customer\/?/, "")
+      .split("/")
+      .filter((s) => s && !/^[0-9a-fA-F]{24}$/.test(s));
+
+    if (segments.length === 0) {
+      crumbs.push({ label: customTitle || "Details", to: null });
+    } else {
+      segments.forEach((seg) => {
+        const clean = seg.replace(/-/g, " ");
+        const formatted = clean.charAt(0).toUpperCase() + clean.slice(1);
+        crumbs.push({ label: formatted, to: null });
+      });
+    }
   }
 
   return crumbs;
@@ -97,6 +137,13 @@ function CustomerLayout() {
   const location = useLocation();
   const { logout } = useAuth();
 
+  // Custom Breadcrumb for dynamic page titles (e.g. Product Name)
+  const [customBreadcrumb, setCustomBreadcrumb] = useState(null);
+
+  useEffect(() => {
+    setCustomBreadcrumb(null);
+  }, [location.pathname]);
+
   // Global Customer State
   const [profile, setProfile] = useState(null);
   const [cartCount, setCartCount] = useState(0);
@@ -107,7 +154,21 @@ function CustomerLayout() {
 
   // UI State
   const [userDropdown, setUserDropdown] = useState(false);
-  const [modal, setModal] = useState(""); // "profile" | "addresses" | "payment" | "wallet" | "password" | "support" | "logout"
+  const [modal, setModal] = useState(""); // "profile" | "password" | "support" | "logout"
+  const [accountSidepanel, setAccountSidepanel] = useState({
+    isOpen: false,
+    initialTab: "wallet" // "wallet" | "addresses" | "payment"
+  });
+
+  const openAccountSidepanel = (tab = "wallet") => {
+    setUserDropdown(false);
+    setAccountSidepanel({ isOpen: true, initialTab: tab });
+  };
+
+  const closeAccountSidepanel = () => {
+    setAccountSidepanel((prev) => ({ ...prev, isOpen: false }));
+  };
+
   const [profileMode, setProfileMode] = useState("card"); // "card" | "edit"
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -117,6 +178,9 @@ function CustomerLayout() {
   const [editingAddress, setEditingAddress] = useState(null);
   const [addressToDelete, setAddressToDelete] = useState(null);
   const [addressForm, setAddressForm] = useState(emptyAddress);
+  const [isMapPickerOpen, setIsMapPickerOpen] = useState(false);
+  const [mapEditAddress, setMapEditAddress] = useState(null);
+  const [showLocationSettings, setShowLocationSettings] = useState(false);
 
   const [paymentMode, setPaymentMode] = useState("list"); // "list" | "form"
   const [paymentTab, setPaymentTab] = useState("card"); // "card" | "upi" | "netbanking"
@@ -129,11 +193,159 @@ function CustomerLayout() {
   const [passwordForm, setPasswordForm] = useState(emptyPassword);
   const [showPassword, setShowPassword] = useState({ current: false, next: false, confirm: false });
 
+  // Full Page Mode State (Persisted in localStorage)
+  const [isFullPage, setIsFullPage] = useState(() => {
+    try {
+      return localStorage.getItem("customer_full_page") === "true";
+    } catch {
+      return false;
+    }
+  });
+
+  const toggleFullPage = () => {
+    setIsFullPage((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem("customer_full_page", String(next));
+      } catch {}
+      return next;
+    });
+  };
+
+  // Topbar Search State (Synchronized with URL ?q=...)
+  const [topbarSearch, setTopbarSearch] = useState("");
+  const [isVoiceSearchOpen, setIsVoiceSearchOpen] = useState(false);
+  const [isVisualSearchOpen, setIsVisualSearchOpen] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const q = params.get("q") || "";
+    setTopbarSearch(q);
+  }, [location.search]);
+
+  const [searchSuggestions, setSearchSuggestions] = useState({ categories: [], vendors: [], products: [] });
+  const [allCategoriesList, setAllCategoriesList] = useState([]);
+  const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
+  const searchDropdownRef = useRef(null);
+
+  const DEFAULT_POPULAR_CATEGORIES = [
+    { name: "Electronics", count: 85 },
+    { name: "Fashion", count: 243 },
+    { name: "Footwear & Shoes", count: 100 },
+    { name: "Appliances", count: 72 },
+    { name: "Home & Living", count: 64 },
+    { name: "Beauty & Care", count: 58 },
+    { name: "Sports & Fitness", count: 52 },
+    { name: "Grocery & Gourmet", count: 45 },
+    { name: "Gaming", count: 39 },
+    { name: "Mobiles & Accessories", count: 96 }
+  ];
+
+  const categoriesToShow = allCategoriesList.length > 0 ? allCategoriesList : DEFAULT_POPULAR_CATEGORIES;
+
+  // Load all categories on mount for instant dropdown on focus
+  useEffect(() => {
+    getProductSearchMeta("")
+      .then((meta) => {
+        if (meta?.categories && Array.isArray(meta.categories) && meta.categories.length > 0) {
+          setAllCategoriesList(meta.categories);
+        }
+      })
+      .catch((err) => console.error("Failed to load initial categories:", err));
+  }, []);
+
+  // Close search dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (searchDropdownRef.current && !searchDropdownRef.current.contains(e.target)) {
+        setIsSearchDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Fetch debounced search metadata suggestions
+  useEffect(() => {
+    const trimmed = topbarSearch.trim();
+    if (!trimmed) {
+      setSearchSuggestions({ categories: [], vendors: [], products: [] });
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        const meta = await getProductSearchMeta(trimmed);
+        if (meta?.suggestions) {
+          setSearchSuggestions(meta.suggestions);
+          const hasResults =
+            (meta.suggestions.categories && meta.suggestions.categories.length > 0) ||
+            (meta.suggestions.vendors && meta.suggestions.vendors.length > 0) ||
+            (meta.suggestions.products && meta.suggestions.products.length > 0);
+          setIsSearchDropdownOpen(hasResults);
+        }
+      } catch (err) {
+        console.error("Failed to fetch search suggestions:", err);
+      }
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [topbarSearch]);
+
+  const handleTopbarSearchSubmit = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    setIsSearchDropdownOpen(false);
+    const trimmed = topbarSearch.trim();
+    if (trimmed) {
+      navigate(`/customer?q=${encodeURIComponent(trimmed)}`);
+      window.dispatchEvent(new CustomEvent('scroll-to-section', { detail: { search: trimmed, resetCategory: true, resetVendor: true, target: 'catalog' } }));
+    } else {
+      navigate("/customer");
+      window.dispatchEvent(new CustomEvent('scroll-to-section', { detail: { search: '', resetCategory: true, resetVendor: true, target: 'catalog' } }));
+    }
+  };
+
   // Notifications State
   const [notifications, setNotifications] = useState([]);
   const [unreadNotifCount, setUnreadNotifCount] = useState(0);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isPaymentsOpen, setIsPaymentsOpen] = useState(false);
+  const [isTicketsSidepanelOpen, setIsTicketsSidepanelOpen] = useState(false);
+  const [ticketsInitialContext, setTicketsInitialContext] = useState(null);
+
+  const openTicketsSidepanel = useCallback((ctx = null) => {
+    setTicketsInitialContext(ctx);
+    setIsTicketsSidepanelOpen(true);
+  }, []);
+
+  useEffect(() => {
+    const handleOpenTickets = (e) => {
+      openTicketsSidepanel(e.detail || null);
+    };
+    window.addEventListener("open-customer-tickets", handleOpenTickets);
+    return () => window.removeEventListener("open-customer-tickets", handleOpenTickets);
+  }, [openTicketsSidepanel]);
+
+  useEffect(() => {
+    const handleOpenAccount = (e) => {
+      const tab = e.detail?.tab || "wallet";
+      openAccountSidepanel(tab);
+    };
+    window.addEventListener("open-account-sidepanel", handleOpenAccount);
+    return () => window.removeEventListener("open-account-sidepanel", handleOpenAccount);
+  }, []);
+
+  useEffect(() => {
+    const handleProfileUpdated = (e) => {
+      if (e.detail) {
+        setProfile((prev) => ({ ...prev, ...e.detail }));
+      }
+    };
+    window.addEventListener("customer-profile-updated", handleProfileUpdated);
+    return () => window.removeEventListener("customer-profile-updated", handleProfileUpdated);
+  }, []);
+
+  const [isDarwinOpen, setIsDarwinOpen] = useState(false);
   const [notifLoading, setNotifLoading] = useState(false);
   const knownNotifIds = useRef(new Set());
 
@@ -180,6 +392,10 @@ function CustomerLayout() {
 
       if (customer) {
         setProfile(customer);
+        try {
+          localStorage.setItem("customer_profile", JSON.stringify(customer));
+          localStorage.setItem("user", JSON.stringify(customer));
+        } catch {}
         setProfileForm({
           name: customer.name || "",
           email: customer.email || "",
@@ -190,7 +406,8 @@ function CustomerLayout() {
       }
 
       const cartItems = Array.isArray(cartData) ? cartData : cartData?.items || [];
-      setCartCount(cartItems.reduce((acc, it) => acc + Number(it.qty || 1), 0));
+      const activeCart = cartItems.filter((it) => !it.savedForLater);
+      setCartCount(activeCart.reduce((acc, it) => acc + Number(it.qty || 1), 0));
 
       const wishItems = Array.isArray(wishlistData) ? wishlistData : wishlistData?.items || [];
       setWishlistCount(wishItems.length);
@@ -209,9 +426,20 @@ function CustomerLayout() {
     try {
       const cartData = await getCart();
       const cartItems = Array.isArray(cartData) ? cartData : cartData?.items || [];
-      const total = cartItems.reduce((acc, it) => acc + Number(it.qty || 1), 0);
+      const total = cartItems.filter((it) => !it.savedForLater).reduce((acc, it) => acc + Number(it.qty || 1), 0);
       setCartCount(total);
       return total;
+    } catch {
+      // non-blocking
+    }
+  }, []);
+
+  const syncWishlistCount = useCallback(async () => {
+    try {
+      const wishlistData = await getWishlist();
+      const wishItems = Array.isArray(wishlistData) ? wishlistData : wishlistData?.items || [];
+      setWishlistCount(wishItems.length);
+      return wishItems.length;
     } catch {
       // non-blocking
     }
@@ -287,7 +515,21 @@ function CustomerLayout() {
     setEditingMethod(null);
   };
 
-  // Profile Save
+  // Profile Handlers
+  const handleOpenProfileModal = () => {
+    if (profile) {
+      setProfileForm({
+        name: profile.name || "",
+        email: profile.email || "",
+        phone: profile.phone || "",
+        gender: profile.gender || "",
+        dateOfBirth: formatDob(profile.dateOfBirth)
+      });
+    }
+    setError("");
+    setModal("profile");
+  };
+
   const handleSaveProfile = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -297,6 +539,7 @@ function CustomerLayout() {
       setProfile(updated);
       toast.success("Profile updated successfully.");
       setProfileMode("card");
+      closeModal();
     } catch (err) {
       const msg = getErrorMessage(err);
       setError(msg);
@@ -333,25 +576,13 @@ function CustomerLayout() {
 
   // Address Handlers
   const openAddAddress = () => {
-    setAddressForm(emptyAddress);
-    setEditingAddress(null);
-    setAddressMode("form");
+    setMapEditAddress(null);
+    setIsMapPickerOpen(true);
   };
 
   const openEditAddress = (addr) => {
-    setAddressForm({
-      fullName: addr.fullName || "",
-      phone: addr.phone || "",
-      addressLine1: addr.addressLine1 || "",
-      addressLine2: addr.addressLine2 || "",
-      city: addr.city || "",
-      state: addr.state || "",
-      pincode: addr.pincode || "",
-      type: addr.type || "Home",
-      isDefault: Boolean(addr.isDefault)
-    });
-    setEditingAddress(addr);
-    setAddressMode("form");
+    setMapEditAddress(addr);
+    setIsMapPickerOpen(true);
   };
 
   const handleSaveAddress = async (e) => {
@@ -510,17 +741,29 @@ function CustomerLayout() {
   const userInitial = (profile?.name || "Customer").charAt(0).toUpperCase();
 
   return (
-    <div className="account-dashboard-wrapper">
+    <div className={`account-dashboard-wrapper ${isFullPage ? "full-page-mode" : ""}`}>
       {/* =========================================================
           GLOBAL UNIFIED SIDEBAR (Used on all Customer Screens)
       ========================================================== */}
       <aside className="account-sidebar">
-        <div className="account-sidebar-brand" onClick={() => navigate("/customer")}>
+        <button
+          type="button"
+          className="account-sidebar-brand"
+          onClick={toggleFullPage}
+          title={isFullPage ? "Expand sidebar" : "Collapse sidebar"}
+          aria-label={isFullPage ? "Expand sidebar" : "Collapse sidebar"}
+          aria-expanded={!isFullPage}
+        >
           <div className="account-brand-icon">
             <ShoppingBag size={22} className="account-brand-svg" />
           </div>
           <span className="account-brand-text">Inventory</span>
-        </div>
+          {isFullPage ? (
+            <ChevronRight size={18} className="account-brand-toggle-icon" aria-hidden="true" />
+          ) : (
+            <ChevronLeft size={18} className="account-brand-toggle-icon" aria-hidden="true" />
+          )}
+        </button>
 
         <nav className="account-sidebar-nav">
           <Link to="/customer" className={`account-nav-item ${isDashboard ? "active" : ""}`}>
@@ -532,18 +775,6 @@ function CustomerLayout() {
             <ShoppingBag size={18} />
             <span>My Orders</span>
           </Link>
-
-          <button
-            type="button"
-            className={`account-nav-item ${modal === "profile" ? "active" : ""}`}
-            onClick={() => {
-              setProfileMode("card");
-              setModal("profile");
-            }}
-          >
-            <User size={18} />
-            <span>My Details</span>
-          </button>
 
           <Link to="/customer/cart" className={`account-nav-item ${isCart ? "active" : ""}`}>
             <div className="account-cart-icon-wrap">
@@ -558,38 +789,55 @@ function CustomerLayout() {
             <span>Wishlist</span>
           </Link>
 
-          <button
-            type="button"
-            className="account-nav-item"
-            onClick={() => {
-              setModal("addresses");
-              setAddressMode("list");
-            }}
+          <Link
+            to="/customer/recommended"
+            className={`account-nav-item ${location.pathname.startsWith("/customer/recommended") ? "active" : ""}`}
           >
-            <MapPin size={18} />
-            <span>Addresses</span>
-          </button>
+            <Sparkles size={18} />
+            <span>Recommended for You</span>
+          </Link>
 
-          <button
-            type="button"
-            className="account-nav-item"
-            onClick={() => {
-              setModal("payment");
-              setPaymentMode("list");
-            }}
+          {/* New Customer Experience Features */}
+          <Link
+            to="/customer/repeat-delivery"
+            className={`account-nav-item ${location.pathname.startsWith("/customer/repeat-delivery") ? "active" : ""}`}
           >
-            <CreditCard size={18} />
-            <span>Payment Methods</span>
-          </button>
+            <Repeat size={18} />
+            <span>Repeat Delivery</span>
+          </Link>
 
-          <button
-            type="button"
-            className="account-nav-item"
-            onClick={() => setModal("wallet")}
+          <Link
+            to="/customer/shared-cart"
+            className={`account-nav-item ${location.pathname.startsWith("/customer/shared-cart") ? "active" : ""}`}
           >
-            <Wallet size={18} />
-            <span>Wallet</span>
-          </button>
+            <Users size={18} />
+            <span>Shared Cart</span>
+          </Link>
+
+          <Link
+            to="/customer/avatar"
+            className={`account-nav-item ${location.pathname.startsWith("/customer/avatar") ? "active" : ""}`}
+          >
+            <Sparkles size={18} />
+            <span>Virtual Avatar</span>
+          </Link>
+
+          <Link
+            to="/customer/warranties"
+            className={`account-nav-item ${location.pathname.startsWith("/customer/warranties") ? "active" : ""}`}
+          >
+            <ShieldCheck size={18} />
+            <span>Warranty Vault</span>
+          </Link>
+
+          <Link
+            to="/customer/rewards"
+            className={`account-nav-item ${location.pathname.startsWith("/customer/rewards") ? "active" : ""}`}
+          >
+            <Gift size={18} />
+            <span>Rewards Wallet</span>
+          </Link>
+
 
           <button
             type="button"
@@ -598,6 +846,15 @@ function CustomerLayout() {
           >
             <CreditCard size={18} />
             <span>Payments</span>
+          </button>
+
+          <button
+            type="button"
+            className={`account-nav-item ${accountSidepanel.isOpen && accountSidepanel.initialTab === "profile" ? "active" : ""}`}
+            onClick={() => openAccountSidepanel("profile")}
+          >
+            <User size={18} />
+            <span>My Details</span>
           </button>
 
           <Link
@@ -619,7 +876,7 @@ function CustomerLayout() {
             <button
               type="button"
               className="account-help-link"
-              onClick={() => setModal("support")}
+              onClick={() => openTicketsSidepanel()}
             >
               Contact Support →
             </button>
@@ -633,23 +890,237 @@ function CustomerLayout() {
       <div className="account-main-area">
         {/* TOP HEADER BAR */}
         <header className="account-topbar">
-          <nav className="account-topbar-breadcrumbs" aria-label="Breadcrumb">
-            {getBreadcrumbs(location.pathname).map((crumb, idx, arr) => {
-              const isLast = idx === arr.length - 1;
-              return (
-                <span key={idx} className="account-topbar-crumb-item">
-                  {idx > 0 && <ChevronRight size={13} className="crumb-separator" />}
-                  {crumb.to && !isLast ? (
-                    <Link to={crumb.to} className="crumb-link">
-                      {crumb.label}
-                    </Link>
-                  ) : (
-                    <span className="crumb-current">{crumb.label}</span>
-                  )}
-                </span>
-              );
-            })}
-          </nav>
+          <div className="account-topbar-left" style={{ display: "flex", alignItems: "center", minWidth: 0, flexShrink: 1, overflow: "hidden" }}>
+            <nav className="account-topbar-breadcrumbs" aria-label="Breadcrumb">
+              {getBreadcrumbs(location.pathname, customBreadcrumb).map((crumb, idx, arr) => {
+                const isLast = idx === arr.length - 1;
+                return (
+                  <span key={idx} className="account-topbar-crumb-item">
+                    {idx > 0 && <ChevronRight size={13} className="crumb-separator" />}
+                    {crumb.to && !isLast ? (
+                      <Link to={crumb.to} className="crumb-link">
+                        {crumb.label}
+                      </Link>
+                    ) : (
+                      <span className="crumb-current">{crumb.label}</span>
+                    )}
+                  </span>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* GLOBAL NAVBAR SEARCH BAR */}
+          <form
+            ref={searchDropdownRef}
+            className="account-topbar-search-form"
+            onSubmit={handleTopbarSearchSubmit}
+          >
+            <Search size={16} className="account-topbar-search-icon" />
+            <input
+              type="text"
+              className="account-topbar-search-input"
+              placeholder="Search products, brands, or categories..."
+              value={topbarSearch}
+              onChange={(e) => {
+                setTopbarSearch(e.target.value);
+                if (e.target.value.trim()) setIsSearchDropdownOpen(true);
+              }}
+              onFocus={() => {
+                setIsSearchDropdownOpen(true);
+              }}
+            />
+            <div className="account-topbar-search-actions">
+              {topbarSearch ? (
+                <button
+                  type="button"
+                  className="account-topbar-search-clear"
+                  onClick={() => {
+                    setTopbarSearch("");
+                    navigate("/customer");
+                  }}
+                  title="Clear search"
+                >
+                  <X size={13} />
+                </button>
+              ) : null}
+
+              {/* VOICE SEARCH TRIGGER MIC BUTTON */}
+              <button
+                type="button"
+                className="topbar-search-action-btn voice-btn"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsSearchDropdownOpen(false);
+                  setIsVoiceSearchOpen(true);
+                }}
+                title="Voice Search"
+              >
+                <Mic size={16} />
+              </button>
+
+              {/* VISUAL SEARCH TRIGGER CAMERA BUTTON */}
+              <button
+                type="button"
+                className="topbar-search-action-btn camera-btn"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsSearchDropdownOpen(false);
+                  setIsVisualSearchOpen(true);
+                }}
+                title="Visual Search (Search by Photo)"
+              >
+                <Camera size={16} />
+              </button>
+            </div>
+
+            {/* LIVE AUTOCOMPLETE DROPDOWN */}
+            {isSearchDropdownOpen && (
+              <div className="adv-search-dropdown-menu">
+                {!topbarSearch.trim() ? (
+                  /* ZERO-QUERY: POPULAR CATEGORIES AS HORIZONTAL CHIPS LIKE BEFORE */
+                  <div className="adv-dropdown-section">
+                    <div className="adv-dropdown-section-title">
+                      <Tag size={12} />
+                      <span>Popular Categories</span>
+                    </div>
+                    <div className="adv-dropdown-tag-pills">
+                      {categoriesToShow.map((cat) => (
+                        <button
+                          key={cat.name}
+                          type="button"
+                          className="adv-quick-pill"
+                          onClick={() => {
+                            setIsSearchDropdownOpen(false);
+                            setTopbarSearch(cat.name);
+                            navigate(`/customer?category=${encodeURIComponent(cat.name)}`);
+                            window.dispatchEvent(new CustomEvent('scroll-to-section', { detail: { category: cat.name, resetSearch: true, resetVendor: true, target: 'catalog' } }));
+                          }}
+                        >
+                          {cat.name} <span style={{ opacity: 0.65, fontSize: "11px" }}>({cat.count})</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    {/* Categories */}
+                    {searchSuggestions.categories?.length > 0 && (
+                      <div className="adv-dropdown-section">
+                        <div className="adv-dropdown-section-title">
+                          <Tag size={12} />
+                          <span>Matching Categories</span>
+                        </div>
+                    {searchSuggestions.categories.map((cat) => (
+                      <button
+                        key={cat.name}
+                        type="button"
+                        className="adv-dropdown-item"
+                        onClick={() => {
+                          setIsSearchDropdownOpen(false);
+                          setTopbarSearch(cat.name);
+                          navigate(`/customer?category=${encodeURIComponent(cat.name)}`);
+                          window.dispatchEvent(new CustomEvent('scroll-to-section', { detail: { category: cat.name, resetSearch: true, resetVendor: true, target: 'catalog' } }));
+                        }}
+                      >
+                        <span className="adv-dropdown-item-text">{cat.name}</span>
+                        <span className="adv-dropdown-count-badge">{cat.count} items</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Vendors */}
+                {searchSuggestions.vendors?.length > 0 && (
+                  <div className="adv-dropdown-section">
+                    <div className="adv-dropdown-section-title">
+                      <Store size={12} />
+                      <span>Vendors &amp; Brands</span>
+                    </div>
+                    {searchSuggestions.vendors.map((v) => (
+                      <button
+                        key={v.name}
+                        type="button"
+                        className="adv-dropdown-item"
+                        onClick={() => {
+                          setIsSearchDropdownOpen(false);
+                          setTopbarSearch(v.name);
+                          navigate(`/customer?vendor=${encodeURIComponent(v.name)}`);
+                          window.dispatchEvent(new CustomEvent('scroll-to-section', { detail: { vendor: v.name, resetSearch: true, resetCategory: true, target: 'catalog' } }));
+                        }}
+                      >
+                        <span className="adv-dropdown-item-text">{v.name}</span>
+                        <span className="adv-dropdown-count-badge">{v.count} products</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Products */}
+                {searchSuggestions.products?.length > 0 && (
+                  <div className="adv-dropdown-section">
+                    <div className="adv-dropdown-section-title">
+                      <ShoppingBag size={12} />
+                      <span>Matching Products</span>
+                    </div>
+                    {searchSuggestions.products.map((p) => (
+                      <button
+                        key={p._id}
+                        type="button"
+                        className="adv-dropdown-item adv-dropdown-product-item"
+                        onClick={() => {
+                          setIsSearchDropdownOpen(false);
+                          setTopbarSearch(p.name);
+                          navigate(`/customer?q=${encodeURIComponent(p.name)}`);
+                          window.dispatchEvent(new CustomEvent('scroll-to-section', { detail: { search: p.name, resetCategory: true, resetVendor: true, target: 'catalog' } }));
+                        }}
+                      >
+                        <div className="adv-dropdown-prod-info">
+                          <span className="adv-dropdown-item-text" style={{ fontWeight: 600 }}>
+                            {p.name}
+                          </span>
+                          <span className="adv-dropdown-prod-sub">
+                            {p.category} • {p.vendorName || "Store"}
+                          </span>
+                        </div>
+                        <span className="adv-dropdown-prod-price">
+                          ₹{Number(p.price || 0).toLocaleString("en-IN")}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Submit query shortcut */}
+                <div className="adv-dropdown-section" style={{ borderTop: "1px solid #f1f5f9", background: "#f8fafc" }}>
+                  <button
+                    type="button"
+                    className="adv-dropdown-item"
+                    style={{ color: "#2563eb", fontWeight: 600 }}
+                    onClick={() => {
+                      setIsSearchDropdownOpen(false);
+                      handleTopbarSearchSubmit();
+                    }}
+                  >
+                    <span>Search for &ldquo;{topbarSearch}&rdquo; &rarr;</span>
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        )}
+      </form>
+
+          {/* NAVBAR DELIVERY ADDRESS DROPDOWN (PLACED AFTER SEARCH) */}
+          <NavbarAddressDropdown
+            customerProfile={profile}
+            onOpenManageAddresses={() => {
+              openAccountSidepanel("addresses");
+            }}
+            onOpenLocationSettings={() => setShowLocationSettings(true)}
+          />
 
           <div className="account-topbar-right">
             <Link to="/customer/wishlist" className={`account-topbar-link ${isWishlist ? "active" : ""}`}>
@@ -686,7 +1157,17 @@ function CustomerLayout() {
                 className="account-user-menu-btn"
                 onClick={() => setUserDropdown((prev) => !prev)}
               >
-                <div className="account-user-avatar-sm">{userInitial}</div>
+                <div className="account-user-avatar-sm">
+                  {profile?.avatar ? (
+                    <img
+                      src={profile.avatar}
+                      alt={profile.name || "Customer"}
+                      className="account-user-avatar-img"
+                    />
+                  ) : (
+                    userInitial
+                  )}
+                </div>
                 <span className="account-user-name">{profile?.name || "Customer"}</span>
                 <ChevronDown size={14} className="account-chevron-icon" />
               </button>
@@ -694,19 +1175,48 @@ function CustomerLayout() {
               {userDropdown && (
                 <div className="account-dropdown-menu" onMouseLeave={() => setUserDropdown(false)}>
                   <div className="account-dropdown-header">
-                    <strong>{profile?.name}</strong>
-                    <span>{profile?.email}</span>
+                    <div className="account-dropdown-user-row">
+                      <div className="account-user-avatar-sm">
+                        {profile?.avatar ? (
+                          <img
+                            src={profile.avatar}
+                            alt={profile.name || "Customer"}
+                            className="account-user-avatar-img"
+                          />
+                        ) : (
+                          userInitial
+                        )}
+                      </div>
+                      <div className="account-dropdown-user-meta">
+                        <strong>{profile?.name}</strong>
+                        <span>{profile?.email}</span>
+                      </div>
+                    </div>
                   </div>
+
                   <button
                     type="button"
                     className="account-dropdown-item"
                     onClick={() => {
                       setUserDropdown(false);
-                      setProfileMode("card");
-                      setModal("profile");
+                      openAccountSidepanel("profile");
                     }}
                   >
                     <User size={15} /> My Details
+                  </button>
+
+                  <button
+                    type="button"
+                    className="account-dropdown-item"
+                    onClick={() => {
+                      toggleFullPage();
+                    }}
+                  >
+                    {isFullPage ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
+                    <span>Full Page Mode</span>
+                    <span className={`account-dropdown-toggle-badge ${isFullPage ? "active" : ""}`}>
+                      {isFullPage ? "ON" : "OFF"}
+                    </span>
                   </button>
                   <button
                     type="button"
@@ -727,6 +1237,16 @@ function CustomerLayout() {
                     }}
                   >
                     <ShoppingBag size={15} /> My Orders
+                  </button>
+                  <button
+                    type="button"
+                    className="account-dropdown-item"
+                    onClick={() => {
+                      setUserDropdown(false);
+                      openTicketsSidepanel();
+                    }}
+                  >
+                    <Headphones size={15} /> Help &amp; Support Tickets
                   </button>
                   <button
                     type="button"
@@ -754,21 +1274,14 @@ function CustomerLayout() {
               addresses,
               cartCount,
               wishlistCount,
-              openProfileModal: () => {
-                setProfileMode("card");
-                setModal("profile");
-              },
-              openAddressesModal: () => {
-                setModal("addresses");
-                setAddressMode("list");
-              },
-              openPaymentModal: () => {
-                setModal("payment");
-                setPaymentMode("list");
-              },
-              openWalletModal: () => setModal("wallet"),
+              openProfileModal: () => openAccountSidepanel("profile"),
+              openAddressesModal: () => openAccountSidepanel("addresses"),
+              openPaymentModal: () => openAccountSidepanel("payment"),
+              openWalletModal: () => openAccountSidepanel("wallet"),
+              openAccountSidepanel,
               openPasswordModal: () => setModal("password"),
-              openSupportModal: () => setModal("support"),
+              openSupportModal: () => openTicketsSidepanel(),
+              openTicketsSidepanel,
               openLogoutModal: () => setModal("logout"),
               openNotificationSidepanel: () => setIsNotifOpen(true),
               openPaymentsSidepanel: () => setIsPaymentsOpen(true),
@@ -776,7 +1289,8 @@ function CustomerLayout() {
               notifications,
               reloadAccount: loadGlobalData,
               reloadCart: syncCartCount,
-              setCartCount
+              setCartCount,
+              setCustomBreadcrumb
             }}
           />
         </main>
@@ -821,601 +1335,88 @@ function CustomerLayout() {
       </div>
 
       {/* =========================================================
-          GLOBAL MODAL: MY DETAILS (USER CARD & EDIT)
+          CUSTOMER ACCOUNT SIDEPANEL: MY DETAILS, WALLET, ADDRESSES, PAYMENT
       ========================================================== */}
-      <Modal
-        isOpen={modal === "profile"}
-        onClose={closeModal}
-        title={profileMode === "card" ? "My Details" : "Edit Personal Details"}
-        size="medium"
-      >
-        {profileMode === "card" ? (
-          <div className="user-details-card-wrap">
-            {/* HERO / AVATAR BANNER */}
-            <div className="user-card-hero-banner" />
-
-            <div className="user-card-profile-header">
-              <div className="user-card-avatar-wrap">
-                <div className="user-card-avatar-inner">{userInitial}</div>
-                <span className="user-card-status-dot" title="Active" />
-              </div>
-              <div className="user-card-title-meta">
-                <div className="user-card-name-row">
-                  <h3 className="user-card-full-name">{profile?.name || "Customer"}</h3>
-                  <span className="user-card-verified-badge" title="Verified Customer">
-                    <ShieldCheck size={13} /> Verified
-                  </span>
-                </div>
-                <p className="user-card-email-sub">{profile?.email || "No email"}</p>
-                <div className="user-card-tags-row">
-                  <span className="user-card-pill role">Customer Member</span>
-                  {profile?.createdAt && (
-                    <span className="user-card-pill joined">
-                      Joined {formatDate(profile.createdAt)}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* QUICK STATS STRIP */}
-            <div className="user-card-stats-strip">
-              <div className="user-card-stat-item">
-                <span className="user-card-stat-label">Wallet Balance</span>
-                <span className="user-card-stat-val highlight">
-                  ₹{Number(wallet.balance || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </span>
-              </div>
-              <div className="user-card-stat-sep" />
-              <div className="user-card-stat-item">
-                <span className="user-card-stat-label">Saved Addresses</span>
-                <span className="user-card-stat-val">{addresses.length}</span>
-              </div>
-              <div className="user-card-stat-sep" />
-              <div className="user-card-stat-item">
-                <span className="user-card-stat-label">Payment Methods</span>
-                <span className="user-card-stat-val">{methods.length}</span>
-              </div>
-            </div>
-
-            {/* INFORMATION FIELDS GRID */}
-            <div className="user-card-info-section">
-              <h4 className="user-card-section-heading">Personal Information</h4>
-              <div className="user-card-fields-grid">
-                <div className="user-card-field-box">
-                  <div className="user-card-field-icon">
-                    <User size={15} />
-                  </div>
-                  <div className="user-card-field-content">
-                    <span className="user-card-field-label">Full Name</span>
-                    <strong className="user-card-field-val">{profile?.name || "—"}</strong>
-                  </div>
-                </div>
-
-                <div className="user-card-field-box">
-                  <div className="user-card-field-icon">
-                    <Mail size={15} />
-                  </div>
-                  <div className="user-card-field-content">
-                    <span className="user-card-field-label">Email Address</span>
-                    <strong className="user-card-field-val">{profile?.email || "—"}</strong>
-                  </div>
-                </div>
-
-                <div className="user-card-field-box">
-                  <div className="user-card-field-icon">
-                    <Phone size={15} />
-                  </div>
-                  <div className="user-card-field-content">
-                    <span className="user-card-field-label">Phone Number</span>
-                    <strong className="user-card-field-val">{profile?.phone || "—"}</strong>
-                  </div>
-                </div>
-
-                <div className="user-card-field-box">
-                  <div className="user-card-field-icon">
-                    <CheckCircle2 size={15} />
-                  </div>
-                  <div className="user-card-field-content">
-                    <span className="user-card-field-label">Gender</span>
-                    <strong className="user-card-field-val">{profile?.gender || "Not specified"}</strong>
-                  </div>
-                </div>
-
-                <div className="user-card-field-box span-full">
-                  <div className="user-card-field-icon">
-                    <Calendar size={15} />
-                  </div>
-                  <div className="user-card-field-content">
-                    <span className="user-card-field-label">Date of Birth</span>
-                    <strong className="user-card-field-val">
-                      {profile?.dateOfBirth ? formatDate(profile.dateOfBirth) : "Not provided"}
-                    </strong>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* CARD FOOTER WITH EDIT BUTTON */}
-            <div className="user-card-footer">
-              <button
-                type="button"
-                className="btn-refined-cancel"
-                onClick={closeModal}
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                className="btn-user-card-edit"
-                onClick={() => {
-                  setProfileForm({
-                    name: profile?.name || "",
-                    email: profile?.email || "",
-                    phone: profile?.phone || "",
-                    gender: profile?.gender || "Female",
-                    dateOfBirth: formatDob(profile?.dateOfBirth)
-                  });
-                  setProfileMode("edit");
-                }}
-              >
-                <Pencil size={14} />
-                <span>Edit Details</span>
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="refined-modal-content">
-            <div className="user-edit-header-bar">
-              <button
-                type="button"
-                className="user-edit-back-btn"
-                onClick={() => setProfileMode("card")}
-              >
-                <ArrowLeft size={14} /> Back to Details Card
-              </button>
-            </div>
-            <p className="refined-modal-subtitle">Update your profile information below.</p>
-            <form className="refined-form" onSubmit={handleSaveProfile}>
-              <div className="refined-form-grid-2">
-                <div className="refined-form-group">
-                  <label>Full Name <span className="req-star">*</span></label>
-                  <input
-                    type="text"
-                    required
-                    value={profileForm.name}
-                    onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
-                    placeholder="Your full name"
-                  />
-                </div>
-                <div className="refined-form-group">
-                  <label>Email <span className="req-star">*</span></label>
-                  <input
-                    type="email"
-                    required
-                    value={profileForm.email}
-                    onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
-                    placeholder="name@domain.com"
-                  />
-                </div>
-                <div className="refined-form-group">
-                  <label>Phone <span className="req-star">*</span></label>
-                  <input
-                    type="tel"
-                    required
-                    value={profileForm.phone}
-                    onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
-                    placeholder="10-digit mobile number"
-                  />
-                </div>
-                <div className="refined-form-group">
-                  <label>Gender <span className="req-star">*</span></label>
-                  <CustomSelect
-                    value={profileForm.gender || "Female"}
-                    onChange={(val) => setProfileForm({ ...profileForm, gender: val })}
-                    options={[
-                      { value: "Female", label: "Female" },
-                      { value: "Male", label: "Male" },
-                      { value: "Other", label: "Other" },
-                      { value: "Prefer not to say", label: "Prefer not to say" },
-                    ]}
-                    size="md"
-                    ariaLabel="Select gender"
-                  />
-                </div>
-                <div className="refined-form-group span-2">
-                  <label>Date of Birth <span className="req-star">*</span></label>
-                  <input
-                    type="date"
-                    required
-                    value={profileForm.dateOfBirth}
-                    onChange={(e) => setProfileForm({ ...profileForm, dateOfBirth: e.target.value })}
-                  />
-                </div>
-              </div>
-              {error && <div className="checkout-error">{error}</div>}
-              <div className="refined-modal-footer">
-                <button
-                  type="button"
-                  className="btn-refined-cancel"
-                  onClick={() => setProfileMode("card")}
-                  disabled={saving}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="btn-refined-submit"
-                  disabled={saving}
-                >
-                  {saving ? "Saving..." : "Save Changes"}
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-      </Modal>
+      <CustomerAccountSidepanel
+        isOpen={accountSidepanel.isOpen}
+        onClose={closeAccountSidepanel}
+        initialTab={accountSidepanel.initialTab}
+        profile={profile}
+        wallet={wallet}
+        addresses={addresses}
+        methods={methods}
+        onReload={loadGlobalData}
+        onOpenPasswordModal={() => setModal("password")}
+        onOpenLocationSettings={() => setShowLocationSettings(true)}
+      />
 
       {/* =========================================================
-          GLOBAL MODAL: DELIVERY ADDRESSES POPUP
+          GLOBAL MODAL: EDIT PROFILE
       ========================================================== */}
-      <Modal isOpen={modal === "addresses"} onClose={closeModal} title="Delivery Addresses" size={addressMode === "form" ? "medium" : "large"}>
+      <Modal isOpen={modal === "profile"} onClose={closeModal} title="Edit Profile Details">
         <div className="refined-modal-content">
-          {addressMode === "list" ? (
-            <div className="refined-address-list-wrap">
-              <div className="refined-address-top-bar">
-                <p className="refined-modal-subtitle">
-                  Manage your saved delivery addresses or add a new one for quick checkout.
-                </p>
-                <button type="button" className="btn-refined-primary-sm" onClick={openAddAddress}>
-                  <Plus size={16} /> Add New Address
-                </button>
-              </div>
-
-              {addresses.length === 0 ? (
-                <div className="refined-empty-modal-box">
-                  <MapPin size={40} className="empty-box-icon" />
-                  <h4>No saved addresses yet</h4>
-                  <p>Add a delivery address to make checkout faster and seamless.</p>
-                  <button type="button" className="btn-refined-primary-sm" onClick={openAddAddress}>
-                    <Plus size={16} /> Add First Address
-                  </button>
-                </div>
-              ) : (
-                <div className="refined-address-cards-grid">
-                  {addresses.map((addr, idx) => (
-                    <div className="refined-address-card" key={addr._id}>
-                      <div className="refined-addr-header">
-                        <span className="refined-addr-type-pill">{addr.type === "Work" ? "💼 WORK" : addr.type === "Other" ? "📍 OTHER" : "🏠 HOME"}</span>
-                        {idx === 0 && <span className="refined-addr-default-pill">DEFAULT</span>}
-                      </div>
-                      <h4 className="refined-addr-name">{addr.fullName}</h4>
-                      <p className="refined-addr-phone"><Phone size={13} /> {addr.phone}</p>
-                      <p className="refined-addr-lines">{addr.addressLine1}{addr.addressLine2 ? `, ${addr.addressLine2}` : ""}</p>
-                      <p className="refined-addr-city">{addr.city}, {addr.state} - <strong>{addr.pincode}</strong></p>
-                      <div className="refined-addr-actions">
-                        <button type="button" className="refined-addr-action-btn" onClick={() => openEditAddress(addr)}><Pencil size={14} /> Edit</button>
-                        <button type="button" className="refined-addr-action-btn danger" onClick={() => setAddressToDelete(addr)}><Trash2 size={14} /> Delete</button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-              <div className="refined-modal-footer">
-                <button type="button" className="btn-refined-cancel" onClick={closeModal}>Close</button>
-              </div>
-            </div>
-          ) : (
-            <>
-              <p className="refined-modal-subtitle">
-                {editingAddress ? "Update your existing delivery address." : "Add a new delivery address for shipping."}
-              </p>
-              <form className="refined-form" onSubmit={handleSaveAddress}>
-                <div className="refined-form-grid-2">
-                  <div className="refined-form-group">
-                    <label>Full Name <span className="req-star">*</span></label>
-                    <input type="text" required value={addressForm.fullName} onChange={(e) => setAddressForm({ ...addressForm, fullName: e.target.value })} placeholder="Full Name" />
-                  </div>
-                  <div className="refined-form-group">
-                    <label>Phone Number <span className="req-star">*</span></label>
-                    <input type="tel" required maxLength={10} value={addressForm.phone} onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value })} placeholder="10-digit mobile" />
-                  </div>
-                  <div className="refined-form-group span-2">
-                    <label>Address Line 1 (Flat, House No., Building) <span className="req-star">*</span></label>
-                    <input type="text" required value={addressForm.addressLine1} onChange={(e) => setAddressForm({ ...addressForm, addressLine1: e.target.value })} placeholder="Street address" />
-                  </div>
-                  <div className="refined-form-group span-2">
-                    <label>Address Line 2 (Area, Colony, Landmark)</label>
-                    <input type="text" value={addressForm.addressLine2} onChange={(e) => setAddressForm({ ...addressForm, addressLine2: e.target.value })} placeholder="Landmark (optional)" />
-                  </div>
-                  <div className="refined-form-group">
-                    <label>City <span className="req-star">*</span></label>
-                    <input type="text" required value={addressForm.city} onChange={(e) => setAddressForm({ ...addressForm, city: e.target.value })} placeholder="City" />
-                  </div>
-                  <div className="refined-form-group">
-                    <label>State <span className="req-star">*</span></label>
-                    <input type="text" required value={addressForm.state} onChange={(e) => setAddressForm({ ...addressForm, state: e.target.value })} placeholder="State" />
-                  </div>
-                  <div className="refined-form-group">
-                    <label>Pincode <span className="req-star">*</span></label>
-                    <input type="text" required maxLength={6} value={addressForm.pincode} onChange={(e) => setAddressForm({ ...addressForm, pincode: e.target.value })} placeholder="6-digit pincode" />
-                  </div>
-                  <div className="refined-form-group">
-                    <label>Address Type</label>
-                    <div className="type-selector-pills">
-                      {["Home", "Work", "Other"].map((t) => (
-                        <button type="button" key={t} className={`type-selector-pill ${addressForm.type === t ? "active" : ""}`} onClick={() => setAddressForm({ ...addressForm, type: t })}>
-                          {t === "Home" ? "🏠 Home" : t === "Work" ? "💼 Work" : "📍 Other"}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <div className="refined-modal-footer">
-                  <button type="button" className="btn-refined-cancel" onClick={() => setAddressMode("list")} disabled={saving}>Cancel</button>
-                  <button type="submit" className="btn-refined-submit" disabled={saving}>{saving ? "Saving..." : editingAddress ? "Update Address" : "Save Address"}</button>
-                </div>
-              </form>
-            </>
-          )}
-        </div>
-      </Modal>
-
-      {/* =========================================================
-          GLOBAL MODAL: PAYMENT METHODS POPUP
-      ========================================================== */}
-      <Modal
-        isOpen={modal === "payment"}
-        onClose={closeModal}
-        title={paymentMode === "list" ? "Payment Methods" : editingMethod ? "Edit Payment Method" : "Add Payment Method"}
-        size="large"
-      >
-        <div className="refined-modal-content">
-          {paymentMode === "list" ? (
-            <div className="refined-payment-list-wrap">
-              <div className="refined-address-top-bar">
-                <p className="refined-modal-subtitle">
-                  Manage your saved credit/debit cards, UPI IDs, and net banking options.
-                </p>
-                <button type="button" className="btn-refined-primary-sm" onClick={openAddPayment}>
-                  <Plus size={16} /> Add Payment Method
-                </button>
-              </div>
-
-              {methods.length === 0 ? (
-                <div className="refined-empty-modal-box">
-                  <CreditCard size={40} className="empty-box-icon" />
-                  <h4>No saved payment methods</h4>
-                  <p>Save your card or UPI ID for seamless, 1-click checkout transactions.</p>
-                  <button type="button" className="btn-refined-primary-sm" onClick={openAddPayment}>
-                    <Plus size={16} /> Add First Payment Method
-                  </button>
-                </div>
-              ) : (
-                <div className="refined-payment-cards-grid">
-                  {methods.map((m) => (
-                    <div className="refined-payment-card-item" key={m._id}>
-                      {m.type === "card" ? (
-                        <div className="visual-card-container">
-                          <div className="visual-card-top">
-                            <span className="visual-card-chip" />
-                            <span className="visual-card-brand">{m.cardBrand || "VISA"}</span>
-                          </div>
-                          <div className="visual-card-number">•••• •••• •••• {m.last4 || (m.cardNumber ? m.cardNumber.slice(-4) : "4242")}</div>
-                          <div className="visual-card-bottom">
-                            <div><small>CARDHOLDER</small><strong>{m.cardholderName || profile?.name || "CARD HOLDER"}</strong></div>
-                            <div><small>EXPIRES</small><strong>{m.expiryMonth || "12"}/{m.expiryYear || "28"}</strong></div>
-                          </div>
-                          <div className="visual-card-actions">
-                            <button type="button" className="visual-card-edit-btn" onClick={() => openEditPayment(m)} title="Edit card"><Pencil size={13} /> Edit</button>
-                            <button type="button" className="visual-card-delete-btn" onClick={() => setPaymentToDelete(m)} title="Remove card"><Trash2 size={14} /></button>
-                          </div>
-                        </div>
-                      ) : m.type === "upi" ? (
-                        <div className="visual-upi-container">
-                          <div className="visual-upi-header">
-                            <div className="visual-upi-badge"><Smartphone size={16} /><span>UPI</span></div>
-                            <span className="visual-upi-verified">✓ Verified</span>
-                          </div>
-                          <div className="visual-upi-id">{m.upiId}</div>
-                          <div className="visual-upi-footer">
-                            <span>Instant UPI Payment</span>
-                            <div style={{ display: "flex", gap: "6px" }}>
-                              <button type="button" className="refined-addr-action-btn" onClick={() => openEditPayment(m)}><Pencil size={13} /> Edit</button>
-                              <button type="button" className="refined-addr-action-btn danger" onClick={() => setPaymentToDelete(m)}><Trash2 size={13} /> Remove</button>
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="visual-upi-container netbanking-box">
-                          <div className="visual-upi-header">
-                            <div className="visual-upi-badge netbank-badge"><Building2 size={16} /><span>{m.bankName || "Net Banking"}</span></div>
-                          </div>
-                          <div className="visual-upi-id">{m.accountName || "Bank Account"}</div>
-                          <small className="netbank-ac-num">A/C: •••• {m.accountNumber ? m.accountNumber.slice(-4) : "9988"}</small>
-                          <div className="visual-upi-footer">
-                            <span>Direct Bank Transfer</span>
-                            <div style={{ display: "flex", gap: "6px" }}>
-                              <button type="button" className="refined-addr-action-btn" onClick={() => openEditPayment(m)}><Pencil size={13} /> Edit</button>
-                              <button type="button" className="refined-addr-action-btn danger" onClick={() => setPaymentToDelete(m)}><Trash2 size={13} /> Remove</button>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-              <div className="refined-modal-footer">
-                <button type="button" className="btn-refined-cancel" onClick={closeModal}>Close</button>
-              </div>
-            </div>
-          ) : (
-            <>
-              <p className="refined-modal-subtitle">
-                {editingMethod
-                  ? "Update your payment method details."
-                  : "Add a new secure payment method for instant checkout."}
-              </p>
-              <div className="refined-payment-add-shell">
-              <div className="refined-payment-tab-row">
-                <button type="button" className={`refined-tab-btn ${paymentTab === "card" ? "active" : ""}`} onClick={() => setPaymentTab("card")}><CreditCard size={16} /><span>Credit / Debit Card</span></button>
-                <button type="button" className={`refined-tab-btn ${paymentTab === "upi" ? "active" : ""}`} onClick={() => setPaymentTab("upi")}><Smartphone size={16} /><span>UPI ID</span></button>
-                <button type="button" className={`refined-tab-btn ${paymentTab === "netbanking" ? "active" : ""}`} onClick={() => setPaymentTab("netbanking")}><Building2 size={16} /><span>Net Banking</span></button>
-              </div>
-
-              <form className="refined-form" onSubmit={handleSavePayment}>
-                {paymentTab === "card" && (
-                  <div className="refined-form-grid-2">
-                    <div className="refined-form-group span-2">
-                      <label>Cardholder Name <span className="req-star">*</span></label>
-                      <input type="text" required value={paymentForm.cardholderName} onChange={(e) => setPaymentForm({ ...paymentForm, cardholderName: e.target.value })} placeholder="Name on card" />
-                    </div>
-                    <div className="refined-form-group span-2">
-                      <label>Card Number <span className="req-star">*</span></label>
-                      <input type="text" required maxLength={19} value={paymentForm.cardNumber} onChange={(e) => {
-                        const val = e.target.value.replace(/\D/g, "").slice(0, 16);
-                        setPaymentForm({ ...paymentForm, cardNumber: val.replace(/(.{4})/g, "$1 ").trim() });
-                      }} placeholder="1234 5678 9012 3456" />
-                    </div>
-                    <div className="refined-form-group">
-                      <label>Expiry Month (MM) <span className="req-star">*</span></label>
-                      <input type="text" required maxLength={2} value={paymentForm.expiryMonth} onChange={(e) => setPaymentForm({ ...paymentForm, expiryMonth: e.target.value })} placeholder="08" />
-                    </div>
-                    <div className="refined-form-group">
-                      <label>Expiry Year (YY) <span className="req-star">*</span></label>
-                      <input type="text" required maxLength={2} value={paymentForm.expiryYear} onChange={(e) => setPaymentForm({ ...paymentForm, expiryYear: e.target.value })} placeholder="28" />
-                    </div>
-                    <div className="refined-form-group">
-                      <label>CVV / CVC <span className="req-star">*</span></label>
-                      <input type="password" required maxLength={4} value={paymentForm.cvv} onChange={(e) => setPaymentForm({ ...paymentForm, cvv: e.target.value })} placeholder="•••" />
-                    </div>
-                    <div className="refined-form-group">
-                      <label className="checkbox-flex">
-                        <input type="checkbox" checked={paymentForm.isDefault} onChange={(e) => setPaymentForm({ ...paymentForm, isDefault: e.target.checked })} />
-                        <span>Save as primary default card</span>
-                      </label>
-                    </div>
-                  </div>
-                )}
-
-                {paymentTab === "upi" && (
-                  <div className="refined-form-grid-2">
-                    <div className="refined-form-group span-2">
-                      <label>UPI ID <span className="req-star">*</span></label>
-                      <input type="text" required value={paymentForm.upiId} onChange={(e) => setPaymentForm({ ...paymentForm, upiId: e.target.value })} placeholder="username@okhdfcbank or 9876543210@upi" />
-                    </div>
-                    <div className="refined-form-group span-2">
-                      <label>Quick Suggestions</label>
-                      <div className="quick-upi-chips">
-                        {["@okhdfcbank", "@okaxis", "@oksbi", "@paytm", "@ybl"].map((handle) => (
-                          <button type="button" key={handle} className="upi-chip-btn" onClick={() => {
-                            const base = paymentForm.upiId.split("@")[0] || "user";
-                            setPaymentForm({ ...paymentForm, upiId: `${base}${handle}` });
-                          }}>{handle}</button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {paymentTab === "netbanking" && (
-                  <div className="refined-form-grid-2">
-                    <div className="refined-form-group span-2">
-                      <label>Select Bank <span className="req-star">*</span></label>
-                      <CustomSelect
-                        value={paymentForm.bankName}
-                        onChange={(val) => setPaymentForm({ ...paymentForm, bankName: val })}
-                        options={[
-                          "HDFC Bank",
-                          "State Bank of India",
-                          "ICICI Bank",
-                          "Axis Bank",
-                          "Kotak Mahindra Bank",
-                          "Punjab National Bank",
-                          "Bank of Baroda",
-                          "Canara Bank",
-                          "Other Bank"
-                        ]}
-                        placeholder="Choose bank"
-                      />
-                    </div>
-                    <div className="refined-form-group">
-                      <label>Account Holder Name <span className="req-star">*</span></label>
-                      <input type="text" required value={paymentForm.accountName} onChange={(e) => setPaymentForm({ ...paymentForm, accountName: e.target.value })} placeholder="Account name" />
-                    </div>
-                    <div className="refined-form-group">
-                      <label>Account Number <span className="req-star">*</span></label>
-                      <input type="text" required value={paymentForm.accountNumber} onChange={(e) => setPaymentForm({ ...paymentForm, accountNumber: e.target.value })} placeholder="Bank A/C number" />
-                    </div>
-                    <div className="refined-form-group span-2">
-                      <label>IFSC Code <span className="req-star">*</span></label>
-                      <input type="text" required maxLength={11} value={paymentForm.ifsc} onChange={(e) => setPaymentForm({ ...paymentForm, ifsc: e.target.value.toUpperCase() })} placeholder="e.g. HDFC0001234" />
-                    </div>
-                  </div>
-                )}
-
-                <div className="refined-modal-footer">
-                  <button type="button" className="btn-refined-cancel" onClick={() => { setPaymentMode("list"); setEditingMethod(null); }} disabled={saving}>Cancel</button>
-                  <button type="submit" className="btn-refined-submit" disabled={saving}>{saving ? "Saving..." : editingMethod ? "Update Payment Method" : "Save Payment Method"}</button>
-                </div>
-              </form>
-            </div>
-            </>
-          )}
-        </div>
-      </Modal>
-
-      {/* =========================================================
-          GLOBAL MODAL: WALLET TOP-UP
-      ========================================================== */}
-      <Modal isOpen={modal === "wallet"} onClose={closeModal} title="Add Money to Wallet">
-        <div className="refined-modal-content">
-          <p className="refined-modal-subtitle">Add instant demo funds for faster 1-click checkout.</p>
-          <div className="refined-wallet-highlight-box">
-            <span>CURRENT AVAILABLE BALANCE</span>
-            <strong>₹ {Number(wallet.balance || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-          </div>
-          <form className="refined-form" onSubmit={handleAddMoney}>
+          <p className="refined-modal-subtitle">Keep your personal details up to date for quick checkout and order delivery updates.</p>
+          <form className="refined-form" onSubmit={handleSaveProfile}>
             <div className="refined-form-group">
-              <label>Enter Amount (₹)</label>
-              <div className="amount-input-wrap">
-                <span className="amount-currency-symbol">₹</span>
-                <input type="number" min="1" max="50000" required value={topup.amount} onChange={(e) => setTopup({ ...topup, amount: e.target.value })} placeholder="1000" />
-              </div>
-            </div>
-            <div className="refined-form-group">
-              <label>Quick Preset Amounts</label>
-              <div className="quick-amount-chips">
-                {[500, 1000, 2000, 5000].map((amt) => (
-                  <button type="button" key={amt} className={`amount-chip-btn ${String(topup.amount) === String(amt) ? "active" : ""}`} onClick={() => setTopup({ ...topup, amount: String(amt) })}>
-                    + ₹{amt.toLocaleString("en-IN")}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="refined-form-group">
-              <label>Pay Using</label>
-              <CustomSelect
-                value={topup.paymentMethodId}
-                onChange={(val) => setTopup({ ...topup, paymentMethodId: val })}
-                options={[
-                  { value: "", label: "Demo Instant Net Banking" },
-                  ...methods.map((m) => ({
-                    value: m._id,
-                    label: m.type === "card"
-                      ? `Card •••• ${m.last4 || "4242"} (${m.cardBrand || "VISA"})`
-                      : m.type === "upi"
-                      ? `UPI: ${m.upiId}`
-                      : `${m.bankName || "Net Banking"} (${m.accountName || "Account"})`
-                  }))
-                ]}
-                placeholder="Select payment method"
+              <label>Full Name <span className="req-star">*</span></label>
+              <input
+                type="text"
+                required
+                value={profileForm.name}
+                onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                placeholder="Full name"
               />
             </div>
+            <div className="refined-form-group">
+              <label>Email Address <span className="req-star">*</span></label>
+              <input
+                type="email"
+                required
+                value={profileForm.email}
+                onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
+                placeholder="Email address"
+              />
+            </div>
+            <div className="refined-form-group">
+              <label>Phone Number</label>
+              <input
+                type="tel"
+                maxLength={10}
+                value={profileForm.phone}
+                onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
+                placeholder="10-digit mobile"
+              />
+            </div>
+            <div className="refined-form-group">
+              <label>Gender</label>
+              <select
+                value={profileForm.gender}
+                onChange={(e) => setProfileForm({ ...profileForm, gender: e.target.value })}
+                className="account-sort-select"
+                style={{ width: "100%" }}
+              >
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div className="refined-form-group">
+              <label>Date of Birth</label>
+              <input
+                type="date"
+                value={profileForm.dateOfBirth}
+                onChange={(e) => setProfileForm({ ...profileForm, dateOfBirth: e.target.value })}
+              />
+            </div>
+            {error && <div className="checkout-error">{error}</div>}
             <div className="refined-modal-footer">
-              <button type="button" className="btn-refined-cancel" onClick={closeModal} disabled={saving}>Cancel</button>
-              <button type="submit" className="btn-refined-submit" disabled={saving}>{saving ? "Adding..." : "Add Money"}</button>
+              <button type="button" className="btn-refined-cancel" onClick={closeModal} disabled={saving}>
+                Cancel
+              </button>
+              <button type="submit" className="btn-refined-submit" disabled={saving}>
+                {saving ? "Saving..." : "Save Changes"}
+              </button>
             </div>
           </form>
         </div>
@@ -1546,12 +1547,106 @@ function CustomerLayout() {
         walletBalance={wallet.balance}
         onRechargeWallet={() => {
           setIsPaymentsOpen(false);
-          setModal("wallet");
+          openAccountSidepanel("wallet");
         }}
         onManagePaymentMethods={() => {
           setIsPaymentsOpen(false);
-          setModal("payment");
-          setPaymentMode("list");
+          openAccountSidepanel("payment");
+        }}
+      />
+
+      {/* CUSTOMER SUPPORT TICKETS SIDEPANEL */}
+      <CustomerTicketsSidepanel
+        isOpen={isTicketsSidepanelOpen}
+        onClose={() => setIsTicketsSidepanelOpen(false)}
+        initialContext={ticketsInitialContext}
+      />
+
+      {/* PRODUCT COMPARE FLOATING BAR */}
+      <CompareFloatingBar />
+
+      {/* DARWIN AI SHOPPING ASSISTANT */}
+      <DarwinFab
+        isOpen={isDarwinOpen}
+        onClick={() => setIsDarwinOpen(true)}
+      />
+      <DarwinChatDrawer
+        isOpen={isDarwinOpen}
+        onClose={() => setIsDarwinOpen(false)}
+        onCartUpdate={() => {
+          syncCartCount();
+          loadGlobalData();
+        }}
+        onWishlistUpdate={() => {
+          syncWishlistCount();
+          loadGlobalData();
+        }}
+        onOpenModal={(modalName) => {
+          setIsDarwinOpen(false);
+          if (modalName === "support") {
+            openTicketsSidepanel();
+          } else {
+            setModal(modalName);
+          }
+        }}
+        onOpenPayments={() => {
+          setIsDarwinOpen(false);
+          setIsPaymentsOpen(true);
+        }}
+        onOpenNotifications={() => {
+          setIsDarwinOpen(false);
+          setIsNotifOpen(true);
+        }}
+      />
+
+      {/* INTERACTIVE LEAFLET ADDRESS MAP MODAL */}
+      <AddressMapModal
+        isOpen={isMapPickerOpen}
+        onClose={() => {
+          setIsMapPickerOpen(false);
+          setMapEditAddress(null);
+        }}
+        initialAddress={mapEditAddress}
+        customerProfile={profile}
+        onSuccess={() => {
+          loadGlobalData();
+          toast.success(mapEditAddress ? "Address updated successfully." : "Address saved with location pin.");
+        }}
+      />
+
+      {/* ADDRESS & MAP GEOCODING SETTINGS MODAL */}
+      <LocationSettingsModal
+        isOpen={showLocationSettings}
+        onClose={() => setShowLocationSettings(false)}
+      />
+
+      {/* GOOGLE AI VOICE SEARCH ASSISTANT MODAL */}
+      <VoiceSearchModal
+        isOpen={isVoiceSearchOpen}
+        onClose={() => setIsVoiceSearchOpen(false)}
+        onNavigateToProduct={(productId) => {
+          navigate(`/customer/products/${productId}`);
+        }}
+        onSearchInCatalog={(query) => {
+          setTopbarSearch(query);
+          setIsSearchDropdownOpen(false);
+          window.dispatchEvent(
+            new CustomEvent('scroll-to-section', {
+              detail: { search: query, resetCategory: true, resetVendor: true, target: 'catalog' }
+            })
+          );
+        }}
+        onWishlistToggle={() => {
+          syncWishlistCount();
+        }}
+      />
+
+      {/* AI VISUAL PRODUCT SEARCH MODAL */}
+      <VisualSearchModal
+        isOpen={isVisualSearchOpen}
+        onClose={() => setIsVisualSearchOpen(false)}
+        onSelectProduct={(p) => {
+          navigate(`/customer/products/${p._id || p.id}`);
         }}
       />
     </div>

@@ -1,0 +1,277 @@
+.php-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+.php-loading-screen {
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.php-top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.php-back-btn {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.php-back-btn:hover {
+  background: #e2e8f0;
+}
+
+.php-tagline {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6366f1;
+  background: #eef2ff;
+  padding: 6px 14px;
+  border-radius: 20px;
+}
+
+.php-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 28px;
+}
+
+@media (max-width: 900px) {
+  .php-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.php-product-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.php-hero-img {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.php-hero-info {
+  flex: 1;
+}
+
+.php-cat-pill {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6366f1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.php-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 4px 0 10px;
+}
+
+.php-price-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.php-current-price {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.php-strike-price {
+  font-size: 16px;
+  color: #94a3b8;
+  text-decoration: line-through;
+}
+
+.php-discount-tag {
+  font-size: 12px;
+  font-weight: 700;
+  color: #047857;
+  background: #ecfdf5;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.php-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+/* Right Col */
+.php-cta-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+}
+
+.php-cta-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 6px;
+}
+
+.php-cta-desc {
+  font-size: 12.5px;
+  color: #64748b;
+  margin: 0 0 16px;
+}
+
+.php-cta-price {
+  font-size: 28px;
+  font-weight: 900;
+  color: #4f46e5;
+  margin-bottom: 16px;
+}
+
+.php-buy-btn {
+  width: 100%;
+  background: #4f46e5;
+  color: #ffffff;
+  border: none;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.php-buy-btn:hover {
+  background: #4338ca;
+}
+
+.php-similar-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.php-similar-card h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 14px;
+}
+
+.php-similar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.php-similar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 10px;
+  text-decoration: none;
+  border: 1px solid #f1f5f9;
+  transition: all 0.15s;
+}
+
+.php-similar-item:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.php-sim-thumb {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #f1f5f9;
+}
+
+.php-sim-info {
+  flex: 1;
+}
+
+.php-sim-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 2px;
+}
+
+.php-sim-price {
+  font-size: 13px;
+  font-weight: 700;
+  color: #4f46e5;
+}
+
+.php-sim-arrow {
+  font-size: 16px;
+  color: #94a3b8;
+}
+
+/* Dark Theme Adaptations */
+[data-theme="dark"] .php-product-header,
+[data-theme="dark"] .php-graph-card,
+[data-theme="dark"] .php-side-card {
+  background: #0f172a;
+  border-color: #1e293b;
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .php-title,
+[data-theme="dark"] .php-curr-price,
+[data-theme="dark"] .php-metric-val,
+[data-theme="dark"] .php-card-title,
+[data-theme="dark"] .php-sim-name {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .php-metric-pill,
+[data-theme="dark"] .php-similar-item,
+[data-theme="dark"] .php-back-btn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+[data-theme="dark"] .php-similar-item:hover,
+[data-theme="dark"] .php-back-btn:hover {
+  background: #334155;
+}
+
+

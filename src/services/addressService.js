@@ -19,3 +19,9 @@ export async function updateAddress(id, address) {
   const response = await api.patch(`/addresses/${id}`, address);
   return response.data;
 }
+
+export async function setDefaultAddress(id) {
+  const response = await api.patch(`/addresses/${id}/default`);
+  return response.data;
+}
+

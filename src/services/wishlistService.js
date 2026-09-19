@@ -52,3 +52,8 @@ export async function deleteWishlistCollection(id) {
   const response = await api.delete(`/wishlist/collections/${id}`);
   return response.data;
 }
+
+export async function updateWishlistAlerts(id, alertSettings) {
+  const response = await api.patch(`/wishlist/${id}/alerts`, alertSettings);
+  return response.data;
+}

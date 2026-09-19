@@ -24,6 +24,7 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import CustomSelect from "../../components/CustomSelect";
 import { toast } from "../../components/Toast";
+import { getGestureNavEnabled, setGestureNavEnabled } from "../../hooks/useGestureNavigation";
 import {
   getVendorProfile,
   updateVendorProfile,
@@ -77,6 +78,7 @@ function VendorSettings() {
     confirmPassword: ""
   });
   const [savingPassword, setSavingPassword] = useState(false);
+  const [gestureNavEnabledState, setGestureNavEnabledState] = useState(getGestureNavEnabled);
 
   const [settings, setSettings] = useState({
     storeName: user?.name || "Premium Electronics & Goods",
@@ -726,6 +728,58 @@ function VendorSettings() {
                       onChange={(e) => handleChange("pan", e.target.value)}
                       placeholder="ABCDE1234F"
                     />
+                  </div>
+                </div>
+
+                {/* Gesture Navigation Toggle */}
+                <div style={{ marginTop: "24px", paddingTop: "20px", borderTop: "1px solid #e2e8f0" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
+                    <div>
+                      <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", fontWeight: 600, color: "#1e293b" }}>Gesture Navigation</h4>
+                      <p style={{ margin: 0, fontSize: "13px", color: "#64748b" }}>
+                        Drag mouse from left or right screen edges to navigate back &amp; forward like mobile gestures
+                      </p>
+                    </div>
+                    <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer", userSelect: "none" }}>
+                      <span style={{ fontSize: "12px", color: gestureNavEnabledState ? "#16a34a" : "#64748b", fontWeight: 700 }}>
+                        {gestureNavEnabledState ? "Enabled" : "Disabled"}
+                      </span>
+                      <input
+                        type="checkbox"
+                        checked={gestureNavEnabledState}
+                        onChange={(e) => {
+                          const val = e.target.checked;
+                          setGestureNavEnabledState(val);
+                          setGestureNavEnabled(val);
+                        }}
+                        style={{ display: "none" }}
+                      />
+                      <div
+                        style={{
+                          width: "44px",
+                          height: "24px",
+                          borderRadius: "999px",
+                          background: gestureNavEnabledState ? "#2563eb" : "#cbd5e1",
+                          position: "relative",
+                          transition: "background 0.2s ease",
+                          boxShadow: "inset 0 1px 3px rgba(0,0,0,0.15)"
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: "18px",
+                            height: "18px",
+                            borderRadius: "50%",
+                            background: "#ffffff",
+                            position: "absolute",
+                            top: "3px",
+                            left: gestureNavEnabledState ? "23px" : "3px",
+                            transition: "left 0.2s ease",
+                            boxShadow: "0 1px 3px rgba(0,0,0,0.25)"
+                          }}
+                        />
+                      </div>
+                    </label>
                   </div>
                 </div>
               </div>

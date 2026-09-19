@@ -1,0 +1,1012 @@
+/* ==========================================================================
+   VoiceSearchModal.css — Google AI Themed Voice Search Assistant
+   ========================================================================== */
+
+.vsm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: vsmFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes vsmFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.vsm-container {
+  position: relative;
+  background: #ffffff;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 640px;
+  min-height: 430px;
+  max-height: 90vh;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(226, 232, 240, 0.8);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: vsmPopIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vsm-container.vsm-wide {
+  max-width: 780px;
+}
+
+@keyframes vsmPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Atmospheric Ambient Bottom Glow */
+.vsm-bottom-glow {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 90px;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 100%, rgba(244, 63, 94, 0.12) 0%, rgba(99, 102, 241, 0.1) 40%, rgba(52, 168, 83, 0.08) 75%, transparent 100%);
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+  z-index: 1;
+}
+
+/* Header */
+.vsm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 14px;
+  z-index: 2;
+}
+
+.vsm-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vsm-header-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  letter-spacing: -0.01em;
+}
+
+.vsm-close-btn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.vsm-close-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+  transform: rotate(90deg);
+}
+
+/* Content Body */
+.vsm-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 28px 28px;
+  z-index: 2;
+  overflow-y: auto;
+}
+
+/* ==========================================================================
+   Screen 2: Listening Screen
+   ========================================================================== */
+
+.vsm-listening-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 0;
+  width: 100%;
+}
+
+.vsm-waveform-circles {
+  position: relative;
+  width: 170px;
+  height: 170px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.vsm-circle-outer {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(66, 133, 244, 0.05);
+  animation: vsmPulseRing 2.4s ease-out infinite;
+}
+
+.vsm-circle-middle {
+  position: absolute;
+  inset: 18px;
+  border-radius: 50%;
+  background: rgba(66, 133, 244, 0.09);
+  animation: vsmPulseRing 2.4s ease-out infinite 0.6s;
+}
+
+.vsm-circle-inner {
+  position: absolute;
+  inset: 36px;
+  border-radius: 50%;
+  background: rgba(66, 133, 244, 0.14);
+}
+
+@keyframes vsmPulseRing {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(0.85);
+    opacity: 0.8;
+  }
+}
+
+.vsm-waveform-bars {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 70px;
+  z-index: 3;
+}
+
+.vsm-wave-bar {
+  width: 9px;
+  border-radius: 9999px;
+  transition: height 0.12s ease;
+}
+
+/* Google AI 4 Bar Colors */
+.vsm-bar-blue   { background: #4285F4; animation: vsmWave 1.1s ease-in-out infinite alternate; }
+.vsm-bar-red    { background: #EA4335; animation: vsmWave 0.9s ease-in-out infinite alternate 0.2s; }
+.vsm-bar-yellow { background: #FBBC05; animation: vsmWave 1.3s ease-in-out infinite alternate 0.4s; }
+.vsm-bar-green  { background: #34A853; animation: vsmWave 1.0s ease-in-out infinite alternate 0.1s; }
+
+@keyframes vsmWave {
+  0%   { height: 18px; }
+  50%  { height: 58px; }
+  100% { height: 26px; }
+}
+
+.vsm-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 6px;
+  letter-spacing: -0.02em;
+}
+
+.vsm-subtitle {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0 0 26px;
+}
+
+.vsm-stop-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fee2e2;
+  color: #ef4444;
+  border: 1px solid #fecaca;
+  padding: 10px 22px;
+  border-radius: 9999px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vsm-stop-btn:hover {
+  background: #fecaca;
+  transform: translateY(-1px);
+}
+
+.vsm-stop-icon {
+  width: 11px;
+  height: 11px;
+  background: #ef4444;
+  border-radius: 2px;
+}
+
+.vsm-live-transcription-card {
+  margin: 10px 0 16px;
+  max-width: 440px;
+  width: 100%;
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 12px 18px;
+  text-align: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  animation: vsmFadeIn 0.2s ease-out;
+}
+
+.vsm-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #16a34a;
+  background: #dcfce7;
+  border-radius: 12px;
+  padding: 2px 9px;
+  margin-bottom: 6px;
+}
+
+.vsm-live-dot {
+  width: 6px;
+  height: 6px;
+  background: #16a34a;
+  border-radius: 50%;
+  animation: vsmPulseLive 1.2s infinite;
+}
+
+@keyframes vsmPulseLive {
+  0% { transform: scale(0.9); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.5; }
+  100% { transform: scale(0.9); opacity: 1; }
+}
+
+.vsm-live-transcription-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.vsm-listening-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.vsm-search-now-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+  color: #ffffff;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 9999px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  transition: all 0.15s ease;
+}
+
+.vsm-search-now-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+}
+
+.vsm-mic-error-alert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff7ed;
+  border: 1px solid #ffedd5;
+  color: #c2410c;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 12.5px;
+  margin: 10px 0 16px;
+  max-width: 440px;
+  text-align: left;
+}
+
+.vsm-prompt-suggestions {
+  margin-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  max-width: 480px;
+}
+
+.vsm-prompt-chip {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 9999px;
+  padding: 5px 14px;
+  font-size: 12px;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vsm-prompt-chip:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+
+/* ==========================================================================
+   Screen 3: Analyzing with AI
+   ========================================================================== */
+
+.vsm-analyzing-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 0 10px;
+  width: 100%;
+}
+
+.vsm-radiant-star-wrap {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.vsm-radiant-glow {
+  position: absolute;
+  inset: -12px;
+  background: radial-gradient(circle, rgba(66, 133, 244, 0.4) 0%, rgba(234, 67, 53, 0.3) 35%, rgba(251, 188, 5, 0.3) 65%, transparent 80%);
+  filter: blur(14px);
+  border-radius: 50%;
+  animation: vsmGlowSpin 4s linear infinite;
+}
+
+@keyframes vsmGlowSpin {
+  0% { transform: rotate(0deg) scale(0.9); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(0.9); }
+}
+
+.vsm-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0 24px;
+  width: 100%;
+  max-width: 320px;
+  text-align: left;
+}
+
+.vsm-checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #334155;
+  transition: all 0.25s ease;
+}
+
+.vsm-checklist-icon-done {
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+.vsm-checklist-icon-pending {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid #cbd5e1;
+  flex-shrink: 0;
+}
+
+.vsm-checklist-icon-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e2e8f0;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: vsmSpin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes vsmSpin {
+  to { transform: rotate(360deg); }
+}
+
+.vsm-transcript-bubble {
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  border-radius: 9999px;
+  padding: 8px 20px;
+  font-size: 13px;
+  color: #1d4ed8;
+  font-style: italic;
+  max-width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==========================================================================
+   Screen 4: Transcribed Query with Edit Option
+   ========================================================================== */
+
+.vsm-confirm-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 0 10px;
+  width: 100%;
+}
+
+.vsm-success-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #10b981;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+}
+
+.vsm-query-box {
+  width: 100%;
+  max-width: 460px;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 16px 0 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.vsm-query-box:focus-within {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.vsm-query-text {
+  font-size: 15px;
+  color: #1e293b;
+  font-weight: 500;
+  margin: 0;
+  text-align: left;
+  flex: 1;
+}
+
+.vsm-query-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  color: #0f172a;
+  background: transparent;
+  font-weight: 500;
+}
+
+.vsm-edit-btn {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.vsm-edit-btn:hover {
+  background: #eff6ff;
+  color: #2563eb;
+  border-color: #bfdbfe;
+}
+
+.vsm-confirm-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 14px;
+  width: 100%;
+  max-width: 460px;
+}
+
+.vsm-btn-secondary {
+  flex: 1;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vsm-btn-secondary:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.vsm-btn-primary {
+  flex: 1.3;
+  background: #4f46e5;
+  border: 1px solid #4338ca;
+  color: #ffffff;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
+  transition: all 0.15s ease;
+}
+
+.vsm-btn-primary:hover {
+  background: #4338ca;
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   Screen 5: Smart Search Results
+   ========================================================================== */
+
+.vsm-results-wrap {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.vsm-results-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  padding: 10px 16px;
+  margin-bottom: 14px;
+}
+
+.vsm-results-prompt-tag {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #1d4ed8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vsm-results-edit-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #ffffff;
+  border: 1px solid #bfdbfe;
+  color: #2563eb;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.vsm-results-edit-pill:hover {
+  background: #dbeafe;
+}
+
+/* Filter pills row */
+.vsm-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 14px;
+  scrollbar-width: none;
+}
+
+.vsm-filter-row::-webkit-scrollbar {
+  display: none;
+}
+
+.vsm-filter-pill {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.vsm-filter-pill:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.vsm-filter-pill.active {
+  background: #4f46e5;
+  border-color: #4f46e5;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Metadata count & Sort row */
+.vsm-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.vsm-count-text {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.vsm-sort-select {
+  font-size: 12.5px;
+  color: #334155;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 5px 10px;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Product Cards Grid */
+.vsm-products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .vsm-products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.vsm-product-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vsm-product-card:hover {
+  transform: translateY(-3px);
+  border-color: #cbd5e1;
+  box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.08);
+}
+
+.vsm-card-img-wrap {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.vsm-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+
+.vsm-product-card:hover .vsm-card-img {
+  transform: scale(1.05);
+}
+
+.vsm-card-heart {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  border: none;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748b;
+  transition: all 0.15s ease;
+}
+
+.vsm-card-heart:hover,
+.vsm-card-heart.active {
+  color: #ef4444;
+  background: #ffffff;
+}
+
+.vsm-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0 0 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.35;
+  height: 35px;
+}
+
+.vsm-card-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  color: #0f172a;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.vsm-star-icon {
+  color: #f59e0b;
+}
+
+.vsm-rating-count {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+.vsm-card-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.vsm-price-current {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.vsm-price-original {
+  font-size: 11.5px;
+  color: #94a3b8;
+  text-decoration: line-through;
+}
+
+.vsm-price-discount {
+  font-size: 11px;
+  font-weight: 700;
+  color: #10b981;
+}
+
+.vsm-results-footer {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vsm-view-catalog-link {
+  background: transparent;
+  border: none;
+  color: #4f46e5;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.vsm-view-catalog-link:hover {
+  background: #eef2ff;
+}
+
+/* ==========================================================================
+   Screen 6: Alternative scene - No direct results
+   ========================================================================== */
+
+.vsm-noresults-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px 0 10px;
+  width: 100%;
+}
+
+.vsm-noresults-icon-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #eff6ff;
+  color: #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.vsm-suggestions-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  max-width: 500px;
+  margin: 20px 0 26px;
+}
+
+.vsm-suggestion-pill {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  border-radius: 9999px;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vsm-suggestion-pill:hover {
+  background: #dbeafe;
+  transform: translateY(-1px);
+}
+
+.vsm-show-all-link {
+  color: #4f46e5;
+  font-size: 13.5px;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.vsm-show-all-link:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Microphone Button in Search Bar
+   ========================================================================== */
+
+.topbar-voice-search-btn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.18s ease;
+  position: relative;
+}
+
+.topbar-voice-search-btn:hover {
+  color: #4f46e5;
+  background: #eef2ff;
+  transform: scale(1.06);
+}
+
+.topbar-voice-search-btn:active {
+  transform: scale(0.96);
+}
+
+/* Dark Mode Support */
+body.dark-mode .vsm-container,
+[data-theme="dark"] .vsm-container {
+  background: #1e293b;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(51, 65, 85, 0.8);
+}
+
+body.dark-mode .vsm-header-title,
+body.dark-mode .vsm-title,
+body.dark-mode .vsm-card-title,
+body.dark-mode .vsm-price-current,
+[data-theme="dark"] .vsm-header-title,
+[data-theme="dark"] .vsm-title,
+[data-theme="dark"] .vsm-card-title,
+[data-theme="dark"] .vsm-price-current {
+  color: #f8fafc;
+}
+
+body.dark-mode .vsm-product-card,
+[data-theme="dark"] .vsm-product-card {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+body.dark-mode .vsm-query-box,
+[data-theme="dark"] .vsm-query-box {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+body.dark-mode .vsm-query-input,
+[data-theme="dark"] .vsm-query-input {
+  color: #f8fafc;
+}
+

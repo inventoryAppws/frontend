@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   X, CreditCard, Wallet, Plus, PlusCircle, RotateCcw,
-  Search, Filter, ChevronRight, ShoppingBag, ArrowDownCircle, ArrowUpCircle
+  Search, Filter, ChevronRight, ShoppingBag, ArrowDownCircle, ArrowUpCircle,
+  Headphones
 } from 'lucide-react';
 import { getTransactions } from '../services/transactionService';
 import useDebounce from '../hooks/useDebounce';
@@ -551,6 +552,26 @@ export default function PaymentsSidepanel({
                                 <span className="txn-detail-value">{txn.meta.source}</span>
                               </div>
                             )}
+                            <div style={{ marginTop: '12px', paddingTop: '10px', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'flex-end' }}>
+                              <button
+                                type="button"
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', padding: '6px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', background: '#ffffff', color: '#0f172a', cursor: 'pointer', fontWeight: 600 }}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  window.dispatchEvent(new CustomEvent('open-customer-tickets', {
+                                    detail: {
+                                      transactionId: txn._id,
+                                      orderDisplayId: txn.orderDisplayId || '',
+                                      category: 'payment',
+                                      subject: `Payment Issue with Txn #${txn._id.slice(-8).toUpperCase()}`
+                                    }
+                                  }));
+                                }}
+                              >
+                                <Headphones size={13} />
+                                <span>Report Payment Issue</span>
+                              </button>
+                            </div>
                           </div>
                         )}
                       </div>

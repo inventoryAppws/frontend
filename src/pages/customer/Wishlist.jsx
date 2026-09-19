@@ -22,7 +22,10 @@ import {
   Settings2,
   Edit2,
   Trash2,
-  Check
+  Check,
+  TrendingDown,
+  Bell,
+  Scale
 } from "lucide-react";
 import {
   getWishlist,
@@ -30,9 +33,11 @@ import {
   getWishlistCollections,
   createWishlistCollection,
   updateWishlistCollection,
-  deleteWishlistCollection
+  deleteWishlistCollection,
+  updateWishlistAlerts
 } from "../../services/wishlistService";
 import { addToCart } from "../../services/cartService";
+import { addToCompare, removeFromCompare, isInCompare } from "../../services/compareService";
 import Loader from "../../components/Loader";
 import ErrorMessage from "../../components/ErrorMessage";
 import ConfirmModal from "../../components/ConfirmModal";
@@ -463,6 +468,10 @@ function Wishlist() {
                 const ratingCount = item.ratingCount || 18;
                 const price = Number(item.price || 0);
                 const originalPrice = Math.round(price * 1.15);
+                const addedPrice = Number(item.addedPrice || 0);
+                const hasPriceDropped = addedPrice > 0 && price < addedPrice;
+                const priceDropAmount = hasPriceDropped ? addedPrice - price : 0;
+                const isCompared = isInCompare(pId || itemId);
 
                 return (
                   <article
@@ -485,6 +494,30 @@ function Wishlist() {
                         title="Remove from wishlist"
                       >
                         <Heart size={17} fill="#ef4444" stroke="#ef4444" />
+                      </button>
+
+                      {/* Compare Toggle */}
+                      <button
+                        className={`product-compare-icon ${isCompared ? "is-compared active" : ""}`}
+                        type="button"
+                        aria-label={isCompared ? `Remove ${item.name} from comparison` : `Compare ${item.name}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (isCompared) {
+                            removeFromCompare(pId || itemId);
+                            toast.info(`Removed ${item.name} from comparison`);
+                          } else {
+                            try {
+                              addToCompare({ ...item, _id: pId || itemId });
+                              toast.success(`Added ${item.name} to comparison!`);
+                            } catch (err) {
+                              toast.warning(err.message || "Cannot add to comparison");
+                            }
+                          }
+                        }}
+                        title={isCompared ? "Remove from comparison" : "Compare product side-by-side"}
+                      >
+                        <Scale size={16} />
                       </button>
 
                       {/* Category & Stock Badges */}
@@ -559,6 +592,20 @@ function Wishlist() {
                         <span className="adv-discount-tag">(15% OFF)</span>
                       </div>
 
+                      {/* Price Drop & Stock Alerts */}
+                      {hasPriceDropped && (
+                        <div style={{ marginTop: "4px", display: "inline-flex", alignItems: "center", gap: "4px", background: "#ecfdf5", color: "#059669", padding: "3px 8px", borderRadius: "6px", fontSize: "11px", fontWeight: 600 }}>
+                          <TrendingDown size={12} />
+                          <span>Price dropped by ₹{priceDropAmount.toLocaleString("en-IN")}!</span>
+                        </div>
+                      )}
+                      {outOfStock && (
+                        <div style={{ marginTop: "4px", display: "inline-flex", alignItems: "center", gap: "4px", background: "#eff6ff", color: "#2563eb", padding: "3px 8px", borderRadius: "6px", fontSize: "11px", fontWeight: 500 }}>
+                          <Bell size={12} />
+                          <span>Alert active: Notify when back in stock</span>
+                        </div>
+                      )}
+
                       {/* Stock Indicator */}
                       <div className="adv-card-meta-stock">
                         <span className={`adv-stock-indicator ${outOfStock ? "zero" : ""}`}>
@@ -610,6 +657,10 @@ function Wishlist() {
                 const ratingCount = item.ratingCount || 18;
                 const price = Number(item.price || 0);
                 const originalPrice = Math.round(price * 1.15);
+                const addedPrice = Number(item.addedPrice || 0);
+                const hasPriceDropped = addedPrice > 0 && price < addedPrice;
+                const priceDropAmount = hasPriceDropped ? addedPrice - price : 0;
+                const isCompared = isInCompare(pId || itemId);
 
                 return (
                   <article
@@ -619,6 +670,31 @@ function Wishlist() {
                   >
                     <div className="adv-list-visual-box">
                       <span className="adv-product-category-tag">{item.category || "General"}</span>
+
+                      {/* Compare Toggle */}
+                      <button
+                        className={`product-compare-icon ${isCompared ? "is-compared active" : ""}`}
+                        type="button"
+                        aria-label={isCompared ? `Remove ${item.name} from comparison` : `Compare ${item.name}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (isCompared) {
+                            removeFromCompare(pId || itemId);
+                            toast.info(`Removed ${item.name} from comparison`);
+                          } else {
+                            try {
+                              addToCompare({ ...item, _id: pId || itemId });
+                              toast.success(`Added ${item.name} to comparison!`);
+                            } catch (err) {
+                              toast.warning(err.message || "Cannot add to comparison");
+                            }
+                          }
+                        }}
+                        title={isCompared ? "Remove from comparison" : "Compare product side-by-side"}
+                      >
+                        <Scale size={14} />
+                      </button>
+
                       <div className="adv-list-img-placeholder">
                         {item.image ? (
                           <img
@@ -661,6 +737,20 @@ function Wishlist() {
                       <p className="adv-list-desc">
                         {item.description || `${item.category || "Product"} • Saved to wishlist`}
                       </p>
+
+                      {/* Alerts */}
+                      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "4px" }}>
+                        {hasPriceDropped && (
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", background: "#ecfdf5", color: "#059669", padding: "2px 7px", borderRadius: "4px", fontSize: "11px", fontWeight: 600 }}>
+                            <TrendingDown size={11} /> Dropped by ₹{priceDropAmount.toLocaleString("en-IN")}!
+                          </span>
+                        )}
+                        {outOfStock && (
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", background: "#eff6ff", color: "#2563eb", padding: "2px 7px", borderRadius: "4px", fontSize: "11px", fontWeight: 500 }}>
+                            <Bell size={11} /> Alert active: Notify when back in stock
+                          </span>
+                        )}
+                      </div>
                     </div>
 
                     <div className="adv-list-action-col wishlist-list-actions" onClick={(e) => e.stopPropagation()}>

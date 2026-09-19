@@ -25,6 +25,7 @@ import {
 import { getVendorProducts, adjustProductStock } from "../../services/productService";
 import { getVendorOrders } from "../../services/orderService";
 import Loader from "../../components/Loader";
+import VendorAiSummaryCard from "../../components/vendor/VendorAiSummaryCard";
 import { formatDate, formatDateTime } from "../../utils/dateFormatter";
 import { getErrorMessage } from "../../utils/errorHandler";
 import { toast } from "../../components/Toast";
@@ -239,6 +240,9 @@ function VendorDashboard() {
       </div>
 
       {error && <div className="vendor-dashboard-error">{error}</div>}
+
+      {/* AI BUSINESS SUMMARY CARD */}
+      <VendorAiSummaryCard />
 
       {/* 2. 5 KEY KPI STATS CARDS */}
       <div className="vendor-kpi-grid">
