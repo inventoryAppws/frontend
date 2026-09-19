@@ -1,33 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
-    <!-- Ocean Radial Lighting -->
+    <!-- Vibrant Ocean Radial Lighting -->
     <radialGradient id="oceanGrad" cx="35%" cy="30%" r="70%">
       <stop offset="0%" stop-color="#38BDF8"/>
       <stop offset="40%" stop-color="#0284C7"/>
       <stop offset="100%" stop-color="#0369A1"/>
     </radialGradient>
 
-    <!-- Atmosphere Glow -->
-    <filter id="planetGlow" x="-15%" y="-15%" width="130%" height="130%">
-      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0284C7" flood-opacity="0.45"/>
-    </filter>
-
-    <!-- Clip to Sphere -->
+    <!-- Clip to Full Size Sphere -->
     <clipPath id="globeClip">
-      <circle cx="32" cy="32" r="22"/>
+      <circle cx="32" cy="32" r="31"/>
     </clipPath>
   </defs>
 
-  <!-- Deep Midnight Slate Base -->
-  <rect width="64" height="64" rx="16" fill="#0F172A"/>
-  <rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#FFFFFF" stroke-opacity="0.12" stroke-width="1.5"/>
+  <!-- Full Size Ocean Sphere (Edge-to-Edge, No Black Background) -->
+  <circle cx="32" cy="32" r="31" fill="url(#oceanGrad)"/>
 
-  <g filter="url(#planetGlow)">
-    <!-- Base Ocean Sphere -->
-    <circle cx="32" cy="32" r="22" fill="url(#oceanGrad)"/>
-
-    <!-- Continents & Islands -->
-    <g clip-path="url(#globeClip)">
+  <!-- Continents & Atmosphere (Scaled to Full 62px Diameter) -->
+  <g clip-path="url(#globeClip)">
+    <g transform="translate(32, 32) scale(1.41) translate(-32, -32)">
       <!-- North America & Greenland -->
       <path d="M16 20 C18 16 23 15 26 18 C28 20 27 25 24 28 C22 30 18 29 16 26 C15 24 14 22 16 20 Z" fill="#16A34A"/>
       <path d="M28 15 C30 13 34 14 33 17 C31 18 28 17 28 15 Z" fill="#16A34A"/>
@@ -44,11 +35,11 @@
       <path d="M48 30 C50 30 52 32 50 34 C48 34 47 32 48 30 Z" fill="#22C55E"/>
 
       <!-- White Atmosphere Cloud Swirls -->
-      <path d="M14 24 Q24 21 34 27 T54 26" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-opacity="0.38"/>
-      <path d="M18 38 Q28 35 38 41 T50 39" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.32"/>
+      <path d="M13 24 Q24 20 35 27 T55 25" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-opacity="0.45"/>
+      <path d="M17 39 Q27 35 38 42 T51 39" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-opacity="0.4"/>
     </g>
 
-    <!-- Rim Light -->
-    <path d="M12 26 C14 18 22 12 30 11 C20 13 14 20 12 26 Z" fill="#FFFFFF" fill-opacity="0.35"/>
+    <!-- 3D Specular Highlight Rim -->
+    <path d="M3 32 C3 16 16 3 32 3 C20 5 8 16 8 32 C8 44 15 53 25 59 C12 55 3 44.5 3 32 Z" fill="#FFFFFF" fill-opacity="0.32"/>
   </g>
 </svg>
