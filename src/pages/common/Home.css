@@ -1,42 +1,70 @@
 /* ==========================================================================
    BENCHMARK MARKETING LANDING PAGE STYLES (Home.css)
    Next-Gen Unified Commerce & Inventory Ecosystem
+   Supports: Light Mode (Default) & Dark Mode with Smooth Transitions
    ========================================================================== */
 
-:root {
-  --home-primary: #2563eb;
-  --home-primary-hover: #1d4ed8;
-  --home-primary-light: #eff6ff;
-  --home-accent-cyan: #06b6d4;
-  --home-accent-emerald: #10b981;
-  --home-accent-purple: #8b5cf6;
-  --home-accent-amber: #f59e0b;
-  --home-dark-slate: #0f172a;
-  --home-dark-card: #1e293b;
-  --home-border-glass: rgba(255, 255, 255, 0.12);
-  --home-shadow-glow: 0 0 35px rgba(37, 99, 235, 0.18);
+/* --------------------------------------------------------------------------
+   THEME VARIABLES
+   -------------------------------------------------------------------------- */
+.home-root[data-theme="light"] {
+  --home-bg: #f8fafc;
+  --home-surface: #ffffff;
+  --home-surface-subtle: #f1f5f9;
+  --home-surface-card: #ffffff;
+  --home-border: rgba(15, 23, 42, 0.08);
+  --home-border-hover: rgba(37, 99, 235, 0.35);
+  --home-text-primary: #0f172a;
+  --home-text-secondary: #334155;
+  --home-text-muted: #64748b;
+  --home-navbar-bg: rgba(255, 255, 255, 0.85);
+  --home-navbar-scrolled: rgba(255, 255, 255, 0.96);
+  --home-shadow-sm: 0 4px 15px rgba(15, 23, 42, 0.05);
+  --home-shadow-md: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --home-shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.12);
+  --home-glow-primary: rgba(37, 99, 235, 0.15);
+  --home-grid-line: rgba(15, 23, 42, 0.04);
 }
 
+.home-root[data-theme="dark"] {
+  --home-bg: #090d16;
+  --home-surface: #0f172a;
+  --home-surface-subtle: #1e293b;
+  --home-surface-card: #141e33;
+  --home-border: rgba(255, 255, 255, 0.1);
+  --home-border-hover: rgba(56, 189, 248, 0.4);
+  --home-text-primary: #f8fafc;
+  --home-text-secondary: #cbd5e1;
+  --home-text-muted: #94a3b8;
+  --home-navbar-bg: rgba(15, 23, 42, 0.8);
+  --home-navbar-scrolled: rgba(15, 23, 42, 0.95);
+  --home-shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.3);
+  --home-shadow-md: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --home-shadow-lg: 0 25px 60px rgba(0, 0, 0, 0.6);
+  --home-glow-primary: rgba(37, 99, 235, 0.35);
+  --home-grid-line: rgba(255, 255, 255, 0.03);
+}
+
+/* Base Root Container */
 .home-root {
   min-height: 100vh;
-  background: #090d16;
-  color: #f8fafc;
+  background: var(--home-bg);
+  color: var(--home-text-primary);
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   overflow-x: hidden;
   position: relative;
-  selection-background-color: #2563eb;
-  selection-color: #ffffff;
+  transition: background-color 0.35s ease, color 0.35s ease;
 }
 
-/* Background Aurora Mesh Lights */
+/* Ambient Aurora Glows */
 .home-aurora-glow-top {
   position: absolute;
-  top: -150px;
+  top: -120px;
   left: 50%;
   transform: translateX(-50%);
   width: 900px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(37, 99, 235, 0.22) 0%, rgba(6, 182, 212, 0.12) 40%, transparent 70%);
+  height: 550px;
+  background: radial-gradient(circle, var(--home-glow-primary) 0%, rgba(6, 182, 212, 0.08) 40%, transparent 70%);
   filter: blur(80px);
   pointer-events: none;
   z-index: 0;
@@ -44,17 +72,16 @@
 
 .home-aurora-glow-mid {
   position: absolute;
-  top: 1300px;
+  top: 1400px;
   right: -100px;
   width: 700px;
   height: 600px;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(37, 99, 235, 0.08) 50%, transparent 70%);
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, var(--home-glow-primary) 50%, transparent 70%);
   filter: blur(90px);
   pointer-events: none;
   z-index: 0;
 }
 
-/* Subtle Grid Background Pattern */
 .home-grid-pattern {
   position: absolute;
   top: 0;
@@ -62,19 +89,19 @@
   width: 100%;
   height: 100%;
   background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(var(--home-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--home-grid-line) 1px, transparent 1px);
   background-size: 64px 64px;
   pointer-events: none;
   z-index: 0;
 }
 
-/* ==========================================================================
+/* --------------------------------------------------------------------------
    1. FLOATING STICKY NAVBAR
-   ========================================================================== */
+   -------------------------------------------------------------------------- */
 .home-nav-wrapper {
   position: sticky;
-  top: 16px;
+  top: 14px;
   left: 0;
   right: 0;
   z-index: 1000;
@@ -87,20 +114,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 24px;
-  background: rgba(15, 23, 42, 0.75);
+  padding: 10px 24px;
+  background: var(--home-navbar-bg);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--home-border);
   border-radius: 999px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--home-shadow-sm);
   transition: all 0.3s ease;
 }
 
 .home-navbar.scrolled {
-  background: rgba(15, 23, 42, 0.92);
-  border-color: rgba(56, 189, 248, 0.25);
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), 0 0 25px rgba(37, 99, 235, 0.2);
+  background: var(--home-navbar-scrolled);
+  border-color: rgba(37, 99, 235, 0.3);
+  box-shadow: var(--home-shadow-md);
 }
 
 .home-brand {
@@ -108,13 +135,13 @@
   align-items: center;
   gap: 12px;
   text-decoration: none;
-  color: #ffffff;
+  color: var(--home-text-primary);
 }
 
 .home-brand-earth-icon {
   width: 32px;
   height: 32px;
-  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.5));
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.4));
   transition: transform 0.4s ease;
 }
 
@@ -126,9 +153,7 @@
   font-size: 20px;
   font-weight: 800;
   letter-spacing: -0.5px;
-  background: linear-gradient(135deg, #ffffff 30%, #93c5fd 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--home-text-primary);
 }
 
 .home-brand-tag {
@@ -136,21 +161,27 @@
   font-weight: 700;
   padding: 3px 8px;
   border-radius: 999px;
-  background: rgba(37, 99, 235, 0.2);
-  border: 1px solid rgba(56, 189, 248, 0.4);
-  color: #38bdf8;
+  background: rgba(37, 99, 235, 0.12);
+  border: 1px solid rgba(37, 99, 235, 0.3);
+  color: #2563eb;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+.home-root[data-theme="dark"] .home-brand-tag {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.3);
 }
 
 .home-nav-links {
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 24px;
 }
 
 .home-nav-links a {
-  color: #94a3b8;
+  color: var(--home-text-muted);
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
@@ -158,7 +189,7 @@
 }
 
 .home-nav-links a:hover {
-  color: #ffffff;
+  color: var(--home-text-primary);
 }
 
 .home-nav-actions {
@@ -167,8 +198,29 @@
   gap: 10px;
 }
 
+/* Theme Toggle Button */
+.home-theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--home-surface-subtle);
+  border: 1px solid var(--home-border);
+  color: var(--home-text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.home-theme-toggle:hover {
+  background: rgba(37, 99, 235, 0.12);
+  border-color: rgba(37, 99, 235, 0.3);
+  transform: rotate(15deg);
+}
+
 .home-btn-nav-login {
-  color: #cbd5e1;
+  color: var(--home-text-secondary);
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
@@ -178,8 +230,8 @@
 }
 
 .home-btn-nav-login:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.06);
+  color: var(--home-text-primary);
+  background: var(--home-surface-subtle);
 }
 
 .home-btn-nav-vendor {
@@ -191,15 +243,14 @@
   text-decoration: none;
   padding: 8px 16px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #ffffff;
+  background: var(--home-surface-subtle);
+  border: 1px solid var(--home-border);
+  color: var(--home-text-primary);
   transition: all 0.2s ease;
 }
 
 .home-btn-nav-vendor:hover {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: var(--home-border-hover);
   transform: translateY(-1px);
 }
 
@@ -214,26 +265,75 @@
   border-radius: 999px;
   background: linear-gradient(135deg, #2563eb, #1d4ed8);
   color: #ffffff;
-  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
   transition: all 0.2s ease;
 }
 
 .home-btn-nav-admin:hover {
   background: linear-gradient(135deg, #3b82f6, #2563eb);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
   transform: translateY(-1px);
 }
 
-/* ==========================================================================
-   2. HERO SECTION & FLOATING DOODLES
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   2. HERO SECTION WITH DUAL PERSPECTIVE SWITCHER
+   -------------------------------------------------------------------------- */
 .home-hero-section {
   position: relative;
   max-width: 1240px;
   margin: 0 auto;
-  padding: 80px 24px 40px;
+  padding: 50px 24px 30px;
   text-align: center;
   z-index: 10;
+}
+
+/* Dual Perspective Switcher (Shopper vs Vendor) */
+.home-perspective-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.home-perspective-switch {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px;
+  background: var(--home-surface-subtle);
+  border: 1px solid var(--home-border);
+  border-radius: 999px;
+  box-shadow: var(--home-shadow-sm);
+  gap: 4px;
+}
+
+.perspective-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border-radius: 999px;
+  background: transparent;
+  border: none;
+  color: var(--home-text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.perspective-btn:hover {
+  color: var(--home-text-primary);
+}
+
+.perspective-btn.active {
+  background: var(--home-surface);
+  color: #2563eb;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.home-root[data-theme="dark"] .perspective-btn.active {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.4);
 }
 
 /* Floating Tech Doodles */
@@ -243,27 +343,26 @@
   align-items: center;
   gap: 8px;
   padding: 8px 14px;
-  background: rgba(30, 41, 59, 0.7);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--home-surface);
+  border: 1px solid var(--home-border);
   border-radius: 999px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--home-shadow-sm);
   font-size: 12px;
   font-weight: 700;
-  color: #f1f5f9;
+  color: var(--home-text-secondary);
   pointer-events: none;
   z-index: 5;
   animation: floatDoodle 6s ease-in-out infinite alternate;
 }
 
-.doodle-1 { top: 70px; left: 4%; animation-delay: 0s; }
-.doodle-2 { top: 90px; right: 5%; animation-delay: 1.5s; }
+.doodle-1 { top: 60px; left: 4%; animation-delay: 0s; }
+.doodle-2 { top: 70px; right: 5%; animation-delay: 1.5s; }
 .doodle-3 { bottom: 60px; left: 2%; animation-delay: 3s; }
-.doodle-4 { bottom: 80px; right: 3%; animation-delay: 4.5s; }
+.doodle-4 { bottom: 70px; right: 3%; animation-delay: 4.5s; }
 
 @keyframes floatDoodle {
   0% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-12px) rotate(2deg); }
+  50% { transform: translateY(-10px) rotate(2deg); }
   100% { transform: translateY(6px) rotate(-2deg); }
 }
 
@@ -279,14 +378,19 @@
   gap: 9px;
   padding: 6px 16px;
   border-radius: 999px;
-  background: rgba(37, 99, 235, 0.15);
-  border: 1px solid rgba(56, 189, 248, 0.4);
-  color: #7dd3fc;
+  background: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  color: #2563eb;
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.4px;
-  margin-bottom: 24px;
-  box-shadow: 0 0 20px rgba(37, 99, 235, 0.2);
+  letter-spacing: 0.3px;
+  margin-bottom: 20px;
+}
+
+.home-root[data-theme="dark"] .home-hero-badge {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.35);
+  color: #7dd3fc;
 }
 
 .home-pulse-dot {
@@ -305,16 +409,16 @@
 
 /* Hero Titles */
 .home-hero-title {
-  font-size: clamp(40px, 5.5vw, 68px);
+  font-size: clamp(38px, 5.2vw, 66px);
   font-weight: 800;
   line-height: 1.08;
   letter-spacing: -2px;
-  margin: 0 auto 24px;
+  margin: 0 auto 20px;
   max-width: 960px;
 }
 
 .home-hero-title span.gradient-text {
-  background: linear-gradient(135deg, #60a5fa 10%, #38bdf8 50%, #c084fc 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #06b6d4 50%, #8b5cf6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
@@ -323,9 +427,9 @@
 .home-hero-subtitle {
   font-size: 18px;
   line-height: 1.6;
-  color: #94a3b8;
+  color: var(--home-text-muted);
   max-width: 720px;
-  margin: 0 auto 36px;
+  margin: 0 auto 34px;
 }
 
 /* Hero Action CTAs */
@@ -335,7 +439,7 @@
   justify-content: center;
   gap: 16px;
   flex-wrap: wrap;
-  margin-bottom: 50px;
+  margin-bottom: 45px;
 }
 
 .home-btn-primary-glow {
@@ -349,13 +453,13 @@
   font-size: 15px;
   font-weight: 700;
   text-decoration: none;
-  box-shadow: 0 0 30px rgba(37, 99, 235, 0.45);
+  box-shadow: 0 6px 25px rgba(37, 99, 235, 0.35);
   transition: all 0.25s ease;
 }
 
 .home-btn-primary-glow:hover {
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  box-shadow: 0 0 45px rgba(37, 99, 235, 0.7);
+  box-shadow: 0 8px 30px rgba(37, 99, 235, 0.5);
   transform: translateY(-2px);
 }
 
@@ -365,19 +469,18 @@
   gap: 10px;
   padding: 15px 28px;
   border-radius: 999px;
-  background: rgba(30, 41, 59, 0.8);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #f1f5f9;
+  background: var(--home-surface);
+  border: 1px solid var(--home-border);
+  color: var(--home-text-primary);
   font-size: 15px;
   font-weight: 700;
   text-decoration: none;
+  box-shadow: var(--home-shadow-sm);
   transition: all 0.25s ease;
 }
 
 .home-btn-secondary-glass:hover {
-  background: rgba(51, 65, 85, 0.9);
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: var(--home-border-hover);
   transform: translateY(-2px);
 }
 
@@ -387,19 +490,73 @@
   gap: 10px;
   padding: 15px 24px;
   border-radius: 999px;
-  background: rgba(139, 92, 246, 0.15);
-  border: 1px solid rgba(168, 85, 247, 0.4);
-  color: #c084fc;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  color: #7c3aed;
   font-size: 15px;
   font-weight: 700;
   text-decoration: none;
   transition: all 0.25s ease;
 }
 
+.home-root[data-theme="dark"] .home-btn-admin-glass {
+  color: #c084fc;
+  background: rgba(139, 92, 246, 0.18);
+  border-color: rgba(192, 132, 252, 0.4);
+}
+
 .home-btn-admin-glass:hover {
-  background: rgba(139, 92, 246, 0.28);
-  border-color: rgba(192, 132, 252, 0.7);
+  background: rgba(139, 92, 246, 0.22);
   transform: translateY(-2px);
+}
+
+/* Perspective Highlight Feature Grid (Changes based on toggle) */
+.home-perspective-features {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  max-width: 1040px;
+  margin: 0 auto 35px;
+  text-align: left;
+}
+
+.perspective-card {
+  padding: 18px 20px;
+  background: var(--home-surface);
+  border: 1px solid var(--home-border);
+  border-radius: 14px;
+  box-shadow: var(--home-shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.perspective-card:hover {
+  border-color: var(--home-border-hover);
+  transform: translateY(-2px);
+}
+
+.perspective-card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.perspective-card h5 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--home-text-primary);
+  margin: 0 0 4px;
+}
+
+.perspective-card p {
+  font-size: 12px;
+  color: var(--home-text-muted);
+  line-height: 1.5;
+  margin: 0;
 }
 
 /* Trust Stats Ribbon */
@@ -409,11 +566,11 @@
   gap: 20px;
   max-width: 980px;
   margin: 0 auto;
-  padding: 22px 30px;
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 20px 30px;
+  background: var(--home-surface);
+  border: 1px solid var(--home-border);
   border-radius: 18px;
+  box-shadow: var(--home-shadow-sm);
 }
 
 .stat-item {
@@ -425,23 +582,23 @@
 .stat-number {
   font-size: 26px;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--home-text-primary);
   letter-spacing: -0.5px;
 }
 
 .stat-label {
   font-size: 12px;
   font-weight: 600;
-  color: #94a3b8;
+  color: var(--home-text-muted);
   margin-top: 4px;
 }
 
-/* ==========================================================================
-   3. MARKETING BANNER SLIDER (Visual Highlights Across 3 Apps)
-   ========================================================================== */
-.home-slider-section {
+/* --------------------------------------------------------------------------
+   3. THE AI TRINITY SHOWCASE (Darwin, Atlas & Titan)
+   -------------------------------------------------------------------------- */
+.home-ai-trinity-section {
   max-width: 1240px;
-  margin: 60px auto 0;
+  margin: 80px auto 0;
   padding: 0 24px;
   position: relative;
   z-index: 10;
@@ -453,32 +610,162 @@
   font-weight: 800;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: #38bdf8;
+  color: #2563eb;
   margin-bottom: 8px;
+}
+
+.home-root[data-theme="dark"] .home-section-tag {
+  color: #38bdf8;
 }
 
 .home-section-title {
   font-size: clamp(28px, 3.5vw, 42px);
   font-weight: 800;
   letter-spacing: -1px;
-  color: #ffffff;
+  color: var(--home-text-primary);
   margin: 0 0 12px;
 }
 
 .home-section-subtitle {
   font-size: 16px;
-  color: #94a3b8;
+  color: var(--home-text-muted);
   max-width: 650px;
   margin: 0 0 35px;
+}
+
+.ai-trinity-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.ai-trinity-card {
+  background: var(--home-surface-card);
+  border: 1px solid var(--home-border);
+  border-radius: 24px;
+  padding: 30px;
+  box-shadow: var(--home-shadow-md);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.ai-trinity-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--home-border-hover);
+  box-shadow: var(--home-shadow-lg);
+}
+
+.ai-mascot-avatar-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-mascot-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.2));
+  transition: transform 0.4s ease;
+}
+
+.ai-trinity-card:hover .ai-mascot-img {
+  transform: scale(1.08) rotate(3deg);
+}
+
+.ai-card-badge {
+  display: inline-block;
+  align-self: center;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin-bottom: 12px;
+}
+
+.ai-trinity-card h4 {
+  font-size: 22px;
+  font-weight: 800;
+  text-align: center;
+  color: var(--home-text-primary);
+  margin: 0 0 6px;
+}
+
+.ai-role-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.ai-desc {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--home-text-muted);
+  text-align: center;
+  margin-bottom: 20px;
+  flex: 1;
+}
+
+.ai-capabilities-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding-top: 16px;
+  border-top: 1px solid var(--home-border);
+  margin-bottom: 22px;
+}
+
+.ai-cap-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--home-text-secondary);
+}
+
+.ai-trinity-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+/* --------------------------------------------------------------------------
+   4. NATURAL REALISTIC HD BANNER CAROUSEL
+   -------------------------------------------------------------------------- */
+.home-slider-section {
+  max-width: 1240px;
+  margin: 80px auto 0;
+  padding: 0 24px;
+  position: relative;
+  z-index: 10;
 }
 
 .home-banner-carousel {
   position: relative;
   border-radius: 24px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(37, 99, 235, 0.15);
-  background: #0f172a;
+  border: 1px solid var(--home-border);
+  box-shadow: var(--home-shadow-lg);
+  background: var(--home-surface);
 }
 
 .banner-slide-wrapper {
@@ -502,11 +789,11 @@
 .banner-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(9, 13, 22, 0.1) 0%, rgba(9, 13, 22, 0.9) 100%);
+  background: linear-gradient(180deg, rgba(9, 13, 22, 0.15) 0%, rgba(9, 13, 22, 0.88) 100%);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 40px;
+  padding: 36px 40px;
 }
 
 .banner-pill {
@@ -516,7 +803,8 @@
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.8px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+  width: fit-content;
 }
 
 .banner-title {
@@ -528,15 +816,15 @@
 
 .banner-desc {
   font-size: 15px;
-  color: #cbd5e1;
+  color: #e2e8f0;
   max-width: 700px;
-  margin: 0 0 20px;
+  margin: 0 0 18px;
   line-height: 1.5;
 }
 
 .banner-bullets {
   display: flex;
-  gap: 20px;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
@@ -546,11 +834,12 @@
   gap: 7px;
   font-size: 13px;
   font-weight: 600;
-  color: #f1f5f9;
-  background: rgba(15, 23, 42, 0.6);
+  color: #ffffff;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(8px);
   padding: 6px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 /* Slider Controls */
@@ -561,9 +850,9 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: rgba(15, 23, 42, 0.7);
+  background: rgba(15, 23, 42, 0.75);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -574,7 +863,7 @@
 }
 
 .slider-nav-btn:hover {
-  background: rgba(37, 99, 235, 0.9);
+  background: #2563eb;
   transform: translateY(-50%) scale(1.1);
 }
 
@@ -594,24 +883,24 @@
   width: 10px;
   height: 10px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.4);
   cursor: pointer;
   transition: all 0.3s ease;
   border: none;
 }
 
 .slider-dot.active {
-  width: 30px;
+  width: 32px;
   background: #38bdf8;
   box-shadow: 0 0 10px #38bdf8;
 }
 
-/* ==========================================================================
-   4. INTERACTIVE 3-IN-1 PLATFORM SHOWCASE WINDOW
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   5. INTERACTIVE 3-IN-1 PLATFORM SHOWCASE WINDOW
+   -------------------------------------------------------------------------- */
 .home-showcase-section {
   max-width: 1240px;
-  margin: 100px auto 0;
+  margin: 90px auto 0;
   padding: 0 24px;
   position: relative;
   z-index: 10;
@@ -620,19 +909,18 @@
 .showcase-window {
   border-radius: 20px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: #0f172a;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(37, 99, 235, 0.12);
+  border: 1px solid var(--home-border);
+  background: var(--home-surface);
+  box-shadow: var(--home-shadow-lg);
 }
 
-/* Mac Top Bar + Tabs */
 .showcase-topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 14px 20px;
-  background: #1e293b;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--home-surface-subtle);
+  border-bottom: 1px solid var(--home-border);
 }
 
 .window-dots {
@@ -652,10 +940,10 @@
 .showcase-tab-buttons {
   display: flex;
   gap: 6px;
-  background: rgba(15, 23, 42, 0.6);
+  background: var(--home-surface);
   padding: 4px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--home-border);
 }
 
 .tab-btn {
@@ -666,7 +954,7 @@
   border-radius: 999px;
   background: transparent;
   border: none;
-  color: #94a3b8;
+  color: var(--home-text-muted);
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
@@ -674,7 +962,7 @@
 }
 
 .tab-btn:hover {
-  color: #ffffff;
+  color: var(--home-text-primary);
 }
 
 .tab-btn.active {
@@ -692,30 +980,29 @@
   color: #10b981;
 }
 
-/* Showcase Body Panels */
 .showcase-body {
   padding: 30px;
-  min-height: 420px;
-  background: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
+  min-height: 400px;
+  background: var(--home-surface);
 }
 
 .tab-content-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  gap: 28px;
   align-items: center;
 }
 
 .tab-info-side h3 {
   font-size: 26px;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--home-text-primary);
   margin: 0 0 12px;
   letter-spacing: -0.5px;
 }
 
 .tab-info-side p {
-  color: #94a3b8;
+  color: var(--home-text-muted);
   font-size: 15px;
   line-height: 1.6;
   margin: 0 0 22px;
@@ -725,7 +1012,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 28px;
+  margin-bottom: 26px;
 }
 
 .tab-feature-item {
@@ -733,41 +1020,41 @@
   align-items: center;
   gap: 10px;
   font-size: 14px;
-  color: #e2e8f0;
+  color: var(--home-text-secondary);
 }
 
 .tab-feature-item svg {
-  color: #38bdf8;
+  color: #2563eb;
   flex-shrink: 0;
 }
 
 .tab-interactive-preview {
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--home-surface-subtle);
+  border: 1px solid var(--home-border);
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--home-shadow-sm);
 }
 
-/* UI Mockups Inside Tab */
 .mockup-header-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 16px;
+  padding-bottom: 14px;
   margin-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--home-border);
 }
 
 .mockup-search-box {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(30, 41, 59, 0.8);
+  background: var(--home-surface);
+  border: 1px solid var(--home-border);
   padding: 8px 14px;
   border-radius: 999px;
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--home-text-muted);
   flex: 1;
   margin-right: 12px;
 }
@@ -780,8 +1067,8 @@
 }
 
 .mockup-metric-card {
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--home-surface);
+  border: 1px solid var(--home-border);
   border-radius: 10px;
   padding: 12px;
 }
@@ -789,20 +1076,21 @@
 .mockup-metric-card small {
   display: block;
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--home-text-muted);
 }
 
 .mockup-metric-card strong {
   display: block;
-  font-size: 18px;
-  color: #ffffff;
+  font-size: 17px;
+  color: var(--home-text-primary);
   margin-top: 4px;
 }
 
 .mockup-chart-visual {
-  background: rgba(30, 41, 59, 0.4);
+  background: var(--home-surface);
+  border: 1px solid var(--home-border);
   border-radius: 10px;
-  padding: 16px;
+  padding: 14px;
 }
 
 .mockup-chart-bars {
@@ -817,15 +1105,14 @@
   flex: 1;
   background: linear-gradient(180deg, #38bdf8 0%, #2563eb 100%);
   border-radius: 4px 4px 0 0;
-  transition: height 0.6s ease;
 }
 
-/* ==========================================================================
-   5. ACTIVE PROMOTIONS & VOUCHERS SECTION
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   6. ACTIVE FLASH DEALS & PROMOTIONS
+   -------------------------------------------------------------------------- */
 .home-coupons-section {
   max-width: 1240px;
-  margin: 100px auto 0;
+  margin: 90px auto 0;
   padding: 0 24px;
   position: relative;
   z-index: 10;
@@ -838,42 +1125,44 @@
 }
 
 .coupon-card {
-  position: relative;
-  background: rgba(30, 41, 59, 0.5);
-  backdrop-filter: blur(12px);
-  border: 1px dashed rgba(56, 189, 248, 0.4);
+  background: var(--home-surface);
+  border: 1px dashed rgba(37, 99, 235, 0.4);
   border-radius: 16px;
   padding: 22px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  box-shadow: var(--home-shadow-sm);
   transition: all 0.25s ease;
 }
 
 .coupon-card:hover {
-  background: rgba(30, 41, 59, 0.8);
-  border-color: #38bdf8;
+  border-color: #2563eb;
   transform: translateY(-4px);
-  box-shadow: 0 10px 30px rgba(56, 189, 248, 0.15);
+  box-shadow: var(--home-shadow-md);
 }
 
 .coupon-badge-discount {
   font-size: 24px;
   font-weight: 800;
-  color: #38bdf8;
+  color: #2563eb;
   margin-bottom: 6px;
+}
+
+.home-root[data-theme="dark"] .coupon-badge-discount {
+  color: #38bdf8;
 }
 
 .coupon-title {
   font-size: 15px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--home-text-primary);
   margin: 0 0 6px;
 }
 
 .coupon-desc {
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--home-text-muted);
   margin: 0 0 16px;
   line-height: 1.4;
 }
@@ -882,23 +1171,27 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(15, 23, 42, 0.6);
+  background: var(--home-surface-subtle);
   padding: 6px 12px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--home-border);
 }
 
 .coupon-code {
   font-family: monospace;
   font-size: 14px;
   font-weight: 700;
+  color: #d97706;
+}
+
+.home-root[data-theme="dark"] .coupon-code {
   color: #f59e0b;
 }
 
 .btn-copy-code {
   background: none;
   border: none;
-  color: #38bdf8;
+  color: #2563eb;
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
@@ -907,16 +1200,20 @@
   transition: all 0.2s;
 }
 
-.btn-copy-code:hover {
-  background: rgba(56, 189, 248, 0.2);
+.home-root[data-theme="dark"] .btn-copy-code {
+  color: #38bdf8;
 }
 
-/* ==========================================================================
-   6. DEEP-DIVE FEATURE PILLARS (Across All 3 Apps)
-   ========================================================================== */
+.btn-copy-code:hover {
+  background: rgba(37, 99, 235, 0.12);
+}
+
+/* --------------------------------------------------------------------------
+   7. DEEP-DIVE FEATURE PILLARS
+   -------------------------------------------------------------------------- */
 .home-features-section {
   max-width: 1240px;
-  margin: 100px auto 0;
+  margin: 90px auto 0;
   padding: 0 24px;
   position: relative;
   z-index: 10;
@@ -929,44 +1226,43 @@
 }
 
 .feature-pillar-card {
-  background: rgba(30, 41, 59, 0.4);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--home-surface);
+  border: 1px solid var(--home-border);
   border-radius: 18px;
-  padding: 30px;
+  padding: 28px;
+  box-shadow: var(--home-shadow-sm);
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
 }
 
 .feature-pillar-card:hover {
-  background: rgba(30, 41, 59, 0.75);
-  border-color: rgba(56, 189, 248, 0.35);
-  transform: translateY(-5px);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 25px rgba(37, 99, 235, 0.12);
+  border-color: var(--home-border-hover);
+  transform: translateY(-4px);
+  box-shadow: var(--home-shadow-md);
 }
 
 .pillar-icon-box {
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .feature-pillar-card h4 {
   font-size: 18px;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--home-text-primary);
   margin: 0 0 10px;
 }
 
 .feature-pillar-card p {
   font-size: 14px;
   line-height: 1.6;
-  color: #94a3b8;
+  color: var(--home-text-muted);
   margin: 0 0 18px;
   flex: 1;
 }
@@ -978,16 +1274,17 @@
   font-weight: 700;
   padding: 4px 10px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  color: #cbd5e1;
+  background: var(--home-surface-subtle);
+  border: 1px solid var(--home-border);
+  color: var(--home-text-secondary);
 }
 
-/* ==========================================================================
-   7. ECOSYSTEM HOW-IT-WORKS STEP PIPELINE
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   8. ECOSYSTEM HOW-IT-WORKS STEP PIPELINE
+   -------------------------------------------------------------------------- */
 .home-workflow-section {
   max-width: 1240px;
-  margin: 100px auto 0;
+  margin: 90px auto 0;
   padding: 0 24px;
   position: relative;
   z-index: 10;
@@ -997,15 +1294,14 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
-  position: relative;
 }
 
 .workflow-step-card {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--home-surface);
+  border: 1px solid var(--home-border);
   border-radius: 16px;
-  padding: 24px;
-  position: relative;
+  padding: 22px;
+  box-shadow: var(--home-shadow-sm);
 }
 
 .step-num-badge {
@@ -1019,59 +1315,58 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
-  box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
+  margin-bottom: 14px;
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.4);
 }
 
 .workflow-step-card h5 {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--home-text-primary);
   margin: 0 0 8px;
 }
 
 .workflow-step-card p {
   font-size: 13px;
   line-height: 1.5;
-  color: #94a3b8;
+  color: var(--home-text-muted);
   margin: 0;
 }
 
-/* ==========================================================================
-   8. BENCHMARK CTA CARD & FOOTER
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   9. BENCHMARK CTA CARD & COMPREHENSIVE FOOTER
+   -------------------------------------------------------------------------- */
 .home-cta-section {
   max-width: 1240px;
-  margin: 110px auto 70px;
+  margin: 100px auto 60px;
   padding: 0 24px;
   position: relative;
   z-index: 10;
 }
 
 .home-cta-card {
-  background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 60%, #172554 100%);
+  background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 70%, #1e1b4b 100%);
   border: 1px solid rgba(56, 189, 248, 0.3);
   border-radius: 28px;
-  padding: 60px 45px;
+  padding: 55px 40px;
   text-align: center;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 50px rgba(37, 99, 235, 0.2);
-  position: relative;
-  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+  color: #ffffff;
 }
 
 .home-cta-card h2 {
-  font-size: clamp(30px, 4vw, 46px);
+  font-size: clamp(28px, 4vw, 44px);
   font-weight: 800;
   color: #ffffff;
-  margin: 0 0 16px;
+  margin: 0 0 14px;
   letter-spacing: -1px;
 }
 
 .home-cta-card p {
-  font-size: 17px;
+  font-size: 16px;
   color: #cbd5e1;
-  max-width: 650px;
-  margin: 0 auto 36px;
+  max-width: 640px;
+  margin: 0 auto 32px;
   line-height: 1.6;
 }
 
@@ -1106,9 +1401,9 @@
 
 /* Footer */
 .home-footer {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  background: #090d16;
-  padding: 60px 24px 40px;
+  border-top: 1px solid var(--home-border);
+  background: var(--home-surface);
+  padding: 55px 24px 35px;
   position: relative;
   z-index: 10;
 }
@@ -1119,15 +1414,15 @@
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 40px;
-  margin-bottom: 50px;
+  margin-bottom: 40px;
 }
 
 .footer-brand-col p {
   font-size: 14px;
   line-height: 1.6;
-  color: #94a3b8;
+  color: var(--home-text-muted);
   max-width: 320px;
-  margin: 16px 0 20px;
+  margin: 14px 0 18px;
 }
 
 .footer-status-pill {
@@ -1138,16 +1433,16 @@
   border-radius: 999px;
   background: rgba(16, 185, 129, 0.1);
   border: 1px solid rgba(16, 185, 129, 0.3);
-  color: #34d399;
+  color: #10b981;
   font-size: 12px;
   font-weight: 700;
 }
 
 .footer-col h6 {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
-  color: #ffffff;
-  margin: 0 0 16px;
+  color: var(--home-text-primary);
+  margin: 0 0 14px;
   text-transform: uppercase;
   letter-spacing: 0.6px;
 }
@@ -1158,38 +1453,40 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 9px;
 }
 
 .footer-col ul li a {
-  color: #94a3b8;
+  color: var(--home-text-muted);
   font-size: 13px;
   text-decoration: none;
   transition: color 0.2s;
 }
 
 .footer-col ul li a:hover {
-  color: #38bdf8;
+  color: #2563eb;
 }
 
 .footer-bottom {
   max-width: 1240px;
   margin: 0 auto;
-  padding-top: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 20px;
+  border-top: 1px solid var(--home-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
   font-size: 13px;
-  color: #64748b;
+  color: var(--home-text-muted);
   flex-wrap: wrap;
   gap: 12px;
 }
 
-/* ==========================================================================
-   RESPONSIVE BREAKPOINTS
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   10. RESPONSIVE MEDIA QUERIES
+   -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
+  .home-perspective-features { grid-template-columns: repeat(2, 1fr); }
+  .ai-trinity-grid { grid-template-columns: 1fr; }
   .home-stats-ribbon { grid-template-columns: repeat(2, 1fr); gap: 16px; }
   .coupon-grid { grid-template-columns: repeat(2, 1fr); }
   .features-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1201,13 +1498,14 @@
 
 @media (max-width: 768px) {
   .home-nav-links { display: none; }
-  .home-hero-title { font-size: 36px; }
+  .home-hero-title { font-size: 34px; }
   .home-hero-subtitle { font-size: 15px; }
+  .home-perspective-features { grid-template-columns: 1fr; }
   .features-grid { grid-template-columns: 1fr; }
   .coupon-grid { grid-template-columns: 1fr; }
   .workflow-steps-grid { grid-template-columns: 1fr; }
   .footer-inner { grid-template-columns: 1fr; }
   .banner-overlay { padding: 20px; }
-  .banner-title { font-size: 20px; }
+  .banner-title { font-size: 19px; }
   .banner-bullets { display: none; }
 }
