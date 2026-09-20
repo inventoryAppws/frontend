@@ -305,17 +305,6 @@ function Home() {
           </nav>
 
           <div className="home-nav-actions">
-            {/* Theme Toggle Button (Light/Dark) */}
-            <button
-              type="button"
-              className="home-theme-toggle"
-              onClick={toggleTheme}
-              title={`Switch to ${theme === "light" ? "Dark" : "Light"} Mode`}
-              aria-label="Toggle theme"
-            >
-              {theme === "light" ? <Moon size={17} /> : <Sun size={17} />}
-            </button>
-
             <Link to="/customer/login" className="home-btn-nav-login">
               Shopper Sign In
             </Link>
@@ -331,6 +320,18 @@ function Home() {
             >
               <Shield size={15} /> Admin Portal
             </a>
+
+            {/* Separate Theme Toggle Pill - Placed as the LAST option on far right */}
+            <button
+              type="button"
+              className="home-theme-pill-btn"
+              onClick={toggleTheme}
+              title={`Switch to ${theme === "light" ? "Dark" : "Light"} Mode`}
+              aria-label="Toggle theme"
+            >
+              {theme === "light" ? <Moon size={15} /> : <Sun size={15} />}
+              <span>{theme === "light" ? "Dark" : "Light"}</span>
+            </button>
           </div>
         </header>
       </div>
@@ -588,10 +589,10 @@ function Home() {
               {/* Crisp natural HD image with Ken-Burns fluid motion */}
               <img src={slide.image} alt={slide.title} className="banner-slide-img" />
 
-              {/* Seamless Glassy Liquid Flow Overlay (Blends naturally, NO card-on-card) */}
-              <div className="banner-glass-dock">
+              {/* Direct Text on Banner (Zero Card-on-Card, 100% Blended) */}
+              <div className="banner-caption-blend">
                 <span
-                  className="banner-glass-pill"
+                  className="banner-blend-pill"
                   style={{
                     background: slide.pillColor,
                     border: `1px solid ${slide.pillBorder}`,
@@ -601,11 +602,11 @@ function Home() {
                   <Sparkles size={12} style={{ display: "inline-block", marginRight: "5px" }} />
                   {slide.tag}
                 </span>
-                <h3 className="banner-glass-title">{slide.title}</h3>
-                <p className="banner-glass-desc">{slide.desc}</p>
-                <div className="banner-glass-bullets">
+                <h3 className="banner-blend-title">{slide.title}</h3>
+                <p className="banner-blend-desc">{slide.desc}</p>
+                <div className="banner-blend-bullets">
                   {slide.bullets.map((b, bIdx) => (
-                    <span key={bIdx} className="banner-glass-bullet-item">
+                    <span key={bIdx} className="banner-blend-bullet-item">
                       <CheckCircle2 size={14} color={slide.pillText} /> {b}
                     </span>
                   ))}

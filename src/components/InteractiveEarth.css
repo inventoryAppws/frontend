@@ -1,41 +1,153 @@
 /* ==========================================================================
-   INTERACTIVE 3D REAL EARTH CORE & FLUID GLASS CARDS (InteractiveEarth.css)
-   Seamless, Zero-Background, Adaptive 3D Centerpiece
+   NATURAL 3D EARTH CORE & ORBITING CART (InteractiveEarth.css)
+   100% Full Uncropped Image, Real NASA Photography, Fluid Glass Cards
    ========================================================================== */
 
 .interactive-earth-stage {
   position: relative;
   width: 100%;
-  max-width: 960px;
-  height: 560px;
-  margin: 15px auto 40px;
+  max-width: 1040px;
+  height: 580px;
+  margin: 10px auto 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   user-select: none;
+  overflow: visible;
 }
 
-/* Three.js Canvas Container (Centered Real Earth) */
-.earth-canvas-container {
-  position: absolute;
+/* 3D Centerpiece Anchor (Receives mouse parallax tilt) */
+.earth-center-anchor {
+  position: relative;
   width: 520px;
-  height: 520px;
-  cursor: grab;
-  z-index: 2;
-  filter: drop-shadow(0 20px 45px rgba(37, 99, 235, 0.22));
+  height: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* Natural Earth Sphere Container (Zero Crop, Full Circular Globe) */
+.natural-earth-sphere {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  z-index: 5;
+  animation: floatEarthGlobe 6s ease-in-out infinite alternate;
+  filter: drop-shadow(0 15px 40px rgba(14, 165, 233, 0.32));
   transition: filter 0.4s ease;
 }
 
-.interactive-earth-stage.dragging .earth-canvas-container {
-  cursor: grabbing;
+.home-root[data-theme="dark"] .natural-earth-sphere {
+  filter: drop-shadow(0 15px 55px rgba(56, 189, 248, 0.5));
 }
 
-.earth-canvas-container canvas {
-  width: 100% !important;
-  height: 100% !important;
+@keyframes floatEarthGlobe {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(1.5deg); }
+  100% { transform: translateY(-15px) rotate(-1deg); }
+}
+
+/* Genuine NASA Photography (Full Image, 0% Crop, Pristine Quality) */
+.natural-earth-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
   display: block;
-  pointer-events: auto;
-  outline: none;
+  pointer-events: none;
+}
+
+/* Atmospheric Rim Glow */
+.natural-earth-atmosphere {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2px solid rgba(56, 189, 248, 0.4);
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.35) inset, 0 0 35px rgba(56, 189, 248, 0.35);
+  pointer-events: none;
+}
+
+/* Orbital Rings (Tilted Equator Ellipses) */
+.earth-orbit-svg {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  width: 520px;
+  height: 280px;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 2;
+}
+
+.orbit-svg-front {
+  z-index: 8;
+}
+
+.orbit-path-back {
+  fill: none;
+  stroke: rgba(56, 189, 248, 0.35);
+  stroke-width: 2.2;
+  stroke-dasharray: 6 5;
+}
+
+.orbit-path-front {
+  fill: none;
+  stroke: #0284c7;
+  stroke-width: 3.2;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.85));
+}
+
+.home-root[data-theme="dark"] .orbit-path-front {
+  stroke: #38bdf8;
+  filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.95));
+}
+
+/* Orbiting 3D Shopping Cart Badge */
+.orbiting-cart-node {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  pointer-events: none;
+  will-change: transform;
+  transition: transform 0.04s linear;
+}
+
+.cart-badge-inner {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #0284c7;
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(2, 132, 199, 0.35), 0 0 0 4px rgba(56, 189, 248, 0.2);
+}
+
+.home-root[data-theme="dark"] .cart-badge-inner {
+  background: #0f172a;
+  border-color: #38bdf8;
+  color: #38bdf8;
+  box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5), 0 0 0 4px rgba(56, 189, 248, 0.25);
+}
+
+.cart-pulse-glow {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(56, 189, 248, 0.6);
+  animation: pulseCartRing 2s ease-out infinite;
+}
+
+@keyframes pulseCartRing {
+  0% { transform: scale(0.9); opacity: 0.9; }
+  100% { transform: scale(1.4); opacity: 0; }
 }
 
 /* --------------------------------------------------------------------------
@@ -53,7 +165,7 @@
   box-shadow: var(--home-shadow-md), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  z-index: 5;
+  z-index: 15;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
   cursor: pointer;
 }
@@ -67,26 +179,26 @@
 
 /* Fluid Organic Floating Keyframes */
 .mc-top-left {
-  top: 40px;
-  left: 20px;
+  top: 45px;
+  left: 30px;
   animation: floatFluid1 6.5s ease-in-out infinite alternate;
 }
 
 .mc-top-right {
-  top: 50px;
-  right: 20px;
+  top: 55px;
+  right: 30px;
   animation: floatFluid2 7s ease-in-out infinite alternate;
 }
 
 .mc-bottom-left {
-  bottom: 45px;
-  left: 30px;
+  bottom: 50px;
+  left: 40px;
   animation: floatFluid3 7.5s ease-in-out infinite alternate;
 }
 
 .mc-bottom-right {
-  bottom: 50px;
-  right: 30px;
+  bottom: 55px;
+  right: 40px;
   animation: floatFluid1 6.2s ease-in-out infinite alternate;
 }
 
@@ -108,7 +220,7 @@
   100% { transform: translateY(-12px) rotate(0.8deg); }
 }
 
-/* Icon Box with Glass Aura */
+/* Icon Box */
 .mc-icon-box {
   width: 46px;
   height: 46px;
@@ -162,7 +274,6 @@
   background: rgba(245, 158, 11, 0.24);
 }
 
-/* Typography Inside Metric Cards */
 .mc-text {
   text-align: left;
 }
@@ -199,15 +310,14 @@
 .doodle-callout {
   position: absolute;
   pointer-events: none;
-  z-index: 6;
+  z-index: 16;
   color: var(--home-doodle-color);
   display: flex;
   align-items: center;
 }
 
-/* "Shop the World ➔" Doodle */
 .doodle-shop-world {
-  bottom: 5px;
+  bottom: 12px;
   right: 175px;
   flex-direction: column;
   align-items: flex-end;
@@ -230,7 +340,6 @@
   filter: drop-shadow(0 2px 6px rgba(37, 99, 235, 0.25));
 }
 
-/* Drag Hint Doodle */
 .doodle-drag-hint {
   top: 15px;
   left: 280px;
@@ -241,11 +350,6 @@
   border-radius: 999px;
   opacity: 0.9;
   box-shadow: var(--home-shadow-sm);
-  transition: opacity 0.3s;
-}
-
-.interactive-earth-stage.dragging .doodle-drag-hint {
-  opacity: 0.15;
 }
 
 .doodle-sparkle-svg {
@@ -268,19 +372,26 @@
   letter-spacing: 0.3px;
 }
 
-/* Responsive Breakpoints */
+/* Responsive */
 @media (max-width: 1024px) {
   .interactive-earth-stage {
-    height: 500px;
+    height: 520px;
   }
-  .earth-canvas-container {
-    width: 420px;
-    height: 420px;
+  .earth-center-anchor {
+    width: 440px;
   }
-  .mc-top-left { left: 10px; top: 25px; }
-  .mc-top-right { right: 10px; top: 25px; }
-  .mc-bottom-left { left: 10px; bottom: 25px; }
-  .mc-bottom-right { right: 10px; bottom: 25px; }
+  .natural-earth-sphere {
+    width: 240px;
+    height: 240px;
+  }
+  .earth-orbit-svg {
+    width: 440px;
+    height: 240px;
+  }
+  .mc-top-left { left: 15px; top: 25px; }
+  .mc-top-right { right: 15px; top: 25px; }
+  .mc-bottom-left { left: 15px; bottom: 25px; }
+  .mc-bottom-right { right: 15px; bottom: 25px; }
   .doodle-shop-world { right: 130px; bottom: 0px; }
   .doodle-drag-hint { left: 220px; }
 }
@@ -288,14 +399,22 @@
 @media (max-width: 768px) {
   .interactive-earth-stage {
     height: auto;
-    min-height: 460px;
+    min-height: 480px;
     flex-direction: column;
     padding: 20px 0;
   }
-  .earth-canvas-container {
+  .earth-center-anchor {
     position: relative;
     width: 320px;
-    height: 320px;
+    height: 300px;
+  }
+  .natural-earth-sphere {
+    width: 200px;
+    height: 200px;
+  }
+  .earth-orbit-svg {
+    width: 320px;
+    height: 200px;
   }
   .interactive-metric-card {
     position: relative;
