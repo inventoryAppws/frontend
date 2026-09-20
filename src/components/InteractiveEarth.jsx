@@ -12,17 +12,17 @@ export default function InteractiveEarth({ theme = "light" }) {
     const container = mountRef.current;
     if (!container) return;
 
-    let width = container.clientWidth || 440;
-    let height = container.clientHeight || 440;
+    let width = container.clientWidth || 520;
+    let height = container.clientHeight || 520;
 
     // 1. Scene setup
     const scene = new THREE.Scene();
 
     // 2. Camera setup
-    const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 1000);
-    camera.position.set(0, 0.8, 7.8);
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
+    camera.position.set(0, 0.6, 8.2);
 
-    // 3. Renderer with full transparent alpha
+    // 3. WebGL Renderer with 100% transparent background (zero white box)
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
       alpha: true,
@@ -30,124 +30,129 @@ export default function InteractiveEarth({ theme = "light" }) {
     });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x000000, 0); // 100% transparent background
+    renderer.setClearColor(0x000000, 0);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.15;
+    renderer.toneMappingExposure = 1.25;
     container.appendChild(renderer.domElement);
 
-    // 4. Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, theme === "dark" ? 0.9 : 1.2);
+    // 4. Lighting: Realistic Sun + Atmospheric Ambient
+    const ambientLight = new THREE.AmbientLight(0xffffff, theme === "dark" ? 0.95 : 1.35);
     scene.add(ambientLight);
 
-    const sunLight = new THREE.DirectionalLight(0xffffff, theme === "dark" ? 2.2 : 2.5);
-    sunLight.position.set(5, 4, 6);
+    const sunLight = new THREE.DirectionalLight(0xffffff, theme === "dark" ? 2.4 : 2.8);
+    sunLight.position.set(6, 4, 7);
     scene.add(sunLight);
 
-    const rimLight = new THREE.DirectionalLight(0x38bdf8, theme === "dark" ? 1.8 : 1.2);
-    rimLight.position.set(-6, -2, -4);
-    scene.add(rimLight);
+    const blueAtmosphereLight = new THREE.DirectionalLight(0x38bdf8, theme === "dark" ? 1.6 : 1.2);
+    blueAtmosphereLight.position.set(-6, -2, -4);
+    scene.add(blueAtmosphereLight);
 
-    // 5. Globe Group (allows tilt and user rotation)
+    // 5. Globe Group (Tilts and spins in 3D)
     const globeGroup = new THREE.Group();
-    globeGroup.rotation.z = 0.22; // ~12 degree axial tilt for aesthetic angle
+    globeGroup.rotation.z = 0.23; // Natural 13.5 deg axial tilt
     scene.add(globeGroup);
 
-    // 6. Earth Sphere
-    const earthRadius = 2.15;
+    // 6. Base Earth Sphere (Realistic NASA Blue Marble)
+    const earthRadius = 2.25;
     const earthGeo = new THREE.SphereGeometry(earthRadius, 64, 64);
-
     const textureLoader = new THREE.TextureLoader();
-    const earthTexture = textureLoader.load(
-      "/earth-texture-hd.jpg",
-      () => {
-        renderer.render(scene, camera);
-      },
-      undefined,
-      (err) => {
-        console.warn("Using fallback Earth material due to load error:", err);
-      }
-    );
+
+    const earthTexture = textureLoader.load("/earth-texture-hd.jpg", () => {
+      renderer.render(scene, camera);
+    });
 
     const earthMat = new THREE.MeshStandardMaterial({
       map: earthTexture,
-      roughness: 0.55,
-      metalness: 0.12,
+      roughness: 0.38,
+      metalness: 0.08,
     });
-
     const earthMesh = new THREE.Mesh(earthGeo, earthMat);
     globeGroup.add(earthMesh);
 
-    // 7. Atmospheric Glow Layer
-    const atmosGeo = new THREE.SphereGeometry(earthRadius * 1.035, 48, 48);
-    const atmosMat = new THREE.MeshBasicMaterial({
-      color: theme === "dark" ? 0x0284c7 : 0x38bdf8,
+    // 7. Realistic Clouds Layer (Drifts independently above Earth)
+    const cloudGeo = new THREE.SphereGeometry(earthRadius * 1.018, 64, 64);
+    const cloudTexture = textureLoader.load("/earth-clouds-hd.png");
+    const cloudMat = new THREE.MeshStandardMaterial({
+      map: cloudTexture,
       transparent: true,
-      opacity: theme === "dark" ? 0.22 : 0.16,
+      opacity: theme === "dark" ? 0.38 : 0.45,
+      blending: THREE.AdditiveBlending,
+      roughness: 0.9,
+    });
+    const cloudMesh = new THREE.Mesh(cloudGeo, cloudMat);
+    globeGroup.add(cloudMesh);
+
+    // 8. Atmospheric Glow Layer (Luminous Cyan Rim)
+    const atmosGeo = new THREE.SphereGeometry(earthRadius * 1.045, 48, 48);
+    const atmosMat = new THREE.MeshBasicMaterial({
+      color: theme === "dark" ? 0x0ea5e9 : 0x38bdf8,
+      transparent: true,
+      opacity: theme === "dark" ? 0.28 : 0.20,
       blending: THREE.AdditiveBlending,
       side: THREE.BackSide,
     });
     const atmosMesh = new THREE.Mesh(atmosGeo, atmosMat);
     globeGroup.add(atmosMesh);
 
-    // 8. Tilted Orbital Commerce Ring
-    const ringRadius = 3.35;
-    const ringGeo = new THREE.TorusGeometry(ringRadius, 0.038, 16, 120);
+    // 9. Luminous Tilted Orbital Commerce Ring
+    const ringRadius = 3.55;
+    const ringGeo = new THREE.TorusGeometry(ringRadius, 0.042, 16, 120);
     const ringMat = new THREE.MeshStandardMaterial({
       color: theme === "dark" ? 0x38bdf8 : 0x0284c7,
       emissive: theme === "dark" ? 0x0284c7 : 0x38bdf8,
-      emissiveIntensity: theme === "dark" ? 0.8 : 0.5,
-      roughness: 0.2,
-      metalness: 0.8,
+      emissiveIntensity: theme === "dark" ? 0.9 : 0.6,
+      roughness: 0.15,
+      metalness: 0.85,
       transparent: true,
-      opacity: 0.88,
+      opacity: 0.9,
     });
     const orbitalRing = new THREE.Mesh(ringGeo, ringMat);
-    orbitalRing.rotation.x = Math.PI * 0.42; // Tilted equator ring
+    orbitalRing.rotation.x = Math.PI * 0.42;
     orbitalRing.rotation.y = -0.18;
     scene.add(orbitalRing);
 
-    // 9. Orbiting 3D Shopping Cart
+    // 10. 3D Miniature Orbiting Shopping Cart
     const cartGroup = new THREE.Group();
 
-    // Basket (tapered wireframe/clean modern white cart)
-    const basketGeo = new THREE.BoxGeometry(0.48, 0.36, 0.36);
+    // Basket body
+    const basketGeo = new THREE.BoxGeometry(0.52, 0.38, 0.38);
     const basketMat = new THREE.MeshStandardMaterial({
       color: 0xffffff,
-      roughness: 0.2,
-      metalness: 0.4,
+      roughness: 0.25,
+      metalness: 0.5,
     });
     const basket = new THREE.Mesh(basketGeo, basketMat);
     cartGroup.add(basket);
 
-    // Inside cart highlight (small colorful packages)
-    const pkg1Geo = new THREE.BoxGeometry(0.18, 0.18, 0.18);
+    // Colorful packages inside
+    const pkg1Geo = new THREE.BoxGeometry(0.2, 0.2, 0.2);
     const pkg1Mat = new THREE.MeshStandardMaterial({ color: 0x38bdf8 });
     const pkg1 = new THREE.Mesh(pkg1Geo, pkg1Mat);
-    pkg1.position.set(-0.08, 0.12, 0.02);
+    pkg1.position.set(-0.09, 0.14, 0.03);
     cartGroup.add(pkg1);
 
-    const pkg2Geo = new THREE.BoxGeometry(0.15, 0.15, 0.15);
+    const pkg2Geo = new THREE.BoxGeometry(0.16, 0.16, 0.16);
     const pkg2Mat = new THREE.MeshStandardMaterial({ color: 0xf43f5e });
     const pkg2 = new THREE.Mesh(pkg2Geo, pkg2Mat);
-    pkg2.position.set(0.1, 0.1, -0.04);
+    pkg2.position.set(0.11, 0.12, -0.05);
     cartGroup.add(pkg2);
 
-    // Cart Handle
-    const handleGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.38, 8);
+    // Handle
+    const handleGeo = new THREE.CylinderGeometry(0.022, 0.022, 0.42, 8);
     const handleMat = new THREE.MeshStandardMaterial({ color: 0x2563eb });
     const handle = new THREE.Mesh(handleGeo, handleMat);
     handle.rotation.z = Math.PI / 2;
-    handle.position.set(0.28, 0.22, 0);
+    handle.position.set(0.3, 0.24, 0);
     cartGroup.add(handle);
 
     // 4 Wheels
-    const wheelGeo = new THREE.CylinderGeometry(0.06, 0.06, 0.04, 12);
+    const wheelGeo = new THREE.CylinderGeometry(0.065, 0.065, 0.045, 12);
     const wheelMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 });
     const wheelOffsets = [
-      [-0.18, -0.22, 0.16],
-      [-0.18, -0.22, -0.16],
-      [0.18, -0.22, 0.16],
-      [0.18, -0.22, -0.16],
+      [-0.2, -0.24, 0.17],
+      [-0.2, -0.24, -0.17],
+      [0.2, -0.24, 0.17],
+      [0.2, -0.24, -0.17],
     ];
     wheelOffsets.forEach(([wx, wy, wz]) => {
       const wheel = new THREE.Mesh(wheelGeo, wheelMat);
@@ -158,13 +163,13 @@ export default function InteractiveEarth({ theme = "light" }) {
 
     scene.add(cartGroup);
 
-    // 10. Interactive Drag & Mouse Tracking State
+    // 11. Mouse Drag & Tracking
     let isUserInteracting = false;
     let previousMouseX = 0;
     let previousMouseY = 0;
     let targetRotationY = 0;
     let targetRotationX = 0;
-    let cartOrbitAngle = 0.4; // initial position in front of earth
+    let cartOrbitAngle = 0.4;
 
     const onMouseDown = (e) => {
       isUserInteracting = true;
@@ -182,12 +187,11 @@ export default function InteractiveEarth({ theme = "light" }) {
         previousMouseX = e.clientX;
         previousMouseY = e.clientY;
       } else {
-        // Subtle tilt parallax towards mouse
         const rect = container.getBoundingClientRect();
         const mouseNormX = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
         const mouseNormY = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
-        globeGroup.position.x = mouseNormX * 0.15;
-        globeGroup.position.y = -mouseNormY * 0.15;
+        globeGroup.position.x = mouseNormX * 0.18;
+        globeGroup.position.y = -mouseNormY * 0.18;
       }
     };
 
@@ -228,49 +232,45 @@ export default function InteractiveEarth({ theme = "light" }) {
     window.addEventListener("touchmove", onTouchMove, { passive: true });
     window.addEventListener("touchend", onTouchEnd);
 
-    // 11. Animation Loop
+    // 12. Animation Loop (Smooth 60fps)
     let animationFrameId;
-    const clock = new THREE.Clock();
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
-      const delta = clock.getDelta();
 
-      // Smooth damped rotation
+      // Auto-spin Earth & Cloud Drift
       if (!isUserInteracting) {
-        targetRotationY += 0.004; // Auto-spin
+        targetRotationY += 0.0035;
       }
+      cloudMesh.rotation.y += 0.0055; // Atmospheric cloud drift
 
       globeGroup.rotation.y += (targetRotationY - globeGroup.rotation.y) * 0.1;
       globeGroup.rotation.x += (targetRotationX - globeGroup.rotation.x) * 0.1;
 
-      // Orbiting Cart along the tilted ring
-      cartOrbitAngle += 0.012;
+      // Orbiting Cart along ring
+      cartOrbitAngle += 0.0125;
       const rx = ringRadius;
       const cosA = Math.cos(cartOrbitAngle);
       const sinA = Math.sin(cartOrbitAngle);
-
-      // Coordinates transformed by ring rotation (x: PI*0.42, y: -0.18)
-      // Standard parametric circle tilted
       const ringTiltX = Math.PI * 0.42;
-      cartGroup.position.x = rx * cosA;
-      cartGroup.position.y = -rx * sinA * Math.sin(ringTiltX) * 0.5;
-      cartGroup.position.z = rx * sinA * Math.cos(ringTiltX) * 1.25;
 
-      // Cart orientation along tangent
+      cartGroup.position.x = rx * cosA;
+      cartGroup.position.y = -rx * sinA * Math.sin(ringTiltX) * 0.52;
+      cartGroup.position.z = rx * sinA * Math.cos(ringTiltX) * 1.28;
+
       cartGroup.rotation.y = -cartOrbitAngle + Math.PI / 2;
-      cartGroup.rotation.x = Math.sin(cartOrbitAngle) * 0.15;
+      cartGroup.rotation.x = Math.sin(cartOrbitAngle) * 0.16;
 
       renderer.render(scene, camera);
     };
 
     animate();
 
-    // 12. Resize handler
+    // 13. Window Resize
     const handleResize = () => {
       if (!container) return;
-      width = container.clientWidth || 440;
-      height = container.clientHeight || 440;
+      width = container.clientWidth || 520;
+      height = container.clientHeight || 520;
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
       renderer.setSize(width, height);
@@ -293,6 +293,8 @@ export default function InteractiveEarth({ theme = "light" }) {
       }
       earthGeo.dispose();
       earthMat.dispose();
+      cloudGeo.dispose();
+      cloudMat.dispose();
       atmosGeo.dispose();
       atmosMat.dispose();
       ringGeo.dispose();
@@ -305,10 +307,10 @@ export default function InteractiveEarth({ theme = "light" }) {
 
   return (
     <div className={`interactive-earth-stage ${isDragging ? "dragging" : ""}`}>
-      {/* Three.js Canvas Container (100% transparent background) */}
-      <div ref={mountRef} className="earth-canvas-container" title="Click & Drag to rotate Earth" />
+      {/* Three.js Canvas Container (100% transparent, center realistic Earth) */}
+      <div ref={mountRef} className="earth-canvas-container" title="Click & Drag to rotate 3D Earth" />
 
-      {/* Floating Glassmorphic Metric Cards */}
+      {/* Floating Glassmorphic Metric Cards (Organic fluid motion) */}
       {/* Top Left: Products */}
       <div
         className={`interactive-metric-card mc-top-left ${activeMetric === "products" ? "active" : ""}`}
@@ -316,7 +318,7 @@ export default function InteractiveEarth({ theme = "light" }) {
         onMouseLeave={() => setActiveMetric(null)}
       >
         <div className="mc-icon-box mc-blue">
-          <Globe size={20} />
+          <Globe size={22} />
         </div>
         <div className="mc-text">
           <span className="mc-label">Global Catalog</span>
@@ -332,7 +334,7 @@ export default function InteractiveEarth({ theme = "light" }) {
         onMouseLeave={() => setActiveMetric(null)}
       >
         <div className="mc-icon-box mc-purple">
-          <Users size={20} />
+          <Users size={22} />
         </div>
         <div className="mc-text">
           <span className="mc-label">Merchant Hubs</span>
@@ -348,7 +350,7 @@ export default function InteractiveEarth({ theme = "light" }) {
         onMouseLeave={() => setActiveMetric(null)}
       >
         <div className="mc-icon-box mc-rose">
-          <Heart size={20} />
+          <Heart size={22} />
         </div>
         <div className="mc-text">
           <span className="mc-label">Happy Shoppers</span>
@@ -364,38 +366,37 @@ export default function InteractiveEarth({ theme = "light" }) {
         onMouseLeave={() => setActiveMetric(null)}
       >
         <div className="mc-icon-box mc-amber">
-          <Zap size={20} />
+          <Zap size={22} />
         </div>
         <div className="mc-text">
           <span className="mc-label">Dispatch Accuracy</span>
-          <span className="mc-value">99.98%</span>
+          <span className="mc-value">99.98% SLA</span>
           <span className="mc-sub">Sub-Second Processing</span>
         </div>
       </div>
 
       {/* Playful Hand-Drawn Doodle Callouts */}
-      {/* 1. "Shop the World ➔" Doodle matching user reference */}
+      {/* 1. "Shop the World ➔" Doodle */}
       <div className="doodle-callout doodle-shop-world">
         <span className="doodle-text">Shop the World</span>
         <svg className="doodle-arrow-svg" viewBox="0 0 70 50" fill="none">
-          {/* Curved hand-drawn arrow curling towards Earth & cart */}
           <path
             d="M8,42 C24,45 52,36 56,12"
             stroke="currentColor"
-            strokeWidth="2.6"
+            strokeWidth="2.8"
             strokeLinecap="round"
           />
           <path
             d="M45,18 L56,12 L60,24"
             stroke="currentColor"
-            strokeWidth="2.6"
+            strokeWidth="2.8"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
         </svg>
       </div>
 
-      {/* 2. Interactive Hint Doodle */}
+      {/* 2. Interactive Drag Hint */}
       <div className="doodle-callout doodle-drag-hint">
         <svg className="doodle-sparkle-svg" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />

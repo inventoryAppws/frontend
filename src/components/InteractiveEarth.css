@@ -1,28 +1,29 @@
 /* ==========================================================================
-   INTERACTIVE 3D EARTH CORE & DOODLES (InteractiveEarth.css)
+   INTERACTIVE 3D REAL EARTH CORE & FLUID GLASS CARDS (InteractiveEarth.css)
    Seamless, Zero-Background, Adaptive 3D Centerpiece
    ========================================================================== */
 
 .interactive-earth-stage {
   position: relative;
   width: 100%;
-  max-width: 860px;
-  height: 520px;
-  margin: 10px auto 30px;
+  max-width: 960px;
+  height: 560px;
+  margin: 15px auto 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   user-select: none;
 }
 
-/* Three.js Canvas Container */
+/* Three.js Canvas Container (Centered Real Earth) */
 .earth-canvas-container {
   position: absolute;
-  width: 480px;
-  height: 480px;
+  width: 520px;
+  height: 520px;
   cursor: grab;
   z-index: 2;
-  transition: transform 0.2s ease;
+  filter: drop-shadow(0 20px 45px rgba(37, 99, 235, 0.22));
+  transition: filter 0.4s ease;
 }
 
 .interactive-earth-stage.dragging .earth-canvas-container {
@@ -38,126 +39,130 @@
 }
 
 /* --------------------------------------------------------------------------
-   FLOATING GLASSMORPHIC METRIC CARDS
+   FLUID GLASSMORPHIC FLOATING METRIC CARDS
    -------------------------------------------------------------------------- */
 .interactive-metric-card {
   position: absolute;
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 14px 20px;
+  padding: 14px 22px;
   background: var(--home-surface);
   border: 1px solid var(--home-border);
-  border-radius: 18px;
-  box-shadow: var(--home-shadow-md);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  border-radius: 20px;
+  box-shadow: var(--home-shadow-md), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   z-index: 5;
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
   cursor: pointer;
 }
 
 .interactive-metric-card:hover,
 .interactive-metric-card.active {
-  transform: translateY(-6px) scale(1.03);
-  box-shadow: var(--home-shadow-lg);
+  transform: translateY(-8px) scale(1.04);
+  box-shadow: var(--home-shadow-lg), 0 0 25px rgba(37, 99, 235, 0.2);
   border-color: var(--home-border-hover);
 }
 
-/* Card Placements */
+/* Fluid Organic Floating Keyframes */
 .mc-top-left {
-  top: 35px;
-  left: 25px;
-  animation: floatCardSlow1 6s ease-in-out infinite alternate;
+  top: 40px;
+  left: 20px;
+  animation: floatFluid1 6.5s ease-in-out infinite alternate;
 }
 
 .mc-top-right {
-  top: 45px;
-  right: 25px;
-  animation: floatCardSlow2 6.5s ease-in-out infinite alternate;
+  top: 50px;
+  right: 20px;
+  animation: floatFluid2 7s ease-in-out infinite alternate;
 }
 
 .mc-bottom-left {
-  bottom: 40px;
-  left: 35px;
-  animation: floatCardSlow3 7s ease-in-out infinite alternate;
+  bottom: 45px;
+  left: 30px;
+  animation: floatFluid3 7.5s ease-in-out infinite alternate;
 }
 
 .mc-bottom-right {
-  bottom: 45px;
-  right: 35px;
-  animation: floatCardSlow1 5.8s ease-in-out infinite alternate;
+  bottom: 50px;
+  right: 30px;
+  animation: floatFluid1 6.2s ease-in-out infinite alternate;
 }
 
-@keyframes floatCardSlow1 {
-  0% { transform: translateY(0px); }
-  100% { transform: translateY(-10px); }
+@keyframes floatFluid1 {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(0.8deg); }
+  100% { transform: translateY(-14px) rotate(-0.5deg); }
 }
 
-@keyframes floatCardSlow2 {
-  0% { transform: translateY(-5px); }
-  100% { transform: translateY(8px); }
+@keyframes floatFluid2 {
+  0% { transform: translateY(-6px) rotate(0deg); }
+  50% { transform: translateY(4px) rotate(-1deg); }
+  100% { transform: translateY(10px) rotate(0.6deg); }
 }
 
-@keyframes floatCardSlow3 {
-  0% { transform: translateY(0px); }
-  100% { transform: translateY(-8px); }
+@keyframes floatFluid3 {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-7px) rotate(-0.8deg); }
+  100% { transform: translateY(-12px) rotate(0.8deg); }
 }
 
-/* Icon Box */
+/* Icon Box with Glass Aura */
 .mc-icon-box {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: transform 0.3s ease;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5);
 }
 
 .interactive-metric-card:hover .mc-icon-box {
-  transform: scale(1.1) rotate(5deg);
+  transform: scale(1.15) rotate(6deg);
 }
 
 .mc-blue {
-  background: rgba(56, 189, 248, 0.16);
+  background: rgba(56, 189, 248, 0.18);
   color: #0284c7;
 }
 
 .mc-purple {
-  background: rgba(139, 92, 246, 0.16);
+  background: rgba(139, 92, 246, 0.18);
   color: #7c3aed;
 }
 
 .mc-rose {
-  background: rgba(244, 63, 94, 0.16);
+  background: rgba(244, 63, 94, 0.18);
   color: #e11d48;
 }
 
 .mc-amber {
-  background: rgba(245, 158, 11, 0.16);
+  background: rgba(245, 158, 11, 0.18);
   color: #d97706;
 }
 
 .home-root[data-theme="dark"] .mc-blue {
   color: #38bdf8;
-  background: rgba(56, 189, 248, 0.22);
+  background: rgba(56, 189, 248, 0.24);
 }
 .home-root[data-theme="dark"] .mc-purple {
-  color: #a78bfa;
-  background: rgba(139, 92, 246, 0.22);
+  color: #c084fc;
+  background: rgba(139, 92, 246, 0.24);
 }
 .home-root[data-theme="dark"] .mc-rose {
   color: #fb7185;
-  background: rgba(244, 63, 94, 0.22);
+  background: rgba(244, 63, 94, 0.24);
 }
 .home-root[data-theme="dark"] .mc-amber {
   color: #fbbf24;
-  background: rgba(245, 158, 11, 0.22);
+  background: rgba(245, 158, 11, 0.24);
 }
 
-/* Text inside Cards */
+/* Typography Inside Metric Cards */
 .mc-text {
   text-align: left;
 }
@@ -168,12 +173,12 @@
   font-weight: 700;
   color: var(--home-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
 }
 
 .mc-value {
   display: block;
-  font-size: 19px;
+  font-size: 20px;
   font-weight: 800;
   color: var(--home-text-primary);
   letter-spacing: -0.5px;
@@ -184,7 +189,7 @@
 .mc-sub {
   display: block;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--home-text-muted);
 }
 
@@ -200,46 +205,47 @@
   align-items: center;
 }
 
-/* 1. "Shop the World" Doodle (Matching media_1789879568830.png) */
+/* "Shop the World ➔" Doodle */
 .doodle-shop-world {
-  bottom: 0px;
-  right: 170px;
+  bottom: 5px;
+  right: 175px;
   flex-direction: column;
   align-items: flex-end;
-  transform: rotate(-5deg);
+  transform: rotate(-6deg);
 }
 
 .doodle-text {
   font-family: 'Caveat', 'Comic Sans MS', 'Patrick Hand', cursive, sans-serif;
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 700;
   letter-spacing: 0.5px;
   line-height: 1;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .doodle-arrow-svg {
-  width: 65px;
-  height: 45px;
+  width: 70px;
+  height: 48px;
   margin-top: -2px;
-  filter: drop-shadow(0 2px 4px rgba(37, 99, 235, 0.2));
+  filter: drop-shadow(0 2px 6px rgba(37, 99, 235, 0.25));
 }
 
-/* 2. Drag Hint Doodle */
+/* Drag Hint Doodle */
 .doodle-drag-hint {
   top: 15px;
-  left: 260px;
-  gap: 6px;
-  background: var(--home-surface-subtle);
+  left: 280px;
+  gap: 7px;
+  background: var(--home-surface);
   border: 1px dashed var(--home-doodle-color);
-  padding: 4px 12px;
+  padding: 5px 14px;
   border-radius: 999px;
-  opacity: 0.85;
+  opacity: 0.9;
+  box-shadow: var(--home-shadow-sm);
   transition: opacity 0.3s;
 }
 
 .interactive-earth-stage.dragging .doodle-drag-hint {
-  opacity: 0.2;
+  opacity: 0.15;
 }
 
 .doodle-sparkle-svg {
@@ -251,7 +257,7 @@
 
 @keyframes pulseSparkle {
   0% { transform: scale(0.8) rotate(0deg); }
-  100% { transform: scale(1.2) rotate(45deg); }
+  100% { transform: scale(1.25) rotate(45deg); }
 }
 
 .doodle-hint-text {
@@ -259,32 +265,30 @@
   font-size: 11px;
   font-weight: 700;
   color: var(--home-doodle-color);
-  letter-spacing: 0.2px;
+  letter-spacing: 0.3px;
 }
 
-/* --------------------------------------------------------------------------
-   RESPONSIVE DESIGN
-   -------------------------------------------------------------------------- */
+/* Responsive Breakpoints */
 @media (max-width: 1024px) {
   .interactive-earth-stage {
-    height: 480px;
+    height: 500px;
   }
   .earth-canvas-container {
-    width: 400px;
-    height: 400px;
+    width: 420px;
+    height: 420px;
   }
-  .mc-top-left { left: 10px; top: 20px; }
-  .mc-top-right { right: 10px; top: 20px; }
-  .mc-bottom-left { left: 10px; bottom: 20px; }
-  .mc-bottom-right { right: 10px; bottom: 20px; }
-  .doodle-shop-world { right: 120px; bottom: -5px; }
-  .doodle-drag-hint { left: 200px; }
+  .mc-top-left { left: 10px; top: 25px; }
+  .mc-top-right { right: 10px; top: 25px; }
+  .mc-bottom-left { left: 10px; bottom: 25px; }
+  .mc-bottom-right { right: 10px; bottom: 25px; }
+  .doodle-shop-world { right: 130px; bottom: 0px; }
+  .doodle-drag-hint { left: 220px; }
 }
 
 @media (max-width: 768px) {
   .interactive-earth-stage {
     height: auto;
-    min-height: 440px;
+    min-height: 460px;
     flex-direction: column;
     padding: 20px 0;
   }

@@ -41,8 +41,8 @@ const BANNER_SLIDES = [
   {
     id: "slide-1",
     tag: "AI COMMERCE ECOSYSTEM",
-    pillColor: "rgba(56, 189, 248, 0.18)",
-    pillBorder: "rgba(56, 189, 248, 0.4)",
+    pillColor: "rgba(56, 189, 248, 0.2)",
+    pillBorder: "rgba(56, 189, 248, 0.45)",
     pillText: "#0284c7",
     title: "Next-Gen Intelligent Multi-App Commerce",
     desc: "Unifying consumer shopping, multi-warehouse vendor fulfillment, and central administrative governance into a single hyper-fast, real-time ecosystem.",
@@ -51,69 +51,69 @@ const BANNER_SLIDES = [
   },
   {
     id: "slide-2",
-    tag: "CONSUMER STOREFRONT",
-    pillColor: "rgba(244, 63, 94, 0.18)",
-    pillBorder: "rgba(244, 63, 94, 0.4)",
-    pillText: "#e11d48",
-    title: "Vibrant Shopping Built for Modern Lifestyles",
-    desc: "Experience frictionless commerce with Darwin AI visual search, instant wallet payments, and live milestone order tracking directly to your doorstep.",
-    image: "/banners/marketing/customer-banner.jpg",
-    bullets: ["Darwin Camera Vision Search", "Instant Digital Wallet Checkout", "Guaranteed 7-Day Easy Returns"]
+    tag: "FASHION & APPAREL",
+    pillColor: "rgba(236, 72, 153, 0.2)",
+    pillBorder: "rgba(236, 72, 153, 0.45)",
+    pillText: "#db2777",
+    title: "Style for Every You: Fresh Seasonal Trends",
+    desc: "Curated apparel collections, tailored coats, and designer accessories from verified boutique merchants with 3D virtual avatar try-on.",
+    image: "/banners/banner-slide-2.jpg",
+    bullets: ["3D Virtual Avatar Try-On", "Guaranteed Perfect Sizing", "30-Day Easy Returns"]
   },
   {
     id: "slide-3",
-    tag: "VENDOR SUPPLY CHAIN",
-    pillColor: "rgba(16, 185, 129, 0.18)",
-    pillBorder: "rgba(16, 185, 129, 0.4)",
-    pillText: "#059669",
-    title: "Empowering Merchants Across Regional Distribution Hubs",
-    desc: "Atlas AI monitors stock depletion, triggers automated reordering alerts, and coordinates multi-warehouse logistics with transparent settlements.",
-    image: "/banners/marketing/vendor-banner.jpg",
-    bullets: ["Atlas Stock Depletion Forecaster", "Automated Threshold Reorders", "Zero Upfront Merchant Commission"]
+    tag: "SMART TECH & COMPUTING",
+    pillColor: "rgba(139, 92, 246, 0.2)",
+    pillBorder: "rgba(139, 92, 246, 0.45)",
+    pillText: "#7c3aed",
+    title: "Upgrade to Smarter Living: Premium Electronics",
+    desc: "Cutting-edge laptops, high-resolution smartphones, and wireless noise-canceling audio gear backed by manufacturer-backed digital warranties.",
+    image: "/banners/banner-slide-1.jpg",
+    bullets: ["Darwin Camera Vision Search", "Digital Warranty Vault", "Sub-Second Wallet Debit"]
   },
   {
     id: "slide-4",
-    tag: "SMART TECH & AUDIO",
-    pillColor: "rgba(139, 92, 246, 0.18)",
-    pillBorder: "rgba(139, 92, 246, 0.4)",
-    pillText: "#7c3aed",
-    title: "Upgrade to Smarter Living: Premium Electronics",
-    desc: "Experience cutting-edge consumer gadgets, wireless audio accessories, and smart home appliances backed by verified vendor warranties.",
-    image: "/banners/banner-slide-4.jpg",
-    bullets: ["Digital Warranty Vault", "Tested & Certified Hardware", "Sub-Second Wallet Debit"]
+    tag: "PRO GAMING & ACCESSORIES",
+    pillColor: "rgba(16, 185, 129, 0.2)",
+    pillBorder: "rgba(16, 185, 129, 0.45)",
+    pillText: "#059669",
+    title: "Level Up Your Battle Station: Pro Gaming Gear",
+    desc: "Ultra-responsive mechanical keyboards, spatial studio-grade surround headsets, and low-latency precision controllers.",
+    image: "/banners/banner-slide-6.jpg",
+    bullets: ["Custom RGB Synced Ecosystem", "Zero-Lag Wireless Tech", "Tournament-Certified Hardware"]
   },
   {
     id: "slide-5",
-    tag: "HANDPICKED SELECTIONS",
-    pillColor: "rgba(6, 182, 212, 0.18)",
-    pillBorder: "rgba(6, 182, 212, 0.4)",
-    pillText: "#0891b2",
-    title: "Great Products, Great Prices from Verified Merchants",
-    desc: "Shop curated quality essentials directly from trusted suppliers across regional hubs, offering guaranteed authenticity and instant dispatch.",
-    image: "/banners/banner-slide-1.jpg",
-    bullets: ["Multi-Vendor Collections", "Free Express Delivery", "No-Hassle 7-Day Returns"]
+    tag: "HOME, LIVING & DECOR",
+    pillColor: "rgba(245, 158, 11, 0.2)",
+    pillBorder: "rgba(245, 158, 11, 0.45)",
+    pillText: "#d97706",
+    title: "Serene Spaces: Modern Living & Nordic Design",
+    desc: "Elevate your sanctuary with sustainable furniture, ambient room aesthetics, and hand-finished artisanal home accents.",
+    image: "/banners/banner-slide-4.jpg",
+    bullets: ["Sustainably Sourced Wood", "Direct From Regional Craftsmen", "Free Room-of-Choice Delivery"]
   },
   {
     id: "slide-6",
-    tag: "FAST FULFILLMENT",
-    pillColor: "rgba(245, 158, 11, 0.18)",
-    pillBorder: "rgba(245, 158, 11, 0.4)",
-    pillText: "#d97706",
-    title: "Instant Multi-Warehouse Express Delivery",
-    desc: "Automated routing connects your shopping cart to the nearest regional distribution hub for ultra-fast milestone-tracked fulfillment.",
-    image: "/banners/orders_hero_banner.jpg",
-    bullets: ["Live Milestone Maps", "Automated Dispatch", "Real-Time Tracking"]
+    tag: "GOURMET & CULINARY",
+    pillColor: "rgba(244, 63, 94, 0.2)",
+    pillBorder: "rgba(244, 63, 94, 0.45)",
+    pillText: "#e11d48",
+    title: "Master the Kitchen: Chef-Grade Cookware",
+    desc: "Non-stick cast iron skillets, Japanese carbon steel cutlery, and artisanal cooking essentials built for everyday gourmets.",
+    image: "/banners/banner-slide-5.jpg",
+    bullets: ["Lifetime Heat Distribution", "Food-Safe Certified Alloys", "Instant Flash Chef Bundles"]
   },
   {
     id: "slide-7",
-    tag: "FASHION & APPAREL",
-    pillColor: "rgba(236, 72, 153, 0.18)",
-    pillBorder: "rgba(236, 72, 153, 0.4)",
-    pillText: "#db2777",
-    title: "Style for Every You: Fresh Seasonal Trends",
-    desc: "Discover premium apparel and lifestyle essentials with virtual 3D avatar try-on sizing, price history tracking, and automated discount coupons.",
-    image: "/banners/banner-slide-3.jpg",
-    bullets: ["3D Avatar Virtual Fitting", "30-Day Price Drop Alerts", "Shared Friend Carts"]
+    tag: "MULTI-HUB FULFILLMENT",
+    pillColor: "rgba(6, 182, 212, 0.2)",
+    pillBorder: "rgba(6, 182, 212, 0.45)",
+    pillText: "#0891b2",
+    title: "Instant Multi-Warehouse Express Delivery",
+    desc: "Automated routing connects your shopping cart to the nearest regional distribution hub for ultra-fast milestone-tracked fulfillment.",
+    image: "/banners/orders_hero_banner.jpg",
+    bullets: ["Live Milestone Maps", "Automated Dispatch Routing", "99.98% Accuracy SLA"]
   }
 ];
 
@@ -582,29 +582,30 @@ function Home() {
           {BANNER_SLIDES.map((slide, idx) => (
             <div
               key={slide.id}
-              className="banner-slide-wrapper"
+              className={`banner-slide-wrapper ${idx === currentSlide ? "active-slide" : ""}`}
               style={{ display: idx === currentSlide ? "block" : "none" }}
             >
-              {/* Crisp natural HD image with NO dimming filter */}
+              {/* Crisp natural HD image with Ken-Burns fluid motion */}
               <img src={slide.image} alt={slide.title} className="banner-slide-img" />
 
-              {/* Floating Frosted Glass Content Card (Theme-Adaptive, Never Dim) */}
-              <div className="banner-content-card">
+              {/* Seamless Glassy Liquid Flow Overlay (Blends naturally, NO card-on-card) */}
+              <div className="banner-glass-dock">
                 <span
-                  className="banner-pill"
+                  className="banner-glass-pill"
                   style={{
                     background: slide.pillColor,
                     border: `1px solid ${slide.pillBorder}`,
                     color: slide.pillText
                   }}
                 >
+                  <Sparkles size={12} style={{ display: "inline-block", marginRight: "5px" }} />
                   {slide.tag}
                 </span>
-                <h3 className="banner-title">{slide.title}</h3>
-                <p className="banner-desc">{slide.desc}</p>
-                <div className="banner-bullets">
+                <h3 className="banner-glass-title">{slide.title}</h3>
+                <p className="banner-glass-desc">{slide.desc}</p>
+                <div className="banner-glass-bullets">
                   {slide.bullets.map((b, bIdx) => (
-                    <span key={bIdx} className="banner-bullet-item">
+                    <span key={bIdx} className="banner-glass-bullet-item">
                       <CheckCircle2 size={14} color={slide.pillText} /> {b}
                     </span>
                   ))}
@@ -631,16 +632,18 @@ function Home() {
             <ChevronRight size={22} />
           </button>
 
-          {/* Indicator Dots */}
+          {/* Dynamic Progress Indicator Bars */}
           <div className="slider-dots">
             {BANNER_SLIDES.map((_, dotIdx) => (
               <button
                 key={dotIdx}
                 type="button"
-                className={`slider-dot ${dotIdx === currentSlide ? "active" : ""}`}
+                className={`slider-dot-bar ${dotIdx === currentSlide ? "active" : ""}`}
                 onClick={() => setCurrentSlide(dotIdx)}
                 aria-label={`Slide ${dotIdx + 1}`}
-              />
+              >
+                {dotIdx === currentSlide && <span className="slider-progress-fill" />}
+              </button>
             ))}
           </div>
         </div>
