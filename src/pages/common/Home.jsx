@@ -33,6 +33,7 @@ import {
   RefreshCw,
   Box
 } from "lucide-react";
+import InteractiveEarth from "../../components/InteractiveEarth";
 import "./Home.css";
 
 // Natural Realistic HD Banner Slides (Using in-store natural HD photography + approved hero banner)
@@ -50,6 +51,28 @@ const BANNER_SLIDES = [
   },
   {
     id: "slide-2",
+    tag: "CONSUMER STOREFRONT",
+    pillColor: "rgba(244, 63, 94, 0.18)",
+    pillBorder: "rgba(244, 63, 94, 0.4)",
+    pillText: "#e11d48",
+    title: "Vibrant Shopping Built for Modern Lifestyles",
+    desc: "Experience frictionless commerce with Darwin AI visual search, instant wallet payments, and live milestone order tracking directly to your doorstep.",
+    image: "/banners/marketing/customer-banner.jpg",
+    bullets: ["Darwin Camera Vision Search", "Instant Digital Wallet Checkout", "Guaranteed 7-Day Easy Returns"]
+  },
+  {
+    id: "slide-3",
+    tag: "VENDOR SUPPLY CHAIN",
+    pillColor: "rgba(16, 185, 129, 0.18)",
+    pillBorder: "rgba(16, 185, 129, 0.4)",
+    pillText: "#059669",
+    title: "Empowering Merchants Across Regional Distribution Hubs",
+    desc: "Atlas AI monitors stock depletion, triggers automated reordering alerts, and coordinates multi-warehouse logistics with transparent settlements.",
+    image: "/banners/marketing/vendor-banner.jpg",
+    bullets: ["Atlas Stock Depletion Forecaster", "Automated Threshold Reorders", "Zero Upfront Merchant Commission"]
+  },
+  {
+    id: "slide-4",
     tag: "SMART TECH & AUDIO",
     pillColor: "rgba(139, 92, 246, 0.18)",
     pillBorder: "rgba(139, 92, 246, 0.4)",
@@ -57,21 +80,21 @@ const BANNER_SLIDES = [
     title: "Upgrade to Smarter Living: Premium Electronics",
     desc: "Experience cutting-edge consumer gadgets, wireless audio accessories, and smart home appliances backed by verified vendor warranties.",
     image: "/banners/banner-slide-4.jpg",
-    bullets: ["Darwin AI Camera Scanner", "Digital Warranty Vault", "Sub-Second Wallet Debit"]
+    bullets: ["Digital Warranty Vault", "Tested & Certified Hardware", "Sub-Second Wallet Debit"]
   },
   {
-    id: "slide-3",
+    id: "slide-5",
     tag: "HANDPICKED SELECTIONS",
-    pillColor: "rgba(16, 185, 129, 0.18)",
-    pillBorder: "rgba(16, 185, 129, 0.4)",
-    pillText: "#059669",
+    pillColor: "rgba(6, 182, 212, 0.18)",
+    pillBorder: "rgba(6, 182, 212, 0.4)",
+    pillText: "#0891b2",
     title: "Great Products, Great Prices from Verified Merchants",
     desc: "Shop curated quality essentials directly from trusted suppliers across regional hubs, offering guaranteed authenticity and instant dispatch.",
     image: "/banners/banner-slide-1.jpg",
     bullets: ["Multi-Vendor Collections", "Free Express Delivery", "No-Hassle 7-Day Returns"]
   },
   {
-    id: "slide-4",
+    id: "slide-6",
     tag: "FAST FULFILLMENT",
     pillColor: "rgba(245, 158, 11, 0.18)",
     pillBorder: "rgba(245, 158, 11, 0.4)",
@@ -82,7 +105,7 @@ const BANNER_SLIDES = [
     bullets: ["Live Milestone Maps", "Automated Dispatch", "Real-Time Tracking"]
   },
   {
-    id: "slide-5",
+    id: "slide-7",
     tag: "FASHION & APPAREL",
     pillColor: "rgba(236, 72, 153, 0.18)",
     pillBorder: "rgba(236, 72, 153, 0.4)",
@@ -402,70 +425,10 @@ function Home() {
         )}
 
         {/* =========================================================
-            3D EARTH CORE SPOTLIGHT (Matching media_1789879568830.png)
+            3D INTERACTIVE EARTH CORE SPOTLIGHT
+            (Full WebGL 3D Earth, Orbiting Cart, Metric Cards & Doodles)
         ========================================================== */}
-        <div className="home-earth-spotlight">
-          {/* Top-Left Floating Card */}
-          <div className="earth-metric-card em-top-left">
-            <div className="em-icon-box" style={{ background: "rgba(56, 189, 248, 0.15)", color: "#0284c7" }}>
-              <Globe size={20} />
-            </div>
-            <div className="em-info">
-              <span className="em-label">Products</span>
-              <span className="em-value">10K+ Verified</span>
-            </div>
-          </div>
-
-          {/* Top-Right Floating Card */}
-          <div className="earth-metric-card em-top-right">
-            <div className="em-icon-box" style={{ background: "rgba(139, 92, 246, 0.15)", color: "#7c3aed" }}>
-              <Users size={20} />
-            </div>
-            <div className="em-info">
-              <span className="em-label">Vendors</span>
-              <span className="em-value">500+ Active</span>
-            </div>
-          </div>
-
-          {/* Center 3D Earth Globe Visual */}
-          <div className="earth-center-wrapper">
-            <img
-              src="/earth-core-visual.png"
-              alt="3D Earth Orbiting Commerce"
-              className="earth-globe-img"
-            />
-          </div>
-
-          {/* Bottom-Left Floating Card */}
-          <div className="earth-metric-card em-bottom-left">
-            <div className="em-icon-box" style={{ background: "rgba(244, 63, 94, 0.15)", color: "#e11d48" }}>
-              <Heart size={20} />
-            </div>
-            <div className="em-info">
-              <span className="em-label">Happy Customers</span>
-              <span className="em-value">25K+ Shoppers</span>
-            </div>
-          </div>
-
-          {/* Bottom-Right Floating Card */}
-          <div className="earth-metric-card em-bottom-right">
-            <div className="em-icon-box" style={{ background: "rgba(16, 185, 129, 0.15)", color: "#059669" }}>
-              <Truck size={20} />
-            </div>
-            <div className="em-info">
-              <span className="em-label">Dispatch Accuracy</span>
-              <span className="em-value">99.98% SLA</span>
-            </div>
-          </div>
-
-          {/* Playful Hand-Drawn Doodle Callout (Shop the World ➔) */}
-          <div className="earth-doodle-callout">
-            <span>Shop the World</span>
-            <svg className="earth-doodle-arrow" viewBox="0 0 50 35">
-              <path d="M5 25 Q25 5 45 15 M38 8 L46 15 L38 22" />
-            </svg>
-          </div>
-        </div>
+        <InteractiveEarth theme={theme} />
 
         {/* Perspective Feature Highlights */}
         {perspective === "shopper" ? (

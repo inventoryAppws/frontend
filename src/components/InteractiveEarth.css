@@ -1,0 +1,309 @@
+/* ==========================================================================
+   INTERACTIVE 3D EARTH CORE & DOODLES (InteractiveEarth.css)
+   Seamless, Zero-Background, Adaptive 3D Centerpiece
+   ========================================================================== */
+
+.interactive-earth-stage {
+  position: relative;
+  width: 100%;
+  max-width: 860px;
+  height: 520px;
+  margin: 10px auto 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+/* Three.js Canvas Container */
+.earth-canvas-container {
+  position: absolute;
+  width: 480px;
+  height: 480px;
+  cursor: grab;
+  z-index: 2;
+  transition: transform 0.2s ease;
+}
+
+.interactive-earth-stage.dragging .earth-canvas-container {
+  cursor: grabbing;
+}
+
+.earth-canvas-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  pointer-events: auto;
+  outline: none;
+}
+
+/* --------------------------------------------------------------------------
+   FLOATING GLASSMORPHIC METRIC CARDS
+   -------------------------------------------------------------------------- */
+.interactive-metric-card {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  background: var(--home-surface);
+  border: 1px solid var(--home-border);
+  border-radius: 18px;
+  box-shadow: var(--home-shadow-md);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 5;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  cursor: pointer;
+}
+
+.interactive-metric-card:hover,
+.interactive-metric-card.active {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: var(--home-shadow-lg);
+  border-color: var(--home-border-hover);
+}
+
+/* Card Placements */
+.mc-top-left {
+  top: 35px;
+  left: 25px;
+  animation: floatCardSlow1 6s ease-in-out infinite alternate;
+}
+
+.mc-top-right {
+  top: 45px;
+  right: 25px;
+  animation: floatCardSlow2 6.5s ease-in-out infinite alternate;
+}
+
+.mc-bottom-left {
+  bottom: 40px;
+  left: 35px;
+  animation: floatCardSlow3 7s ease-in-out infinite alternate;
+}
+
+.mc-bottom-right {
+  bottom: 45px;
+  right: 35px;
+  animation: floatCardSlow1 5.8s ease-in-out infinite alternate;
+}
+
+@keyframes floatCardSlow1 {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-10px); }
+}
+
+@keyframes floatCardSlow2 {
+  0% { transform: translateY(-5px); }
+  100% { transform: translateY(8px); }
+}
+
+@keyframes floatCardSlow3 {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-8px); }
+}
+
+/* Icon Box */
+.mc-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.interactive-metric-card:hover .mc-icon-box {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.mc-blue {
+  background: rgba(56, 189, 248, 0.16);
+  color: #0284c7;
+}
+
+.mc-purple {
+  background: rgba(139, 92, 246, 0.16);
+  color: #7c3aed;
+}
+
+.mc-rose {
+  background: rgba(244, 63, 94, 0.16);
+  color: #e11d48;
+}
+
+.mc-amber {
+  background: rgba(245, 158, 11, 0.16);
+  color: #d97706;
+}
+
+.home-root[data-theme="dark"] .mc-blue {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.22);
+}
+.home-root[data-theme="dark"] .mc-purple {
+  color: #a78bfa;
+  background: rgba(139, 92, 246, 0.22);
+}
+.home-root[data-theme="dark"] .mc-rose {
+  color: #fb7185;
+  background: rgba(244, 63, 94, 0.22);
+}
+.home-root[data-theme="dark"] .mc-amber {
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.22);
+}
+
+/* Text inside Cards */
+.mc-text {
+  text-align: left;
+}
+
+.mc-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--home-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mc-value {
+  display: block;
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--home-text-primary);
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  margin: 2px 0;
+}
+
+.mc-sub {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--home-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   PLAYFUL HAND-DRAWN DOODLES
+   -------------------------------------------------------------------------- */
+.doodle-callout {
+  position: absolute;
+  pointer-events: none;
+  z-index: 6;
+  color: var(--home-doodle-color);
+  display: flex;
+  align-items: center;
+}
+
+/* 1. "Shop the World" Doodle (Matching media_1789879568830.png) */
+.doodle-shop-world {
+  bottom: 0px;
+  right: 170px;
+  flex-direction: column;
+  align-items: flex-end;
+  transform: rotate(-5deg);
+}
+
+.doodle-text {
+  font-family: 'Caveat', 'Comic Sans MS', 'Patrick Hand', cursive, sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.doodle-arrow-svg {
+  width: 65px;
+  height: 45px;
+  margin-top: -2px;
+  filter: drop-shadow(0 2px 4px rgba(37, 99, 235, 0.2));
+}
+
+/* 2. Drag Hint Doodle */
+.doodle-drag-hint {
+  top: 15px;
+  left: 260px;
+  gap: 6px;
+  background: var(--home-surface-subtle);
+  border: 1px dashed var(--home-doodle-color);
+  padding: 4px 12px;
+  border-radius: 999px;
+  opacity: 0.85;
+  transition: opacity 0.3s;
+}
+
+.interactive-earth-stage.dragging .doodle-drag-hint {
+  opacity: 0.2;
+}
+
+.doodle-sparkle-svg {
+  width: 14px;
+  height: 14px;
+  color: var(--home-doodle-color);
+  animation: pulseSparkle 2s ease-in-out infinite alternate;
+}
+
+@keyframes pulseSparkle {
+  0% { transform: scale(0.8) rotate(0deg); }
+  100% { transform: scale(1.2) rotate(45deg); }
+}
+
+.doodle-hint-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--home-doodle-color);
+  letter-spacing: 0.2px;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE DESIGN
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .interactive-earth-stage {
+    height: 480px;
+  }
+  .earth-canvas-container {
+    width: 400px;
+    height: 400px;
+  }
+  .mc-top-left { left: 10px; top: 20px; }
+  .mc-top-right { right: 10px; top: 20px; }
+  .mc-bottom-left { left: 10px; bottom: 20px; }
+  .mc-bottom-right { right: 10px; bottom: 20px; }
+  .doodle-shop-world { right: 120px; bottom: -5px; }
+  .doodle-drag-hint { left: 200px; }
+}
+
+@media (max-width: 768px) {
+  .interactive-earth-stage {
+    height: auto;
+    min-height: 440px;
+    flex-direction: column;
+    padding: 20px 0;
+  }
+  .earth-canvas-container {
+    position: relative;
+    width: 320px;
+    height: 320px;
+  }
+  .interactive-metric-card {
+    position: relative;
+    width: 90%;
+    margin: 8px auto;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    animation: none !important;
+  }
+  .doodle-callout {
+    display: none;
+  }
+}
