@@ -24,7 +24,8 @@ import {
   Sun,
   Moon,
   Bot,
-  Cpu,
+  Globe,
+  Users,
   BarChart3,
   MapPin,
   Clock,
@@ -71,6 +72,17 @@ const BANNER_SLIDES = [
   },
   {
     id: "slide-4",
+    tag: "FAST FULFILLMENT",
+    pillColor: "rgba(245, 158, 11, 0.18)",
+    pillBorder: "rgba(245, 158, 11, 0.4)",
+    pillText: "#d97706",
+    title: "Instant Multi-Warehouse Express Delivery",
+    desc: "Automated routing connects your shopping cart to the nearest regional distribution hub for ultra-fast milestone-tracked fulfillment.",
+    image: "/banners/orders_hero_banner.jpg",
+    bullets: ["Live Milestone Maps", "Automated Dispatch", "Real-Time Tracking"]
+  },
+  {
+    id: "slide-5",
     tag: "FASHION & APPAREL",
     pillColor: "rgba(236, 72, 153, 0.18)",
     pillBorder: "rgba(236, 72, 153, 0.4)",
@@ -79,17 +91,6 @@ const BANNER_SLIDES = [
     desc: "Discover premium apparel and lifestyle essentials with virtual 3D avatar try-on sizing, price history tracking, and automated discount coupons.",
     image: "/banners/banner-slide-3.jpg",
     bullets: ["3D Avatar Virtual Fitting", "30-Day Price Drop Alerts", "Shared Friend Carts"]
-  },
-  {
-    id: "slide-5",
-    tag: "FLASH SAVINGS",
-    pillColor: "rgba(245, 158, 11, 0.18)",
-    pillBorder: "rgba(245, 158, 11, 0.4)",
-    pillText: "#d97706",
-    title: "Big Savings, Happier Days: Exclusive Deals",
-    desc: "Save up to 30% across top trending categories with automated dynamic vouchers and 15% wallet cashback credited instantly on checkout.",
-    image: "/banners/banner-slide-6.jpg",
-    bullets: ["Up to 30% Off", "Instant Cashback", "Zero Transaction Fees"]
   }
 ];
 
@@ -251,7 +252,6 @@ function Home() {
     <div className="home-root" data-theme={theme}>
       {/* Aurora Mesh Ambient Lighting */}
       <div className="home-aurora-glow-top"></div>
-      <div className="home-aurora-glow-mid"></div>
       <div className="home-grid-pattern"></div>
 
       {/* Copy Toast Alert */}
@@ -313,23 +313,9 @@ function Home() {
       </div>
 
       {/* =========================================================
-          2. HERO SECTION WITH DUAL PERSPECTIVE SWITCHER
+          2. HERO SECTION & DUAL PERSPECTIVE SWITCHER
       ========================================================== */}
       <section className="home-hero-section" id="overview">
-        {/* Floating Tech Doodles */}
-        <div className="home-doodle doodle-1">
-          <span className="doodle-icon">🌍</span> Earth Brand Sync
-        </div>
-        <div className="home-doodle doodle-2">
-          <span className="doodle-icon">⚡</span> Sub-100ms Inference
-        </div>
-        <div className="home-doodle doodle-3">
-          <span className="doodle-icon">🎁</span> Instant Flash Vouchers
-        </div>
-        <div className="home-doodle doodle-4">
-          <span className="doodle-icon">🛡️</span> Role-Based Security
-        </div>
-
         {/* Dual Perspective Switcher */}
         <div className="home-perspective-container">
           <div className="home-perspective-switch">
@@ -381,38 +367,6 @@ function Home() {
                 <Shield size={18} /> Admin Portal <ExternalLink size={14} />
               </a>
             </div>
-
-            {/* Shopper Perspective Feature Highlights */}
-            <div className="home-perspective-features">
-              <div className="perspective-card">
-                <div className="perspective-card-icon" style={{ background: "rgba(56, 189, 248, 0.15)", color: "#0284c7" }}>
-                  <Camera size={20} />
-                </div>
-                <h5>Darwin AI Visual Scanner</h5>
-                <p>Point your smartphone camera to find exact or similar items in seconds.</p>
-              </div>
-              <div className="perspective-card">
-                <div className="perspective-card-icon" style={{ background: "rgba(16, 185, 129, 0.15)", color: "#059669" }}>
-                  <Wallet size={20} />
-                </div>
-                <h5>Instant Digital Wallet</h5>
-                <p>Preload balance, get 1-click checkout, and enjoy instant refund returns.</p>
-              </div>
-              <div className="perspective-card">
-                <div className="perspective-card-icon" style={{ background: "rgba(245, 158, 11, 0.15)", color: "#d97706" }}>
-                  <TrendingUp size={20} />
-                </div>
-                <h5>Price History &amp; Alerts</h5>
-                <p>Track 30-day price trends and receive instant alerts when items drop in price.</p>
-              </div>
-              <div className="perspective-card">
-                <div className="perspective-card-icon" style={{ background: "rgba(139, 92, 246, 0.15)", color: "#7c3aed" }}>
-                  <MapPin size={20} />
-                </div>
-                <h5>Live Geo-Milestones</h5>
-                <p>Interactive Leaflet map showing real-time courier dispatch progress.</p>
-              </div>
-            </div>
           </>
         ) : (
           <>
@@ -444,60 +398,139 @@ function Home() {
                 <Shield size={18} /> Admin Portal <ExternalLink size={14} />
               </a>
             </div>
-
-            {/* Vendor Perspective Feature Highlights */}
-            <div className="home-perspective-features">
-              <div className="perspective-card">
-                <div className="perspective-card-icon" style={{ background: "rgba(16, 185, 129, 0.15)", color: "#059669" }}>
-                  <BarChart3 size={20} />
-                </div>
-                <h5>Atlas Demand Forecasts</h5>
-                <p>Predict stock run-out dates before inventory hits critical zero.</p>
-              </div>
-              <div className="perspective-card">
-                <div className="perspective-card-icon" style={{ background: "rgba(56, 189, 248, 0.15)", color: "#0284c7" }}>
-                  <Truck size={20} />
-                </div>
-                <h5>Multi-Warehouse Routing</h5>
-                <p>Automatic order dispatch from the nearest regional fulfillment center.</p>
-              </div>
-              <div className="perspective-card">
-                <div className="perspective-card-icon" style={{ background: "rgba(245, 158, 11, 0.15)", color: "#d97706" }}>
-                  <Zap size={20} />
-                </div>
-                <h5>Instant Low-Stock Triggers</h5>
-                <p>Real-time amber badges alert your team when SKUs drop below safety stock.</p>
-              </div>
-              <div className="perspective-card">
-                <div className="perspective-card-icon" style={{ background: "rgba(139, 92, 246, 0.15)", color: "#7c3aed" }}>
-                  <CheckCircle2 size={20} />
-                </div>
-                <h5>Automated Margin Payouts</h5>
-                <p>Reconcile platform sales, compute profit margins, and withdraw earnings.</p>
-              </div>
-            </div>
           </>
         )}
 
-        {/* Live Trust Metrics Ribbon */}
-        <div className="home-stats-ribbon">
-          <div className="stat-item">
-            <span className="stat-number">6,020+</span>
-            <span className="stat-label">Verified Products in Catalog</span>
+        {/* =========================================================
+            3D EARTH CORE SPOTLIGHT (Matching media_1789879568830.png)
+        ========================================================== */}
+        <div className="home-earth-spotlight">
+          {/* Top-Left Floating Card */}
+          <div className="earth-metric-card em-top-left">
+            <div className="em-icon-box" style={{ background: "rgba(56, 189, 248, 0.15)", color: "#0284c7" }}>
+              <Globe size={20} />
+            </div>
+            <div className="em-info">
+              <span className="em-label">Products</span>
+              <span className="em-value">10K+ Verified</span>
+            </div>
           </div>
-          <div className="stat-item">
-            <span className="stat-number">99.98%</span>
-            <span className="stat-label">Dispatch Fulfillment Accuracy</span>
+
+          {/* Top-Right Floating Card */}
+          <div className="earth-metric-card em-top-right">
+            <div className="em-icon-box" style={{ background: "rgba(139, 92, 246, 0.15)", color: "#7c3aed" }}>
+              <Users size={20} />
+            </div>
+            <div className="em-info">
+              <span className="em-label">Vendors</span>
+              <span className="em-value">500+ Active</span>
+            </div>
           </div>
-          <div className="stat-item">
-            <span className="stat-number">&lt; 85ms</span>
-            <span className="stat-label">AI Inference Speed (Cerebras &amp; Groq)</span>
+
+          {/* Center 3D Earth Globe Visual */}
+          <div className="earth-center-wrapper">
+            <img
+              src="/earth-core-visual.png"
+              alt="3D Earth Orbiting Commerce"
+              className="earth-globe-img"
+            />
           </div>
-          <div className="stat-item">
-            <span className="stat-number">3 Roles</span>
-            <span className="stat-label">Shopper, Merchant &amp; Admin</span>
+
+          {/* Bottom-Left Floating Card */}
+          <div className="earth-metric-card em-bottom-left">
+            <div className="em-icon-box" style={{ background: "rgba(244, 63, 94, 0.15)", color: "#e11d48" }}>
+              <Heart size={20} />
+            </div>
+            <div className="em-info">
+              <span className="em-label">Happy Customers</span>
+              <span className="em-value">25K+ Shoppers</span>
+            </div>
+          </div>
+
+          {/* Bottom-Right Floating Card */}
+          <div className="earth-metric-card em-bottom-right">
+            <div className="em-icon-box" style={{ background: "rgba(16, 185, 129, 0.15)", color: "#059669" }}>
+              <Truck size={20} />
+            </div>
+            <div className="em-info">
+              <span className="em-label">Dispatch Accuracy</span>
+              <span className="em-value">99.98% SLA</span>
+            </div>
+          </div>
+
+          {/* Playful Hand-Drawn Doodle Callout (Shop the World ➔) */}
+          <div className="earth-doodle-callout">
+            <span>Shop the World</span>
+            <svg className="earth-doodle-arrow" viewBox="0 0 50 35">
+              <path d="M5 25 Q25 5 45 15 M38 8 L46 15 L38 22" />
+            </svg>
           </div>
         </div>
+
+        {/* Perspective Feature Highlights */}
+        {perspective === "shopper" ? (
+          <div className="home-perspective-features">
+            <div className="perspective-card">
+              <div className="perspective-card-icon" style={{ background: "rgba(56, 189, 248, 0.15)", color: "#0284c7" }}>
+                <Camera size={20} />
+              </div>
+              <h5>Darwin AI Visual Scanner</h5>
+              <p>Point your smartphone camera to find exact or similar items in seconds.</p>
+            </div>
+            <div className="perspective-card">
+              <div className="perspective-card-icon" style={{ background: "rgba(16, 185, 129, 0.15)", color: "#059669" }}>
+                <Wallet size={20} />
+              </div>
+              <h5>Instant Digital Wallet</h5>
+              <p>Preload balance, get 1-click checkout, and enjoy instant refund returns.</p>
+            </div>
+            <div className="perspective-card">
+              <div className="perspective-card-icon" style={{ background: "rgba(245, 158, 11, 0.15)", color: "#d97706" }}>
+                <TrendingUp size={20} />
+              </div>
+              <h5>Price History &amp; Alerts</h5>
+              <p>Track 30-day price trends and receive instant alerts when items drop in price.</p>
+            </div>
+            <div className="perspective-card">
+              <div className="perspective-card-icon" style={{ background: "rgba(139, 92, 246, 0.15)", color: "#7c3aed" }}>
+                <MapPin size={20} />
+              </div>
+              <h5>Live Geo-Milestones</h5>
+              <p>Interactive Leaflet map showing real-time courier dispatch progress.</p>
+            </div>
+          </div>
+        ) : (
+          <div className="home-perspective-features">
+            <div className="perspective-card">
+              <div className="perspective-card-icon" style={{ background: "rgba(16, 185, 129, 0.15)", color: "#059669" }}>
+                <BarChart3 size={20} />
+              </div>
+              <h5>Atlas Demand Forecasts</h5>
+              <p>Predict stock run-out dates before inventory hits critical zero.</p>
+            </div>
+            <div className="perspective-card">
+              <div className="perspective-card-icon" style={{ background: "rgba(56, 189, 248, 0.15)", color: "#0284c7" }}>
+                <Truck size={20} />
+              </div>
+              <h5>Multi-Warehouse Routing</h5>
+              <p>Automatic order dispatch from the nearest regional fulfillment center.</p>
+            </div>
+            <div className="perspective-card">
+              <div className="perspective-card-icon" style={{ background: "rgba(245, 158, 11, 0.15)", color: "#d97706" }}>
+                <Zap size={20} />
+              </div>
+              <h5>Instant Low-Stock Triggers</h5>
+              <p>Real-time amber badges alert your team when SKUs drop below safety stock.</p>
+            </div>
+            <div className="perspective-card">
+              <div className="perspective-card-icon" style={{ background: "rgba(139, 92, 246, 0.15)", color: "#7c3aed" }}>
+                <CheckCircle2 size={20} />
+              </div>
+              <h5>Automated Margin Payouts</h5>
+              <p>Reconcile platform sales, compute profit margins, and withdraw earnings.</p>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* =========================================================
@@ -567,14 +600,14 @@ function Home() {
       </section>
 
       {/* =========================================================
-          4. NATURAL REALISTIC HD BANNER CAROUSEL
+          4. BANNER SLIDESHOW (Zero Blacklight Dimming)
       ========================================================== */}
       <section className="home-slider-section" id="banners">
         <div style={{ textAlign: "center", marginBottom: "30px" }}>
           <span className="home-section-tag">CURATED PROMOTIONS</span>
           <h2 className="home-section-title">Explore Store Collections &amp; Seasonal Campaigns</h2>
           <p className="home-section-subtitle" style={{ margin: "0 auto" }}>
-            High-definition photographic highlights from our active multi-vendor catalog.
+            High-definition photographic highlights from our active multi-vendor catalog without dimming.
           </p>
         </div>
 
@@ -589,8 +622,11 @@ function Home() {
               className="banner-slide-wrapper"
               style={{ display: idx === currentSlide ? "block" : "none" }}
             >
+              {/* Crisp natural HD image with NO dimming filter */}
               <img src={slide.image} alt={slide.title} className="banner-slide-img" />
-              <div className="banner-overlay">
+
+              {/* Floating Frosted Glass Content Card (Theme-Adaptive, Never Dim) */}
+              <div className="banner-content-card">
                 <span
                   className="banner-pill"
                   style={{
@@ -606,7 +642,7 @@ function Home() {
                 <div className="banner-bullets">
                   {slide.bullets.map((b, bIdx) => (
                     <span key={bIdx} className="banner-bullet-item">
-                      <CheckCircle2 size={15} color={slide.pillText} /> {b}
+                      <CheckCircle2 size={14} color={slide.pillText} /> {b}
                     </span>
                   ))}
                 </div>
@@ -648,7 +684,7 @@ function Home() {
       </section>
 
       {/* =========================================================
-          5. INTERACTIVE 3-IN-1 PLATFORM SHOWCASE WINDOW
+          5. INTERACTIVE 3-IN-1 PLATFORM SHOWCASE
       ========================================================== */}
       <section className="home-showcase-section" id="platform-demo">
         <div style={{ textAlign: "center", marginBottom: "30px" }}>

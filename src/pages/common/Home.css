@@ -1,7 +1,8 @@
 /* ==========================================================================
    BENCHMARK MARKETING LANDING PAGE STYLES (Home.css)
    Next-Gen Unified Commerce & Inventory Ecosystem
-   Supports: Light Mode (Default) & Dark Mode with Smooth Transitions
+   Supports: Light Mode (Default) & Dark Mode with Zero Black Dimming
+   Features: 3D Earth Core Spotlight, AI Trinity, Dynamic Dual Perspectives
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -17,13 +18,18 @@
   --home-text-primary: #0f172a;
   --home-text-secondary: #334155;
   --home-text-muted: #64748b;
-  --home-navbar-bg: rgba(255, 255, 255, 0.85);
-  --home-navbar-scrolled: rgba(255, 255, 255, 0.96);
+  --home-navbar-bg: rgba(255, 255, 255, 0.88);
+  --home-navbar-scrolled: rgba(255, 255, 255, 0.98);
   --home-shadow-sm: 0 4px 15px rgba(15, 23, 42, 0.05);
   --home-shadow-md: 0 10px 30px rgba(15, 23, 42, 0.08);
   --home-shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.12);
-  --home-glow-primary: rgba(37, 99, 235, 0.15);
+  --home-glow-primary: rgba(37, 99, 235, 0.12);
   --home-grid-line: rgba(15, 23, 42, 0.04);
+  --home-banner-card-bg: rgba(255, 255, 255, 0.92);
+  --home-banner-card-border: rgba(255, 255, 255, 0.9);
+  --home-banner-card-text: #0f172a;
+  --home-banner-card-desc: #334155;
+  --home-doodle-color: #2563eb;
 }
 
 .home-root[data-theme="dark"] {
@@ -43,9 +49,14 @@
   --home-shadow-lg: 0 25px 60px rgba(0, 0, 0, 0.6);
   --home-glow-primary: rgba(37, 99, 235, 0.35);
   --home-grid-line: rgba(255, 255, 255, 0.03);
+  --home-banner-card-bg: rgba(15, 23, 42, 0.88);
+  --home-banner-card-border: rgba(255, 255, 255, 0.15);
+  --home-banner-card-text: #ffffff;
+  --home-banner-card-desc: #cbd5e1;
+  --home-doodle-color: #38bdf8;
 }
 
-/* Base Root Container */
+/* Base Container */
 .home-root {
   min-height: 100vh;
   background: var(--home-bg);
@@ -53,31 +64,19 @@
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   overflow-x: hidden;
   position: relative;
-  transition: background-color 0.35s ease, color 0.35s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Ambient Aurora Glows */
+/* Ambient Lights */
 .home-aurora-glow-top {
   position: absolute;
-  top: -120px;
+  top: -100px;
   left: 50%;
   transform: translateX(-50%);
-  width: 900px;
-  height: 550px;
-  background: radial-gradient(circle, var(--home-glow-primary) 0%, rgba(6, 182, 212, 0.08) 40%, transparent 70%);
+  width: 800px;
+  height: 500px;
+  background: radial-gradient(circle, var(--home-glow-primary) 0%, rgba(6, 182, 212, 0.06) 40%, transparent 70%);
   filter: blur(80px);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.home-aurora-glow-mid {
-  position: absolute;
-  top: 1400px;
-  right: -100px;
-  width: 700px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, var(--home-glow-primary) 50%, transparent 70%);
-  filter: blur(90px);
   pointer-events: none;
   z-index: 0;
 }
@@ -177,7 +176,7 @@
 .home-nav-links {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 22px;
 }
 
 .home-nav-links a {
@@ -198,7 +197,6 @@
   gap: 10px;
 }
 
-/* Theme Toggle Button */
 .home-theme-toggle {
   display: flex;
   align-items: center;
@@ -276,22 +274,21 @@
 }
 
 /* --------------------------------------------------------------------------
-   2. HERO SECTION WITH DUAL PERSPECTIVE SWITCHER
+   2. HERO SECTION & DUAL PERSPECTIVE SWITCHER
    -------------------------------------------------------------------------- */
 .home-hero-section {
   position: relative;
   max-width: 1240px;
   margin: 0 auto;
-  padding: 50px 24px 30px;
+  padding: 40px 24px 20px;
   text-align: center;
   z-index: 10;
 }
 
-/* Dual Perspective Switcher (Shopper vs Vendor) */
 .home-perspective-container {
   display: flex;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 
 .home-perspective-switch {
@@ -336,42 +333,6 @@
   box-shadow: 0 2px 12px rgba(37, 99, 235, 0.4);
 }
 
-/* Floating Tech Doodles */
-.home-doodle {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  background: var(--home-surface);
-  border: 1px solid var(--home-border);
-  border-radius: 999px;
-  box-shadow: var(--home-shadow-sm);
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--home-text-secondary);
-  pointer-events: none;
-  z-index: 5;
-  animation: floatDoodle 6s ease-in-out infinite alternate;
-}
-
-.doodle-1 { top: 60px; left: 4%; animation-delay: 0s; }
-.doodle-2 { top: 70px; right: 5%; animation-delay: 1.5s; }
-.doodle-3 { bottom: 60px; left: 2%; animation-delay: 3s; }
-.doodle-4 { bottom: 70px; right: 3%; animation-delay: 4.5s; }
-
-@keyframes floatDoodle {
-  0% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(2deg); }
-  100% { transform: translateY(6px) rotate(-2deg); }
-}
-
-.doodle-icon {
-  font-size: 16px;
-  display: inline-block;
-}
-
-/* Hero Badge */
 .home-hero-badge {
   display: inline-flex;
   align-items: center;
@@ -384,7 +345,7 @@
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.3px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .home-root[data-theme="dark"] .home-hero-badge {
@@ -407,13 +368,12 @@
   50% { transform: scale(1.4); opacity: 0.6; }
 }
 
-/* Hero Titles */
 .home-hero-title {
   font-size: clamp(38px, 5.2vw, 66px);
   font-weight: 800;
   line-height: 1.08;
   letter-spacing: -2px;
-  margin: 0 auto 20px;
+  margin: 0 auto 18px;
   max-width: 960px;
 }
 
@@ -429,17 +389,16 @@
   line-height: 1.6;
   color: var(--home-text-muted);
   max-width: 720px;
-  margin: 0 auto 34px;
+  margin: 0 auto 30px;
 }
 
-/* Hero Action CTAs */
 .home-hero-actions {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 16px;
   flex-wrap: wrap;
-  margin-bottom: 45px;
+  margin-bottom: 40px;
 }
 
 .home-btn-primary-glow {
@@ -510,7 +469,158 @@
   transform: translateY(-2px);
 }
 
-/* Perspective Highlight Feature Grid (Changes based on toggle) */
+/* --------------------------------------------------------------------------
+   3. 3D EARTH CORE SPOTLIGHT (Matching media_1789879568830.png)
+   -------------------------------------------------------------------------- */
+.home-earth-spotlight {
+  position: relative;
+  max-width: 780px;
+  margin: 10px auto 40px;
+  padding: 20px 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.earth-center-wrapper {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.earth-globe-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 15px 35px rgba(37, 99, 235, 0.2));
+  animation: floatEarth 6s ease-in-out infinite alternate;
+}
+
+@keyframes floatEarth {
+  0% { transform: translateY(0px) scale(1); }
+  100% { transform: translateY(-12px) scale(1.02); }
+}
+
+/* Floating Metric Cards Around Earth (Matching User Reference) */
+.earth-metric-card {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  background: var(--home-surface);
+  border: 1px solid var(--home-border);
+  border-radius: 16px;
+  box-shadow: var(--home-shadow-md);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 5;
+  transition: all 0.3s ease;
+}
+
+.earth-metric-card:hover {
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: var(--home-shadow-lg);
+  border-color: var(--home-border-hover);
+}
+
+.em-top-left {
+  top: 10px;
+  left: 20px;
+  animation: floatCard1 5s ease-in-out infinite alternate;
+}
+
+.em-top-right {
+  top: 20px;
+  right: 20px;
+  animation: floatCard2 5.5s ease-in-out infinite alternate;
+}
+
+.em-bottom-left {
+  bottom: 10px;
+  left: 30px;
+  animation: floatCard3 6s ease-in-out infinite alternate;
+}
+
+.em-bottom-right {
+  bottom: 20px;
+  right: 30px;
+  animation: floatCard1 5.2s ease-in-out infinite alternate;
+}
+
+@keyframes floatCard1 {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-8px); }
+}
+@keyframes floatCard2 {
+  0% { transform: translateY(-4px); }
+  100% { transform: translateY(6px); }
+}
+@keyframes floatCard3 {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-10px); }
+}
+
+.em-icon-box {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.em-info {
+  text-align: left;
+}
+
+.em-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--home-text-muted);
+}
+
+.em-value {
+  display: block;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--home-text-primary);
+  letter-spacing: -0.3px;
+}
+
+/* Hand-Drawn Doodle Callout (Shop the World ➔) */
+.earth-doodle-callout {
+  position: absolute;
+  bottom: -15px;
+  right: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--home-doodle-color);
+  font-family: 'Caveat', 'Comic Sans MS', cursive, sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  pointer-events: none;
+  z-index: 6;
+  transform: rotate(-6deg);
+}
+
+.earth-doodle-arrow {
+  width: 50px;
+  height: 35px;
+  stroke: var(--home-doodle-color);
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Perspective Feature Highlights */
 .home-perspective-features {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -559,46 +669,12 @@
   margin: 0;
 }
 
-/* Trust Stats Ribbon */
-.home-stats-ribbon {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 20px 30px;
-  background: var(--home-surface);
-  border: 1px solid var(--home-border);
-  border-radius: 18px;
-  box-shadow: var(--home-shadow-sm);
-}
-
-.stat-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.stat-number {
-  font-size: 26px;
-  font-weight: 800;
-  color: var(--home-text-primary);
-  letter-spacing: -0.5px;
-}
-
-.stat-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--home-text-muted);
-  margin-top: 4px;
-}
-
 /* --------------------------------------------------------------------------
-   3. THE AI TRINITY SHOWCASE (Darwin, Atlas & Titan)
+   4. THE AI TRINITY SHOWCASE (Darwin, Atlas & Titan)
    -------------------------------------------------------------------------- */
 .home-ai-trinity-section {
   max-width: 1240px;
-  margin: 80px auto 0;
+  margin: 70px auto 0;
   padding: 0 24px;
   position: relative;
   z-index: 10;
@@ -673,7 +749,7 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.15));
   transition: transform 0.4s ease;
 }
 
@@ -749,7 +825,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   4. NATURAL REALISTIC HD BANNER CAROUSEL
+   5. BANNER SLIDESHOW (Zero Blacklight Dimming)
    -------------------------------------------------------------------------- */
 .home-slider-section {
   max-width: 1240px;
@@ -780,20 +856,28 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.6s ease;
+  /* NO DIMMING FILTER: Clear, natural, high definition */
 }
 
 .banner-slide-wrapper:hover .banner-slide-img {
   transform: scale(1.02);
 }
 
-.banner-overlay {
+/* Clean Frosted Floating Glass Card (No Heavy Black Overlay Covering Image) */
+.banner-content-card {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(9, 13, 22, 0.15) 0%, rgba(9, 13, 22, 0.88) 100%);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 36px 40px;
+  bottom: 28px;
+  left: 32px;
+  max-width: 680px;
+  padding: 24px 28px;
+  border-radius: 18px;
+  background: var(--home-banner-card-bg);
+  border: 1px solid var(--home-banner-card-border);
+  color: var(--home-banner-card-text);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--home-shadow-md);
+  transition: all 0.3s ease;
 }
 
 .banner-pill {
@@ -808,38 +892,38 @@
 }
 
 .banner-title {
-  font-size: clamp(22px, 3vw, 34px);
+  font-size: clamp(20px, 2.6vw, 30px);
   font-weight: 800;
-  color: #ffffff;
-  margin: 0 0 10px;
+  color: var(--home-banner-card-text);
+  margin: 0 0 8px;
+  line-height: 1.25;
 }
 
 .banner-desc {
-  font-size: 15px;
-  color: #e2e8f0;
-  max-width: 700px;
-  margin: 0 0 18px;
+  font-size: 14px;
+  color: var(--home-banner-card-desc);
+  max-width: 600px;
+  margin: 0 0 14px;
   line-height: 1.5;
 }
 
 .banner-bullets {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .banner-bullet-item {
   display: flex;
   align-items: center;
-  gap: 7px;
-  font-size: 13px;
+  gap: 6px;
+  font-size: 12px;
   font-weight: 600;
-  color: #ffffff;
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(8px);
-  padding: 6px 14px;
+  color: var(--home-banner-card-text);
+  background: var(--home-surface-subtle);
+  border: 1px solid var(--home-border);
+  padding: 5px 12px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 /* Slider Controls */
@@ -850,20 +934,21 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #ffffff;
+  background: var(--home-surface);
+  border: 1px solid var(--home-border);
+  color: var(--home-text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 15;
+  box-shadow: var(--home-shadow-md);
   transition: all 0.2s;
 }
 
 .slider-nav-btn:hover {
   background: #2563eb;
+  color: #ffffff;
   transform: translateY(-50%) scale(1.1);
 }
 
@@ -873,7 +958,7 @@
 .slider-dots {
   position: absolute;
   bottom: 20px;
-  right: 40px;
+  right: 32px;
   display: flex;
   gap: 8px;
   z-index: 15;
@@ -883,20 +968,24 @@
   width: 10px;
   height: 10px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(15, 23, 42, 0.25);
   cursor: pointer;
   transition: all 0.3s ease;
   border: none;
 }
 
+.home-root[data-theme="dark"] .slider-dot {
+  background: rgba(255, 255, 255, 0.35);
+}
+
 .slider-dot.active {
   width: 32px;
-  background: #38bdf8;
-  box-shadow: 0 0 10px #38bdf8;
+  background: #2563eb;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
 }
 
 /* --------------------------------------------------------------------------
-   5. INTERACTIVE 3-IN-1 PLATFORM SHOWCASE WINDOW
+   6. INTERACTIVE 3-IN-1 PLATFORM SHOWCASE
    -------------------------------------------------------------------------- */
 .home-showcase-section {
   max-width: 1240px;
@@ -1108,7 +1197,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   6. ACTIVE FLASH DEALS & PROMOTIONS
+   7. ACTIVE FLASH DEALS & PROMOTIONS
    -------------------------------------------------------------------------- */
 .home-coupons-section {
   max-width: 1240px;
@@ -1209,7 +1298,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   7. DEEP-DIVE FEATURE PILLARS
+   8. DEEP-DIVE FEATURE PILLARS
    -------------------------------------------------------------------------- */
 .home-features-section {
   max-width: 1240px;
@@ -1280,7 +1369,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   8. ECOSYSTEM HOW-IT-WORKS STEP PIPELINE
+   9. ECOSYSTEM WORKFLOW PIPELINE
    -------------------------------------------------------------------------- */
 .home-workflow-section {
   max-width: 1240px;
@@ -1334,7 +1423,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   9. BENCHMARK CTA CARD & COMPREHENSIVE FOOTER
+   10. BENCHMARK CTA CARD & FOOTER
    -------------------------------------------------------------------------- */
 .home-cta-section {
   max-width: 1240px;
@@ -1482,7 +1571,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   10. RESPONSIVE MEDIA QUERIES
+   11. RESPONSIVE MEDIA QUERIES
    -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
   .home-perspective-features { grid-template-columns: repeat(2, 1fr); }
@@ -1492,8 +1581,9 @@
   .features-grid { grid-template-columns: repeat(2, 1fr); }
   .workflow-steps-grid { grid-template-columns: repeat(2, 1fr); }
   .tab-content-grid { grid-template-columns: 1fr; }
-  .home-doodle { display: none; }
   .footer-inner { grid-template-columns: 1fr 1fr; }
+  .home-earth-spotlight { padding: 10px; }
+  .earth-metric-card { position: static; margin-bottom: 10px; }
 }
 
 @media (max-width: 768px) {
@@ -1505,7 +1595,8 @@
   .coupon-grid { grid-template-columns: 1fr; }
   .workflow-steps-grid { grid-template-columns: 1fr; }
   .footer-inner { grid-template-columns: 1fr; }
-  .banner-overlay { padding: 20px; }
-  .banner-title { font-size: 19px; }
+  .banner-content-card { position: static; border-radius: 0; max-width: 100%; }
+  .banner-title { font-size: 18px; }
   .banner-bullets { display: none; }
+  .earth-doodle-callout { display: none; }
 }
