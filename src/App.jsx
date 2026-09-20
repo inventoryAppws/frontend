@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 // =========================
 // Common Pages
@@ -66,9 +67,30 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ToastContainer from "./components/Toast";
 import GestureNavigation from "./components/GestureNavigation";
 
+function DynamicFavicon() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const isVendor = location.pathname.startsWith("/vendor");
+    const targetFavicon = isVendor ? "/telegram-icon.svg" : "/favicon.svg";
+
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "icon";
+      document.head.appendChild(link);
+    }
+    link.type = "image/svg+xml";
+    link.href = targetFavicon;
+  }, [location.pathname]);
+
+  return null;
+}
+
 function App() {
   return (
     <BrowserRouter>
+      <DynamicFavicon />
       <ToastContainer />
       <GestureNavigation />
       <Routes>

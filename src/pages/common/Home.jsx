@@ -252,7 +252,7 @@ const AI_TRINITY = [
       "Dynamic Marketing Campaign Builder"
     ],
     ctaText: "Open Titan Admin Console",
-    ctaLink: "http://localhost:5174",
+    ctaLink: "https://inventoryadmin24.vercel.app",
     isExternal: true
   }
 ];
@@ -711,7 +711,7 @@ export default function Home() {
               <Store size={14} /> Vendor
             </Link>
             <a
-              href="http://localhost:5174"
+              href="https://inventoryadmin24.vercel.app"
               target="_blank"
               rel="noopener noreferrer"
               className="apple-btn-pill-secondary"
@@ -757,7 +757,7 @@ export default function Home() {
             Explore Vendor Hub
           </Link>
           <a
-            href="http://localhost:5174"
+            href="https://inventoryadmin24.vercel.app"
             target="_blank"
             rel="noopener noreferrer"
             className="apple-hero-cta-btn link-style"
@@ -3125,7 +3125,7 @@ export default function Home() {
             <h5>Explore Ecosystem</h5>
             <Link to="/customer/login">Shopper Portal</Link>
             <Link to="/vendor/login">Vendor Hub</Link>
-            <a href="http://localhost:5174" target="_blank" rel="noopener noreferrer">
+            <a href="https://inventoryadmin24.vercel.app" target="_blank" rel="noopener noreferrer">
               Admin Governance
             </a>
             <a href="#dual-showcase">Dual Experience</a>
