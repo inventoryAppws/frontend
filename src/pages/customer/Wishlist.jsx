@@ -139,7 +139,7 @@ function Wishlist() {
     if (isHovered) return;
     timerRef.current = window.setInterval(() => {
       setHeroSlide((curr) => (curr + 1) % WISHLIST_BANNERS.length);
-    }, 4500);
+    }, 3000);
 
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);

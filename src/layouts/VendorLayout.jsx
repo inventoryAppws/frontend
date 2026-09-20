@@ -13,10 +13,6 @@ import {
   Plus,
   ExternalLink,
   ChevronDown,
-  Sparkles,
-  Store,
-  Boxes,
-  HelpCircle,
   Menu,
   X,
   RotateCcw,
@@ -198,8 +194,8 @@ function VendorLayout() {
       <aside className={`vendor-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
         {/* BRAND */}
         <div className="vendor-brand">
-          <div className="vendor-logo">
-            <Store size={22} />
+          <div className="vendor-logo" style={{ overflow: "hidden", padding: 0 }}>
+            <img src="/telegram-icon.svg" alt="Vendor App" style={{ width: "100%", height: "100%", objectFit: "contain", borderRadius: "inherit" }} />
           </div>
 
           <div className="brand-info">

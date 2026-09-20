@@ -3440,7 +3440,9 @@ tr:last-child td {
 
   justify-content: center;
 
-  background: #2563eb;
+  background: transparent !important;
+
+  box-shadow: none !important;
 
   color: white;
 
@@ -9333,12 +9335,12 @@ tr:last-child td {
   width: 36px;
   height: 36px;
   border-radius: 9px;
-  background: #2563eb;
+  background: transparent !important;
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25);
+  box-shadow: none !important;
 }
 
 .account-brand-svg {
@@ -21731,14 +21733,14 @@ body.dark-mode .skeleton-order-header,
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  background: transparent !important;
   color: #ffffff;
   font-weight: 800;
   font-size: 1.2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+  box-shadow: none !important;
 }
 
 .vendor-brand div {
@@ -24411,12 +24413,12 @@ body.dark-mode .skeleton-order-header,
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  background: transparent !important;
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+  box-shadow: none !important;
 }
 
 .brand-info strong {
@@ -32780,7 +32782,7 @@ body.dark-mode .skeleton-order-header,
 }
 
 /* Ticket Card Styling */
-.coupon-ticket-card {
+.coupons-sidepanel-drawer .coupon-ticket-card {
   position: relative !important;
   background: #ffffff !important;
   border-radius: 16px !important;
@@ -32790,19 +32792,19 @@ body.dark-mode .skeleton-order-header,
   overflow: hidden !important;
 }
 
-.coupon-ticket-card:hover {
+.coupons-sidepanel-drawer .coupon-ticket-card:hover {
   transform: translateY(-2px) !important;
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08) !important;
   border-color: #cbd5e1 !important;
 }
 
-.coupon-ticket-card.applied {
+.coupons-sidepanel-drawer .coupon-ticket-card.applied {
   border-color: #86efac !important;
   background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 60%) !important;
   box-shadow: 0 4px 14px rgba(22, 163, 74, 0.12) !important;
 }
 
-.coupon-ticket-card.ineligible {
+.coupons-sidepanel-drawer .coupon-ticket-card.ineligible {
   background: #fafafa !important;
   opacity: 0.82 !important;
 }

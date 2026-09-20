@@ -170,12 +170,12 @@ function CustomerHome() {
       }))
     : HERO_SLIDES;
 
-  // 4-second slideshow interval for header banner
+  // 3-second slideshow interval for header banner
   useEffect(() => {
     if (!activeSlides.length) return;
     const timer = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % activeSlides.length);
-    }, 4000);
+    }, 3000);
     return () => clearInterval(timer);
   }, [activeSlides.length]);
 

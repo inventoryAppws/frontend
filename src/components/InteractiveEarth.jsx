@@ -1,14 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import { Globe, Users, Heart, Zap, ShoppingCart, Sparkles } from "lucide-react";
+import * as THREE from "three";
+import { Globe, Users, Heart, Zap, ShoppingCart } from "lucide-react";
 import "./InteractiveEarth.css";
 
 export default function InteractiveEarth({ theme = "light" }) {
   const containerRef = useRef(null);
+  const mountRef = useRef(null);
+  const cartNodeRef = useRef(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const [cartAngle, setCartAngle] = useState(0);
   const [activeMetric, setActiveMetric] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isDraggingState, setIsDraggingState] = useState(false);
 
-  // 1. Mouse Parallax Tilt (Natural 3D tilt without clipping)
+  // 1. Mouse Parallax Tilt for the surrounding cards
   useEffect(() => {
     const handleMouseMove = (e) => {
       const container = containerRef.current;
@@ -16,8 +20,7 @@ export default function InteractiveEarth({ theme = "light" }) {
       const rect = container.getBoundingClientRect();
       const x = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
       const y = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
-      // Soft gentle tilt (max 12 deg)
-      setTilt({ x: -y * 10, y: x * 12 });
+      setTilt({ x: -y * 8, y: x * 10 });
     };
 
     const handleMouseLeave = () => {
@@ -37,89 +40,294 @@ export default function InteractiveEarth({ theme = "light" }) {
     };
   }, []);
 
-  // 2. Real-time Continuous Cart Orbiting Animation
+  // 2. Three.js Interactive 3D Draggable Rotating Earth & True 3D Depth Orbit Ring
   useEffect(() => {
-    let animId;
-    const updateOrbit = () => {
-      setCartAngle((prev) => (prev + 0.012) % (Math.PI * 2));
-      animId = requestAnimationFrame(updateOrbit);
+    const mount = mountRef.current;
+    if (!mount) return;
+
+    const width = 520;
+    const height = 340;
+
+    // Scene & Camera
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
+    camera.position.set(0, 0, 4.6);
+
+    // WebGL Renderer with transparency & high pixel ratio
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      powerPreference: "high-performance"
+    });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.domElement.className = "three-earth-webgl";
+    renderer.domElement.style.width = "100%";
+    renderer.domElement.style.height = "100%";
+    renderer.domElement.style.position = "absolute";
+    renderer.domElement.style.inset = "0";
+    renderer.domElement.style.zIndex = "4";
+    renderer.domElement.style.cursor = "grab";
+    mount.appendChild(renderer.domElement);
+
+    // Globe Group (Spins on user drag or idle spin)
+    const globeGroup = new THREE.Group();
+    globeGroup.rotation.y = -1.4;
+    globeGroup.rotation.x = 0.22;
+    scene.add(globeGroup);
+
+    // Textures
+    const textureLoader = new THREE.TextureLoader();
+    let loadedCount = 0;
+    const onLoadTexture = () => {
+      loadedCount++;
+      if (loadedCount >= 1) {
+        setIsLoaded(true);
+      }
     };
-    animId = requestAnimationFrame(updateOrbit);
-    return () => cancelAnimationFrame(animId);
+
+    const earthTexture = textureLoader.load("/earth-texture-hd.jpg", onLoadTexture);
+    const specularTexture = textureLoader.load("/earth-specular-hd.jpg");
+    const cloudsTexture = textureLoader.load("/earth-clouds-hd.jpg");
+
+    // Earth Sphere Mesh (Rich 3D PBR Material with glistening specular oceans)
+    const earthGeo = new THREE.SphereGeometry(1.36, 64, 64);
+    const earthMat = new THREE.MeshPhongMaterial({
+      map: earthTexture,
+      specularMap: specularTexture,
+      specular: new THREE.Color(0x38bdf8),
+      shininess: 32,
+      flatShading: false
+    });
+    const earthMesh = new THREE.Mesh(earthGeo, earthMat);
+    globeGroup.add(earthMesh);
+
+    // Clouds Sphere Mesh (Slightly larger, realistic cloud shadows)
+    const cloudsGeo = new THREE.SphereGeometry(1.378, 64, 64);
+    const cloudsMat = new THREE.MeshStandardMaterial({
+      map: cloudsTexture,
+      transparent: true,
+      opacity: 0.38,
+      blending: THREE.NormalBlending,
+      depthWrite: false
+    });
+    const cloudsMesh = new THREE.Mesh(cloudsGeo, cloudsMat);
+    globeGroup.add(cloudsMesh);
+
+    // Atmospheric Rayleigh Shader Glow (Fades seamlessly into space)
+    const atmosGeo = new THREE.SphereGeometry(1.415, 64, 64);
+    const atmosMat = new THREE.ShaderMaterial({
+      vertexShader: `
+        varying vec3 vNormal;
+        varying vec3 vPosition;
+        void main() {
+          vNormal = normalize(normalMatrix * normal);
+          vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec3 vNormal;
+        varying vec3 vPosition;
+        void main() {
+          vec3 viewDir = normalize(-vPosition);
+          float rim = 1.0 - max(0.0, dot(vNormal, viewDir));
+          float intensity = pow(rim, 3.2) * 1.6;
+          vec3 glowColor = mix(vec3(0.12, 0.65, 1.0), vec3(0.45, 0.88, 1.0), rim);
+          gl_FragColor = vec4(glowColor, intensity);
+        }
+      `,
+      blending: THREE.AdditiveBlending,
+      side: THREE.BackSide,
+      transparent: true
+    });
+    const atmosMesh = new THREE.Mesh(atmosGeo, atmosMat);
+    globeGroup.add(atmosMesh);
+
+    // 3D Orbital Ring Mesh (Torus with full WebGL Depth-Testing)
+    // The back half is naturally occluded by the Earth; the front half sweeps across the front!
+    const orbitRadius = 2.02;
+    const ringGeo = new THREE.TorusGeometry(orbitRadius, 0.016, 16, 160);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: 0x0284c7,
+      transparent: true,
+      opacity: 0.88,
+      depthTest: true
+    });
+    const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+
+    // Secondary subtle cyan ambient glow ring
+    const glowRingGeo = new THREE.TorusGeometry(orbitRadius, 0.038, 16, 160);
+    const glowRingMat = new THREE.MeshBasicMaterial({
+      color: 0x38bdf8,
+      transparent: true,
+      opacity: 0.28,
+      depthTest: true
+    });
+    const glowRingMesh = new THREE.Mesh(glowRingGeo, glowRingMat);
+
+    const ringGroup = new THREE.Group();
+    // Tilted gracefully across Earth's equator
+    ringGroup.rotation.x = Math.PI * 0.38;
+    ringGroup.rotation.y = -Math.PI * 0.08;
+    ringGroup.rotation.z = -Math.PI * 0.05;
+    ringGroup.add(ringMesh);
+    ringGroup.add(glowRingMesh);
+    scene.add(ringGroup);
+
+    // Natural Space Lighting (Sun Key Light + Soft Space Ambient)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.68);
+    scene.add(ambientLight);
+
+    const sunLight = new THREE.DirectionalLight(0xffffff, 2.4);
+    sunLight.position.set(5.2, 1.8, 3.4);
+    scene.add(sunLight);
+
+    const fillLight = new THREE.DirectionalLight(0x0ea5e9, 0.85);
+    fillLight.position.set(-5.0, -1.6, -2.6);
+    scene.add(fillLight);
+
+    // Drag to Rotate Interaction with Inertia & Momentum
+    let isDragging = false;
+    let prevX = 0;
+    let prevY = 0;
+    let velocityX = 0;
+    let velocityY = 0;
+
+    const onPointerDown = (e) => {
+      isDragging = true;
+      setIsDraggingState(true);
+      prevX = e.clientX;
+      prevY = e.clientY;
+      velocityX = 0;
+      velocityY = 0;
+      renderer.domElement.style.cursor = "grabbing";
+    };
+
+    const onPointerMove = (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - prevX;
+      const dy = e.clientY - prevY;
+      
+      globeGroup.rotation.y += dx * 0.0055;
+      globeGroup.rotation.x += dy * 0.004;
+      globeGroup.rotation.x = Math.max(-0.65, Math.min(0.65, globeGroup.rotation.x));
+      
+      velocityX = dx * 0.0055;
+      velocityY = dy * 0.004;
+      prevX = e.clientX;
+      prevY = e.clientY;
+    };
+
+    const onPointerUp = () => {
+      if (isDragging) {
+        isDragging = false;
+        setIsDraggingState(false);
+        renderer.domElement.style.cursor = "grab";
+      }
+    };
+
+    const dom = renderer.domElement;
+    dom.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", onPointerUp);
+    window.addEventListener("pointercancel", onPointerUp);
+
+    // Render & Physics Loop
+    let animationFrameId;
+    let currentCartAngle = 0;
+
+    const animate = () => {
+      animationFrameId = requestAnimationFrame(animate);
+
+      if (!isDragging) {
+        globeGroup.rotation.y += velocityX;
+        globeGroup.rotation.x += velocityY;
+        globeGroup.rotation.x = Math.max(-0.65, Math.min(0.65, globeGroup.rotation.x));
+        velocityX *= 0.94;
+        velocityY *= 0.94;
+
+        if (Math.abs(velocityX) < 0.0003) {
+          globeGroup.rotation.y += 0.0018;
+        }
+      }
+
+      cloudsMesh.rotation.y += 0.00035;
+
+      // Update 3D Orbiting Shopping Cart Position
+      currentCartAngle = (currentCartAngle + 0.011) % (Math.PI * 2);
+      const cartX = Math.cos(currentCartAngle) * orbitRadius;
+      const cartY = Math.sin(currentCartAngle) * orbitRadius;
+      const cart3D = new THREE.Vector3(cartX, cartY, 0).applyEuler(ringGroup.rotation);
+
+      // Project 3D vector to screen coordinates for the cart badge
+      const projected = cart3D.clone().project(camera);
+      const px = ((projected.x + 1) / 2) * width;
+      const py = ((-projected.y + 1) / 2) * height;
+
+      // Check if occluded behind the Earth globe
+      const isBehindGlobe = cart3D.z < -0.15 && Math.hypot(cart3D.x, cart3D.y) < 1.34;
+
+      if (cartNodeRef.current) {
+        cartNodeRef.current.style.transform = `translate(${px}px, ${py}px) translate(-50%, -50%) scale(${
+          cart3D.z > 0 ? 1.06 : 0.84
+        })`;
+        cartNodeRef.current.style.opacity = isBehindGlobe ? "0" : "1";
+        cartNodeRef.current.style.zIndex = cart3D.z > 0 ? "15" : "2";
+      }
+
+      renderer.render(scene, camera);
+    };
+
+    animate();
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      dom.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerUp);
+
+      if (mount.contains(renderer.domElement)) {
+        mount.removeChild(renderer.domElement);
+      }
+      earthGeo.dispose();
+      earthMat.dispose();
+      cloudsGeo.dispose();
+      cloudsMat.dispose();
+      atmosGeo.dispose();
+      atmosMat.dispose();
+      ringGeo.dispose();
+      ringMat.dispose();
+      glowRingGeo.dispose();
+      glowRingMat.dispose();
+      renderer.dispose();
+    };
   }, []);
 
-  // Calculate cart 2D position along elliptical tilted orbit
-  // Semi-major axis a = 210px, semi-minor axis b = 65px, tilt angle ~ -18 deg
-  const a = 210;
-  const b = 68;
-  const rot = -0.32; // ~-18 degrees
-  const cosT = Math.cos(cartAngle);
-  const sinT = Math.sin(cartAngle);
-
-  // Unrotated ellipse coords
-  const ex = a * cosT;
-  const ey = b * sinT;
-
-  // Rotated coords
-  const cartX = ex * Math.cos(rot) - ey * Math.sin(rot);
-  const cartY = ex * Math.sin(rot) + ey * Math.cos(rot);
-  const isFront = sinT > 0; // In front of Earth when sinT > 0
-
   return (
-    <div className="interactive-earth-stage" ref={containerRef}>
-      {/* 3D Centered Natural Earth Globe with Orbiting Commerce Ring */}
+    <div className={`interactive-earth-stage ${isDraggingState ? "is-dragging" : ""} earth-theme-${theme}`} ref={containerRef}>
+      {/* 3D Centered Natural Earth Globe with True WebGL Depth-Tested Orbit */}
       <div
         className="earth-center-anchor"
+        ref={mountRef}
         style={{
           transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
         }}
       >
-        {/* Rear section of orbital ring (behind Earth) */}
-        <svg className="earth-orbit-svg" viewBox="0 0 520 280">
-          <ellipse
-            cx="260"
-            cy="140"
-            rx="210"
-            ry="68"
-            transform="rotate(-18 260 140)"
-            className="orbit-path-back"
-          />
-        </svg>
+        {/* Instant poster image while WebGL initializes */}
+        {!isLoaded && (
+          <div className="natural-earth-fallback-poster">
+            <img
+              src="/natural-earth-hd.png"
+              alt="Natural Planet Earth - Fully Uncropped"
+              className="natural-earth-photo"
+            />
+          </div>
+        )}
 
-        {/* Natural Realistic Full Earth Globe (100% uncropped, authentic NASA photography) */}
-        <div className="natural-earth-sphere">
-          <img
-            src="/natural-earth-hd.png"
-            alt="Natural Planet Earth - Fully Uncropped"
-            className="natural-earth-photo"
-          />
-          {/* Subtle natural atmospheric rim halo */}
-          <div className="natural-earth-atmosphere" />
-        </div>
-
-        {/* Front section of orbital ring & orbiting shopping cart */}
-        <svg className="earth-orbit-svg orbit-svg-front" viewBox="0 0 520 280">
-          <ellipse
-            cx="260"
-            cy="140"
-            rx="210"
-            ry="68"
-            transform="rotate(-18 260 140)"
-            className="orbit-path-front"
-          />
-        </svg>
-
-        {/* Orbiting 3D Shopping Cart (Glides seamlessly around Earth) */}
-        <div
-          className="orbiting-cart-node"
-          style={{
-            transform: `translate(${260 + cartX}px, ${140 + cartY}px) translate(-50%, -50%) scale(${
-              isFront ? 1.05 : 0.88
-            })`,
-            zIndex: isFront ? 12 : 1,
-            opacity: isFront ? 1 : 0.75,
-          }}
-        >
+        {/* Orbiting 3D Shopping Cart (Synced with 3D Ring) */}
+        <div className="orbiting-cart-node" ref={cartNodeRef}>
           <div className="cart-badge-inner">
             <ShoppingCart size={18} className="cart-icon-svg" />
             <span className="cart-pulse-glow" />
@@ -144,79 +352,52 @@ export default function InteractiveEarth({ theme = "light" }) {
         </div>
       </div>
 
-      {/* Top Right: Vendors */}
+      {/* Top Right: Real-time Shoppers */}
       <div
-        className={`interactive-metric-card mc-top-right ${activeMetric === "vendors" ? "active" : ""}`}
-        onMouseEnter={() => setActiveMetric("vendors")}
+        className={`interactive-metric-card mc-top-right ${activeMetric === "shoppers" ? "active" : ""}`}
+        onMouseEnter={() => setActiveMetric("shoppers")}
         onMouseLeave={() => setActiveMetric(null)}
       >
-        <div className="mc-icon-box mc-purple">
+        <div className="mc-icon-box mc-green">
           <Users size={22} />
         </div>
         <div className="mc-text">
-          <span className="mc-label">Merchant Hubs</span>
-          <span className="mc-value">500+ Active</span>
-          <span className="mc-sub">Multi-Warehouse Routing</span>
+          <span className="mc-label">Active Shoppers</span>
+          <span className="mc-value">14,280 Live</span>
+          <span className="mc-sub">Browsing Stores</span>
         </div>
       </div>
 
-      {/* Bottom Left: Happy Customers */}
+      {/* Bottom Left: Customer Satisfaction */}
       <div
-        className={`interactive-metric-card mc-bottom-left ${activeMetric === "customers" ? "active" : ""}`}
-        onMouseEnter={() => setActiveMetric("customers")}
+        className={`interactive-metric-card mc-bottom-left ${activeMetric === "satisfaction" ? "active" : ""}`}
+        onMouseEnter={() => setActiveMetric("satisfaction")}
         onMouseLeave={() => setActiveMetric(null)}
       >
         <div className="mc-icon-box mc-rose">
           <Heart size={22} />
         </div>
         <div className="mc-text">
-          <span className="mc-label">Happy Shoppers</span>
-          <span className="mc-value">25,000+ Active</span>
-          <span className="mc-sub">4.9 ★ Community Trust</span>
+          <span className="mc-label">Satisfaction Rate</span>
+          <span className="mc-value">99.4% Rated 5★</span>
+          <span className="mc-sub">Verified Reviews</span>
         </div>
       </div>
 
-      {/* Bottom Right: Dispatch Speed */}
+      {/* Bottom Right: Instant Settlement Speed */}
       <div
-        className={`interactive-metric-card mc-bottom-right ${activeMetric === "accuracy" ? "active" : ""}`}
-        onMouseEnter={() => setActiveMetric("accuracy")}
+        className={`interactive-metric-card mc-bottom-right ${activeMetric === "speed" ? "active" : ""}`}
+        onMouseEnter={() => setActiveMetric("speed")}
         onMouseLeave={() => setActiveMetric(null)}
       >
         <div className="mc-icon-box mc-amber">
           <Zap size={22} />
         </div>
         <div className="mc-text">
-          <span className="mc-label">Dispatch Accuracy</span>
-          <span className="mc-value">99.98% SLA</span>
-          <span className="mc-sub">Sub-Second Processing</span>
+          <span className="mc-label">Settlement Speed</span>
+          <span className="mc-value">&lt; 15ms Latency</span>
+          <span className="mc-sub">Instant Digital Wallet</span>
         </div>
-      </div>
-
-      {/* Playful Hand-Drawn Doodle Callouts */}
-      {/* 1. "Shop the World ➔" Doodle */}
-      <div className="doodle-callout doodle-shop-world">
-        <span className="doodle-text">Shop the World</span>
-        <svg className="doodle-arrow-svg" viewBox="0 0 70 50" fill="none">
-          <path
-            d="M8,42 C24,45 52,36 56,12"
-            stroke="currentColor"
-            strokeWidth="2.8"
-            strokeLinecap="round"
-          />
-          <path
-            d="M45,18 L56,12 L60,24"
-            stroke="currentColor"
-            strokeWidth="2.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </div>
-
-      {/* 2. Natural Parallax Hint */}
-      <div className="doodle-callout doodle-drag-hint">
-        <Sparkles size={14} className="doodle-sparkle-svg" />
-        <span className="doodle-hint-text">Natural 3D Interactive Core</span>
       </div>
     </div>
   );

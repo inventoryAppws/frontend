@@ -754,8 +754,8 @@ function CustomerLayout() {
           aria-label={isFullPage ? "Expand sidebar" : "Collapse sidebar"}
           aria-expanded={!isFullPage}
         >
-          <div className="account-brand-icon">
-            <ShoppingBag size={22} className="account-brand-svg" />
+          <div className="account-brand-icon" style={{ overflow: "hidden", padding: 0 }}>
+            <img src="/favicon.svg" alt="Logo" style={{ width: "100%", height: "100%", objectFit: "contain", borderRadius: "inherit" }} />
           </div>
           <span className="account-brand-text">Inventory</span>
           {isFullPage ? (
