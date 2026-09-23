@@ -62,6 +62,8 @@ import FrequentlyBoughtTogether from '../../components/product/FrequentlyBoughtT
 import BecauseYouViewedRail from '../../components/product/BecauseYouViewedRail';
 import CompleteTheLookRail from '../../components/product/CompleteTheLookRail';
 import ProductPriceHistoryTab from '../../components/product/ProductPriceHistoryTab';
+import ProductDecisionAssistant from '../../components/product/ProductDecisionAssistant';
+import { injectProductJsonLd, removeProductJsonLd, openAnywearTryOn, isAnywearAvailable } from '../../utils/anywear';
 
 function ProductDetails() {
   const { id } = useParams();
@@ -76,8 +78,38 @@ function ProductDetails() {
   const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
   const [isRepeatModalOpen, setIsRepeatModalOpen] = useState(false);
   const [isTryOnModalOpen, setIsTryOnModalOpen] = useState(false);
+  const [tryOnInitialMode, setTryOnInitialMode] = useState('camera');
   const [isSpecsSidepanelOpen, setIsSpecsSidepanelOpen] = useState(false);
   const [isSharedCartModalOpen, setIsSharedCartModalOpen] = useState(false);
+
+  useEffect(() => {
+    const handleTryOnEvent = (e) => {
+      const mode = e.detail?.mode || 'camera';
+      setTryOnInitialMode(mode);
+      setIsTryOnModalOpen(true);
+    };
+    const handleDecartMessage = (e) => {
+      if (e.data?.type === 'DECART_ADD_TO_BAG' || e.data?.type === 'DECART_ADD_TO_CART') {
+        handleAddToCart();
+      }
+    };
+    window.addEventListener('open-virtual-tryon', handleTryOnEvent);
+    window.addEventListener('message', handleDecartMessage);
+    return () => {
+      window.removeEventListener('open-virtual-tryon', handleTryOnEvent);
+      window.removeEventListener('message', handleDecartMessage);
+    };
+  }, []);
+
+  // Dynamically inject Schema.org Product JSON-LD for Decart Anywear detection
+  useEffect(() => {
+    if (product) {
+      injectProductJsonLd(product);
+    }
+    return () => {
+      removeProductJsonLd();
+    };
+  }, [product]);
 
   const [activeDetailsTab, setActiveDetailsTab] = useState('overview');
 
@@ -758,6 +790,8 @@ function ProductDetails() {
               <>
                 <button
                   type='button'
+                  data-action="add-to-cart"
+                  data-testid="add-to-cart"
                   className={`btn btn-primary product-hero-btn add-cart-btn ${isCartAddedSuccess ? "is-added" : ""}`}
                   onClick={handleAddToCart}
                   disabled={isAddingToCart}
@@ -781,6 +815,8 @@ function ProductDetails() {
                 </button>
                 <button
                   type='button'
+                  data-action="buy-now"
+                  data-testid="buy-now"
                   className='btn product-hero-btn buy-now-btn'
                   onClick={handleBuyNow}
                 >
@@ -793,31 +829,67 @@ function ProductDetails() {
 
           {/* Advanced Feature Action Buttons */}
           <div className="product-extended-actions" style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '12px', width: '100%' }}>
-            {/* 1. View on 3D Avatar (For apparel/fashion/shoes) */}
-            {(product.clothingType || ['Fashion', 'Clothing', 'Footwear & Shoes', 'Apparel'].includes(product.category) || product.gender) && (
-              <button
-                type="button"
-                className="btn btn-outline product-hero-btn"
-                onClick={() => setIsTryOnModalOpen(true)}
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  background: 'var(--bg-surface, #fdf2f8)',
-                  borderColor: '#f472b6',
-                  color: '#be185d',
-                  fontWeight: 600,
-                  padding: '12px 18px',
-                  borderRadius: '10px',
-                  fontSize: '14px',
-                  cursor: 'pointer'
-                }}
-              >
-                <Sparkles size={17} />
-                <span>Try On 3D Avatar</span>
-              </button>
+            {/* 1. View on 3D Avatar & Anywear Live Camera */}
+            {(product.clothingType || product.virtualTryOn?.enabled || ['Fashion', 'Clothing', 'Footwear & Shoes', 'Apparel'].includes(product.category) || product.gender) && (
+              <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
+                <button
+                  type="button"
+                  className="btn btn-outline product-hero-btn"
+                  onClick={() => {
+                    if (isAnywearAvailable()) {
+                      openAnywearTryOn(product);
+                    } else {
+                      setTryOnInitialMode('camera');
+                      setIsTryOnModalOpen(true);
+                    }
+                  }}
+                  style={{
+                    flex: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    background: 'linear-gradient(135deg, #fdf2f8 0%, #eff6ff 100%)',
+                    borderColor: '#f472b6',
+                    color: '#be185d',
+                    fontWeight: 700,
+                    padding: '12px 14px',
+                    borderRadius: '12px',
+                    fontSize: '13.5px',
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 8px rgba(244, 114, 182, 0.15)'
+                  }}
+                  title="Try on with live webcam camera via Anywear Decart AI"
+                >
+                  <Sparkles size={17} />
+                  <span>👗 Live Try-On (Anywear AI)</span>
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-outline product-hero-btn"
+                  onClick={() => {
+                    setTryOnInitialMode('avatar');
+                    setIsTryOnModalOpen(true);
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    background: '#f8fafc',
+                    borderColor: '#cbd5e1',
+                    color: '#334155',
+                    fontWeight: 600,
+                    padding: '12px 14px',
+                    borderRadius: '12px',
+                    fontSize: '13.5px',
+                    cursor: 'pointer'
+                  }}
+                  title="Open 3D Avatar Customizer & Fitting Room"
+                >
+                  <span>👤 3D Avatar</span>
+                </button>
+              </div>
             )}
 
             {/* 2. Schedule Repeat Delivery (For repeat eligible or groceries) */}
@@ -992,6 +1064,23 @@ function ProductDetails() {
               </div>
             );
           })()}
+
+          {/* Decision Assistant: Why customers choose this */}
+          <ProductDecisionAssistant
+            product={product}
+            customerProfile={profile}
+            onAskDarwin={() => {
+              window.dispatchEvent(
+                new CustomEvent('open-darwin-chat', {
+                  detail: {
+                    initialMessage: `Can you explain why ${product?.name} is a great choice and compare it against other options?`,
+                    productId: product?._id,
+                    productName: product?.name
+                  }
+                })
+              );
+            }}
+          />
 
           {/* Availability Details */}
           <div className='product-stock-status-row'>
@@ -1888,6 +1977,7 @@ function ProductDetails() {
         <TryOnModal
           isOpen={isTryOnModalOpen}
           product={product}
+          initialMode={tryOnInitialMode}
           onClose={() => setIsTryOnModalOpen(false)}
           onAddToCart={() => {
             handleAddToCart();

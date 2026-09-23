@@ -23,7 +23,9 @@ import {
   Plus,
   Bell,
   Compass,
-  Headphones
+  Headphones,
+  Sliders,
+  Brain
 } from "lucide-react";
 import { getGestureNavEnabled, setGestureNavEnabled } from "../../hooks/useGestureNavigation";
 import { getCustomerOrders } from "../../services/orderService";
@@ -33,6 +35,7 @@ import WideOrderModal from "../../components/WideOrderModal";
 import MultiProductsOrderModal from "../../components/MultiProductsOrderModal";
 import OrderDetailsSidepanel from "../../components/OrderDetailsSidepanel";
 import ReturnRequestsSidepanel from "../../components/ReturnRequestsSidepanel";
+import ShoppingProfileModal from "../../components/profile/ShoppingProfileModal";
 import Loader from "../../components/Loader";
 import ErrorMessage from "../../components/ErrorMessage";
 import { getErrorMessage } from "../../utils/errorHandler";
@@ -104,6 +107,7 @@ function CustomerDetails() {
   const [selectedTrackingOrder, setSelectedTrackingOrder] = useState(null);
   const [isRequestsDrawerOpen, setIsRequestsDrawerOpen] = useState(false);
   const [isGestureNavEnabled, setIsGestureNavEnabled] = useState(getGestureNavEnabled);
+  const [isShoppingProfileModalOpen, setIsShoppingProfileModalOpen] = useState(false);
 
   const loadOrders = async () => {
     setLoading(true);
@@ -501,6 +505,56 @@ function CustomerDetails() {
           </div>
         </div>
 
+        {/* Row: Customer Shopping Profile & Preferences */}
+        <div
+          className="account-setting-row"
+          onClick={() => setIsShoppingProfileModalOpen(true)}
+          role="button"
+          tabIndex={0}
+        >
+          <div className="account-setting-left">
+            <div className="account-setting-icon-box blue-theme">
+              <Sliders size={18} />
+            </div>
+            <div className="account-setting-info">
+              <h4>Customer Shopping Profile</h4>
+              <p>Preferences such as budget, brands, sizes, categories and styles</p>
+            </div>
+          </div>
+
+          <div className="account-setting-right">
+            <span className="account-setting-meta-text">
+              Size {profile?.shoppingProfile?.sizes?.footwear || "UK 8"} &nbsp;|&nbsp; Budget: Up to ₹{(profile?.shoppingProfile?.budget?.max || 10000).toLocaleString("en-IN")}
+            </span>
+            <ChevronRight size={18} className="account-setting-chevron" />
+          </div>
+        </div>
+
+        {/* Row: Darwin Shopping Memory */}
+        <div
+          className="account-setting-row"
+          onClick={() => setIsShoppingProfileModalOpen(true)}
+          role="button"
+          tabIndex={0}
+        >
+          <div className="account-setting-left">
+            <div className="account-setting-icon-box orange-theme">
+              <Brain size={18} />
+            </div>
+            <div className="account-setting-info">
+              <h4>Darwin Shopping Memory</h4>
+              <p>Darwin remembers useful shopping preferences with customer control</p>
+            </div>
+          </div>
+
+          <div className="account-setting-right">
+            <span className="account-setting-meta-text">
+              <strong style={{ color: "#16a34a", fontWeight: 700 }}>Active</strong> &nbsp;|&nbsp; Full Customer Control
+            </span>
+            <ChevronRight size={18} className="account-setting-chevron" />
+          </div>
+        </div>
+
         {/* Row 2: Security */}
         <div
           className="account-setting-row"
@@ -881,6 +935,17 @@ function CustomerDetails() {
         onClose={() => setIsRequestsDrawerOpen(false)}
         orders={orders}
         onSelectOrder={(ord) => setSelectedOrderDetails(ord)}
+      />
+
+      {/* Customer Shopping Profile & Darwin Shopping Memory Modal */}
+      <ShoppingProfileModal
+        isOpen={isShoppingProfileModalOpen}
+        onClose={() => setIsShoppingProfileModalOpen(false)}
+        onProfileSaved={(updated) => {
+          if (context?.profile) {
+            window.dispatchEvent(new CustomEvent('customer-profile-updated', { detail: { shoppingProfile: updated } }));
+          }
+        }}
       />
     </div>
   );

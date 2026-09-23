@@ -26,9 +26,12 @@ import {
   CheckCheck,
   Wand2,
   ShieldCheck,
-  Tag
+  Tag,
+  Camera
 } from 'lucide-react';
 import ThreeAvatarCanvas from '../../components/avatar/ThreeAvatarCanvas';
+import TryOnModal from '../../components/avatar/TryOnModal';
+import { openAnywearTryOn, isAnywearAvailable, injectProductJsonLd } from '../../utils/anywear';
 import { addToCart } from '../../services/cartService';
 import { API_BASE_URL } from '../../services/api';
 import './VirtualAvatar.css';
@@ -447,6 +450,28 @@ export default function VirtualAvatar() {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [lookAvatarSnapshot, setLookAvatarSnapshot] = useState(null);
   const [copiedShareLink, setCopiedShareLink] = useState(false);
+
+  // Anywear Live Virtual Try-On Modal State
+  const [anywearModalOpen, setAnywearModalOpen] = useState(false);
+  const [anywearProduct, setAnywearProduct] = useState(null);
+
+  const handleOpenAnywearLiveTryOn = (item = null) => {
+    let target = item;
+    if (!target) {
+      // Find currently equipped top, dress, outerwear, or any equipped item
+      const equippedItems = Object.values(outfit).filter(Boolean);
+      target = outfit.top || outfit.dress || outfit.outerwear || outfit.bottom || outfit.shoes || (equippedItems.length > 0 ? equippedItems[0] : null);
+    }
+    if (!target) {
+      setToastMessage('Please select or equip an item to try on live camera!');
+      setTimeout(() => setToastMessage(''), 2500);
+      return;
+    }
+
+    // Open in-app Live Try-On Modal directly
+    setAnywearProduct(target);
+    setAnywearModalOpen(true);
+  };
 
   // Toast feedback
   const [toastMessage, setToastMessage] = useState('');
@@ -1468,6 +1493,16 @@ export default function VirtualAvatar() {
                 <Sliders size={13} />
                 <span>Adjust Silhouette &amp; Skin</span>
               </button>
+
+              <button
+                type="button"
+                className="va-anywear-live-cam-btn"
+                onClick={() => handleOpenAnywearLiveTryOn()}
+                title="Try on Live WebCam Camera with Anywear AR"
+              >
+                <Camera size={14} />
+                <span>Live Camera (Anywear)</span>
+              </button>
             </div>
 
             {/* 3D React Three Fiber Canvas */}
@@ -1642,6 +1677,17 @@ export default function VirtualAvatar() {
                             <div className="va-garment-actions-cell">
                               <button
                                 type="button"
+                                className="va-garment-anywear-icon-btn"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleOpenAnywearLiveTryOn(item);
+                                }}
+                                title="Try on Live WebCam Camera with Anywear AR"
+                              >
+                                <Camera size={13} />
+                              </button>
+                              <button
+                                type="button"
                                 className={`va-garment-try-btn ${isEquipped ? 'is-wearing' : ''}`}
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -1762,6 +1808,17 @@ export default function VirtualAvatar() {
                                   title="Add to Shopping Cart"
                                 >
                                   <ShoppingBag size={13} />
+                                </button>
+                                <button
+                                  type="button"
+                                  className="va-garment-anywear-icon-btn"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleOpenAnywearLiveTryOn(item);
+                                  }}
+                                  title="Live Camera Try-On (Anywear AR)"
+                                >
+                                  <Camera size={13} />
                                 </button>
                                 <button
                                   type="button"
@@ -2046,6 +2103,14 @@ export default function VirtualAvatar() {
                     }}
                   >
                     <Check size={15} /> Equip on 3D Avatar
+                  </button>
+                  <button
+                    type="button"
+                    className="va-secondary-btn"
+                    onClick={() => handleOpenAnywearLiveTryOn(vtonGarment)}
+                    style={{ background: 'linear-gradient(135deg, #ec4899 0%, #db2777 100%)', color: '#fff', border: 'none' }}
+                  >
+                    <Camera size={15} /> Try on Live Camera (Anywear)
                   </button>
                   <button
                     type="button"
@@ -2342,6 +2407,24 @@ export default function VirtualAvatar() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* ANYWEAR LIVE CAMERA VIRTUAL TRY-ON MODAL */}
+      {anywearModalOpen && anywearProduct && (
+        <TryOnModal
+          isOpen={anywearModalOpen}
+          product={anywearProduct}
+          initialMode="camera"
+          onClose={() => setAnywearModalOpen(false)}
+          onAddToCart={(prod) => {
+            const pid = prod._id || prod.productId || prod.id;
+            if (pid && !String(pid).startsWith('av_')) {
+              addToCart(pid, 1).catch(() => {});
+            }
+            setToastMessage(`✓ Added ${prod.name} to cart!`);
+            setTimeout(() => setToastMessage(''), 2500);
+          }}
+        />
       )}
     </div>
   );

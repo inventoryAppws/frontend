@@ -1,0 +1,2192 @@
+/* ==========================================================================
+   DARK MODE & COLLAPSIBLE SIDEBAR SYSTEM
+   Applied exclusively when [data-theme="dark"] is set on <html>.
+   Light mode remains 100% untouched and default.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. ROOT & BODY
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+[data-theme="dark"] body {
+  background-color: #000000 !important;
+  color: #f1f5f9 !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. CUSTOMER LAYOUT — CORE CONTAINER & SIDEBAR
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] .account-dashboard-wrapper {
+  background-color: #000000 !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .account-sidebar {
+  background: #000000 !important;
+  border-right: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .account-sidebar-brand {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .account-brand-text h2 {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .account-brand-text span {
+  color: #71717a !important;
+}
+
+[data-theme="dark"] .account-nav-label {
+  color: #52525b !important;
+}
+
+[data-theme="dark"] .account-nav-item {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .account-nav-item:hover {
+  background: #0f0f14 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .account-nav-item.active {
+  background: rgba(99, 102, 241, 0.15) !important;
+  color: #818cf8 !important;
+  border-left-color: #6366f1 !important;
+}
+
+[data-theme="dark"] .account-sidebar-help-card {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .account-help-text strong {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .account-help-link {
+  color: #818cf8 !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. CUSTOMER LAYOUT — TOPBAR & HEADER
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] .account-main-area {
+  background-color: #000000 !important;
+}
+
+[data-theme="dark"] .account-topbar {
+  background: #000000 !important;
+  border-bottom: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .account-topbar-crumb-item {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .crumb-link {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .crumb-link:hover {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .crumb-current {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .crumb-separator {
+  color: #52525b !important;
+}
+
+/* Topbar Search */
+[data-theme="dark"] .account-topbar-search-form {
+  background: #050507 !important;
+  border-color: #24242c !important;
+}
+
+[data-theme="dark"] .account-topbar-search-input {
+  color: #ffffff !important;
+  background: transparent !important;
+}
+
+[data-theme="dark"] .account-topbar-search-input::placeholder {
+  color: #71717a !important;
+}
+
+[data-theme="dark"] .account-topbar-search-icon {
+  color: #71717a !important;
+}
+
+[data-theme="dark"] .adv-search-dropdown-menu {
+  background: #0a0a0c !important;
+  border-color: #1c1c22 !important;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.8) !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .adv-search-item {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .adv-search-item:hover {
+  background: #141418 !important;
+  color: #ffffff !important;
+}
+
+/* Topbar Actions & Badges */
+[data-theme="dark"] .account-topbar-link {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .account-topbar-link:hover,
+[data-theme="dark"] .account-topbar-link.active {
+  color: #818cf8 !important;
+}
+
+[data-theme="dark"] .account-notif-btn {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .account-notif-btn:hover {
+  background: #141418 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .account-user-btn {
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .account-user-btn:hover {
+  background: #141418 !important;
+}
+
+[data-theme="dark"] .account-user-name {
+  color: #ffffff !important;
+}
+
+/* User Dropdown */
+[data-theme="dark"] .account-dropdown-menu {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8) !important;
+}
+
+[data-theme="dark"] .account-dropdown-header {
+  border-bottom: 1px solid #1c1c22 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .account-dropdown-header strong {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .account-dropdown-item {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .account-dropdown-item:hover {
+  background: #141418 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .account-dropdown-toggle-badge {
+  background: #1c1c22 !important;
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .account-dropdown-toggle-badge.active {
+  background: #6366f1 !important;
+  color: #ffffff !important;
+}
+
+/* Address Dropdown */
+[data-theme="dark"] .navbar-address-btn,
+[data-theme="dark"] .navbar-delivery-address-chip {
+  background: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .navbar-address-btn:hover {
+  background: #141418 !important;
+}
+
+[data-theme="dark"] .navbar-address-dropdown-panel {
+  background: #0a0a0c !important;
+  border-color: #1c1c22 !important;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.8) !important;
+  color: #f1f5f9 !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. CUSTOMER DISCOVERY HOMEPAGE — HERO BANNER & GRADIENT OVERLAY
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] .adv-search-hero-section {
+  background: #000000 !important;
+  border: 1px solid #1c1c22 !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Blends the image into pure black on the left while keeping the photo crisp on the right */
+[data-theme="dark"] .adv-hero-gradient-overlay {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.98) 0%,
+    rgba(0, 0, 0, 0.90) 35%,
+    rgba(0, 0, 0, 0.60) 60%,
+    rgba(0, 0, 0, 0.20) 85%,
+    rgba(0, 0, 0, 0) 100%
+  ) !important;
+}
+
+[data-theme="dark"] .adv-hero-title {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .adv-hero-subtitle {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .adv-hero-badge {
+  color: #818cf8 !important;
+}
+
+[data-theme="dark"] .adv-hero-action-btn {
+  background: rgba(15, 15, 18, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid #24242c !important;
+  color: #f1f5f9 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6) !important;
+}
+
+[data-theme="dark"] .adv-hero-action-btn:hover {
+  background: #24242c !important;
+  border-color: #3f3f46 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .adv-hero-action-btn.primary {
+  background: rgba(37, 99, 235, 0.35) !important;
+  border-color: #2563eb !important;
+  color: #93c5fd !important;
+}
+
+[data-theme="dark"] .adv-hero-action-btn.primary:hover {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .adv-hero-action-btn.deals {
+  background: rgba(194, 65, 12, 0.35) !important;
+  border-color: #ea580c !important;
+  color: #fdba74 !important;
+}
+
+[data-theme="dark"] .adv-hero-action-btn.deals:hover {
+  background: #c2410c !important;
+  color: #ffffff !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. QUICK DISCOVERY SHORTCUTS & CATEGORY CARDS
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] .quick-discovery-shortcuts {
+  background: transparent !important;
+}
+
+[data-theme="dark"] .shortcuts-bar-label {
+  color: #71717a !important;
+}
+
+[data-theme="dark"] .shortcut-pill {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .shortcut-pill:hover {
+  background: #141418 !important;
+  border-color: #2e2e38 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .shortcut-pill.active {
+  background: #6366f1 !important;
+  border-color: #6366f1 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .discovery-section-title {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .discovery-section-subtitle {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .discovery-section-badge {
+  color: #818cf8 !important;
+}
+
+/* Category Cards */
+[data-theme="dark"] .category-card-compact {
+  background: #0a0a0c !important;
+  border: 1.5px solid #1c1c22 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
+}
+
+[data-theme="dark"] .category-card-compact:hover,
+[data-theme="dark"] .category-card-compact.active {
+  background: #121216 !important;
+  border-color: #6366f1 !important;
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.25) !important;
+}
+
+[data-theme="dark"] .category-card-compact .category-title {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .category-card-compact .category-count {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .category-card-compact .category-icon-box {
+  background: #141418 !important;
+  border-color: #24242c !important;
+  color: #818cf8 !important;
+}
+
+/* Personalized Profile Bar (Darwin Shopping Memory Bar) */
+[data-theme="dark"] .personalized-profile-bar {
+  background: #0a0a0c !important;
+  border: 1px solid #2563eb !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6) !important;
+}
+
+[data-theme="dark"] .personalized-profile-bar span {
+  color: #93c5fd !important;
+}
+
+[data-theme="dark"] .personalized-profile-bar span:first-child {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .personalized-profile-bar button {
+  background: #141418 !important;
+  border: 1px solid #3b82f6 !important;
+  color: #93c5fd !important;
+}
+
+[data-theme="dark"] .personalized-profile-bar button:hover {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. PRODUCT CARDS & CAROUSELS (HIGH-CONTRAST & READABLE)
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] .product-card-adv,
+[data-theme="dark"] .adv-product-card,
+[data-theme="dark"] .adv-list-card,
+[data-theme="dark"] .product-card,
+[data-theme="dark"] .catalog-item-card {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6) !important;
+}
+
+[data-theme="dark"] .product-card-adv:hover,
+[data-theme="dark"] .adv-product-card:hover,
+[data-theme="dark"] .adv-list-card:hover {
+  border-color: #6366f1 !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Titles and text must be crisp white and high-contrast */
+[data-theme="dark"] .adv-product-title,
+[data-theme="dark"] .adv-list-title,
+[data-theme="dark"] .product-title,
+[data-theme="dark"] .product-card-title {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .adv-product-desc,
+[data-theme="dark"] .adv-list-desc {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .adv-product-vendor-text {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .carousel-title {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .carousel-subtitle {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .carousel-view-all-btn {
+  color: #818cf8 !important;
+}
+
+[data-theme="dark"] .carousel-view-all-btn:hover {
+  color: #a5b4fc !important;
+}
+
+[data-theme="dark"] .carousel-nav-arrows button {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .carousel-nav-arrows button:hover {
+  background: #141418 !important;
+  color: #ffffff !important;
+  border-color: #2e2e38 !important;
+}
+
+/* Prices */
+[data-theme="dark"] .adv-selling-price {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .adv-original-price {
+  color: #71717a !important;
+}
+
+[data-theme="dark"] .adv-discount-tag {
+  color: #fb923c !important;
+}
+
+/* Decision Peek ("98% Positive · Why Choose This") */
+[data-theme="dark"] .adv-decision-peek {
+  background: rgba(34, 197, 94, 0.15) !important;
+  border: 1px solid rgba(34, 197, 94, 0.35) !important;
+  color: #4ade80 !important;
+}
+
+[data-theme="dark"] .adv-rec-reason-pill {
+  background: rgba(59, 130, 246, 0.15) !important;
+  border: 1px solid rgba(59, 130, 246, 0.35) !important;
+  color: #93c5fd !important;
+}
+
+/* Floating Bottom Dock */
+[data-theme="dark"] .adv-floating-dock {
+  background: rgba(10, 10, 12, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid #1c1c22 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8) !important;
+}
+
+[data-theme="dark"] .adv-dock-item {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .adv-dock-item:hover {
+  color: #ffffff !important;
+  background: #141418 !important;
+}
+
+[data-theme="dark"] .adv-dock-item.active {
+  color: #818cf8 !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. PRODUCT DETAILS PAGE
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] .product-details-container {
+  background: #000000 !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .product-breadcrumbs .breadcrumb-link {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .product-breadcrumbs .breadcrumb-current {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .product-breadcrumbs .breadcrumb-sep {
+  color: #52525b !important;
+}
+
+[data-theme="dark"] .product-details-hero-card {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.8) !important;
+}
+
+[data-theme="dark"] .product-visual-box {
+  background: #050507 !important;
+  border: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .product-details-hero-card h1,
+[data-theme="dark"] .product-details-hero-card h2,
+[data-theme="dark"] .product-details-hero-card h3 {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .product-details-hero-card p {
+  color: #cbd5e1 !important;
+}
+
+/* Decision Assistant Card ("Why customers choose this") */
+[data-theme="dark"] .product-confidence-card,
+[data-theme="dark"] .decision-assistant-card,
+[data-theme="dark"] .product-decision-assistant-card {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .decision-assistant-header strong,
+[data-theme="dark"] .confidence-title {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .decision-point-item span {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .decision-warning-box,
+[data-theme="dark"] .product-warning-banner {
+  background: rgba(245, 158, 11, 0.12) !important;
+  border: 1px solid rgba(245, 158, 11, 0.3) !important;
+  color: #fde68a !important;
+}
+
+[data-theme="dark"] .darwin-product-assistant-card {
+  background: #0a0a0c !important;
+  border: 1px solid #2563eb !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .product-action-btn-outline {
+  background: #0a0a0c !important;
+  border: 1px solid #24242c !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .product-action-btn-outline:hover {
+  background: #141418 !important;
+  border-color: #6366f1 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .product-detail-compare-btn,
+[data-theme="dark"] .product-detail-share-btn {
+  background: #0a0a0c !important;
+  border-color: #24242c !important;
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .product-detail-compare-btn:hover,
+[data-theme="dark"] .product-detail-share-btn:hover {
+  background: #141418 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .product-extended-actions button,
+[data-theme="dark"] .product-hero-btn {
+  background: #0a0a0c !important;
+  border-color: #24242c !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .product-extended-actions button:hover,
+[data-theme="dark"] .product-hero-btn:hover {
+  background: #141418 !important;
+  border-color: #3f3f46 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .product-ticket-trigger-link {
+  background: rgba(13, 148, 136, 0.15) !important;
+  border-color: rgba(13, 148, 136, 0.3) !important;
+  color: #2dd4bf !important;
+}
+
+[data-theme="dark"] .product-highlights-quick-card {
+  background: #0a0a0c !important;
+  border-color: #1c1c22 !important;
+}
+
+[data-theme="dark"] .product-highlights-quick-card h3 {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .product-highlights-quick-card ul li {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .product-highlights-quick-card ul li strong {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .product-pincode-delivery-card {
+  background: #0a0a0c !important;
+  border-color: #1c1c22 !important;
+}
+
+[data-theme="dark"] .pincode-delivery-title {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .pincode-text-input {
+  background: #050507 !important;
+  border-color: #24242c !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .pincode-delivery-results {
+  background: #050507 !important;
+  border-color: #24242c !important;
+}
+
+[data-theme="dark"] .pincode-eta-headline {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .pincode-perk-item span {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .assurance-card {
+  background: #0a0a0c !important;
+  border-color: #1c1c22 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .assurance-card strong {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .assurance-card p {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .product-details-nav-tabs-bar {
+  background: #000000 !important;
+  border-color: #1c1c22 !important;
+}
+
+[data-theme="dark"] .pd-nav-tab-btn {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .pd-nav-tab-btn:hover {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .pd-nav-tab-btn.active {
+  color: #38bdf8 !important;
+  border-bottom-color: #38bdf8 !important;
+  background: rgba(56, 189, 248, 0.1) !important;
+}
+
+[data-theme="dark"] .product-accordion-card,
+[data-theme="dark"] .product-review-item,
+[data-theme="dark"] .product-qa-card {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. DARWIN AI CHAT DRAWER & SIDEPANEL
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] .darwin-drawer-panel {
+  background: #000000 !important;
+  color: #f1f5f9 !important;
+  border-left: 1px solid #1c1c22 !important;
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.9) !important;
+}
+
+[data-theme="dark"] .darwin-drawer-header {
+  background: #000000 !important;
+  border-bottom: 1px solid #1c1c22 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .darwin-drawer-header h3,
+[data-theme="dark"] .darwin-drawer-header strong {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .darwin-header-sub {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .darwin-drawer-body {
+  background: #050507 !important;
+}
+
+[data-theme="dark"] .darwin-onboarding-card {
+  background: #0a0a0c !important;
+  border: 1px solid #2563eb !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .darwin-onboarding-card h4 {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .darwin-onboarding-card p {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .darwin-decision-card,
+[data-theme="dark"] .darwin-topic-card {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .darwin-decision-card:hover {
+  background: #141418 !important;
+  border-color: #6366f1 !important;
+}
+
+[data-theme="dark"] .darwin-decision-card strong {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .darwin-decision-card p {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .darwin-search-pill,
+[data-theme="dark"] .darwin-popular-pill {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .darwin-search-pill:hover {
+  background: #141418 !important;
+  color: #ffffff !important;
+  border-color: #3f3f46 !important;
+}
+
+[data-theme="dark"] .darwin-drawer-footer {
+  background: #000000 !important;
+  border-top: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .darwin-input-bar {
+  background: #050507 !important;
+  border: 1px solid #24242c !important;
+}
+
+[data-theme="dark"] .darwin-chat-input {
+  background: transparent !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .darwin-chat-input::placeholder {
+  color: #71717a !important;
+}
+
+[data-theme="dark"] .darwin-bubble-ai {
+  background: #0a0a0c !important;
+  color: #f1f5f9 !important;
+  border: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .darwin-bubble-user {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+/* --------------------------------------------------------------------------
+   9. CUSTOMER ACCOUNT SIDEPANEL & PAYMENTS SIDEPANEL
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] .account-sidepanel-drawer,
+[data-theme="dark"] .payments-sidepanel-drawer {
+  background: #000000 !important;
+  color: #f1f5f9 !important;
+  border-left: 1px solid #1c1c22 !important;
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.9) !important;
+}
+
+[data-theme="dark"] .account-drawer-header,
+[data-theme="dark"] .payments-sidepanel-header {
+  background: #000000 !important;
+  border-bottom: 1px solid #1c1c22 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .account-drawer-title,
+[data-theme="dark"] .payments-header-title {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .account-drawer-subtitle,
+[data-theme="dark"] .payments-header-subtitle {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .account-drawer-tabs,
+[data-theme="dark"] .payments-tabs-nav {
+  background: #050507 !important;
+  border-bottom: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .account-drawer-tab-btn,
+[data-theme="dark"] .payments-tab-btn {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .account-drawer-tab-btn:hover,
+[data-theme="dark"] .payments-tab-btn:hover {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .account-drawer-tab-btn.active,
+[data-theme="dark"] .payments-tab-btn.active {
+  background: #0a0a0c !important;
+  color: #818cf8 !important;
+  border-bottom-color: #6366f1 !important;
+}
+
+[data-theme="dark"] .account-section-card {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .account-card-title {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .account-profile-field label {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .account-profile-field input {
+  background: #050507 !important;
+  border: 1px solid #24242c !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .account-wallet-balance-box {
+  background: #0a0a0c !important;
+  border: 1px solid #2563eb !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .account-address-card,
+[data-theme="dark"] .account-payment-method-card {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+}
+
+/* --------------------------------------------------------------------------
+   10. MODALS, CONFIRMATION DIALOGS & CUSTOMER DETAILS PAGE
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] .modal-overlay,
+[data-theme="dark"] .account-modal-overlay {
+  background: rgba(0, 0, 0, 0.85) !important;
+  backdrop-filter: blur(6px) !important;
+}
+
+[data-theme="dark"] .confirm-modal,
+[data-theme="dark"] .modal,
+[data-theme="dark"] .modal-content,
+[data-theme="dark"] .refined-modal-content,
+[data-theme="dark"] .account-modal-content {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9) !important;
+}
+
+[data-theme="dark"] .confirm-modal h2,
+[data-theme="dark"] .modal-header h2,
+[data-theme="dark"] .refined-modal-title {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .confirm-modal > p,
+[data-theme="dark"] .refined-modal-subtitle {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .btn-secondary,
+[data-theme="dark"] .btn-refined-cancel {
+  background: #141418 !important;
+  color: #ffffff !important;
+  border: 1px solid #24242c !important;
+}
+
+[data-theme="dark"] .btn-secondary:hover,
+[data-theme="dark"] .btn-refined-cancel:hover {
+  background: #24242c !important;
+}
+
+/* Customer Details Page */
+[data-theme="dark"] .details-page section {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .details-hero {
+  background: #000000 !important;
+  border: 1px solid #1c1c22 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .details-hero h1 {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .details-hero p {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .details-stats > div {
+  background: #050507 !important;
+  border: 1px solid #1c1c22 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .details-stats strong {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .details-stats span {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .section-heading h2 {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .recent-order {
+  border-color: #1c1c22 !important;
+  color: #f1f5f9 !important;
+}
+
+/* --------------------------------------------------------------------------
+   11. AUTHENTICATION & LOGIN PAGES (Customer & Vendor)
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] .auth-page {
+  background: #000000 !important;
+}
+
+[data-theme="dark"] .auth-card {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9) !important;
+}
+
+[data-theme="dark"] .auth-header-block h1 {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .auth-subtitle {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .auth-tabs-toggle {
+  background: #050507 !important;
+  border: 1px solid #24242c !important;
+}
+
+[data-theme="dark"] .auth-tab-btn {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .auth-tab-btn.active {
+  background: #0a0a0c !important;
+  color: #818cf8 !important;
+}
+
+[data-theme="dark"] .auth-card label {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .auth-card input {
+  background: #050507 !important;
+  border: 1px solid #24242c !important;
+  color: #ffffff !important;
+}
+
+/* --------------------------------------------------------------------------
+   12. VENDOR APPLICATION — FULL DARK MODE OVERRIDES
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] .vendor-app {
+  background: #000000 !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .vendor-sidebar {
+  background: #000000 !important;
+  border-right: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .vendor-brand {
+  border-bottom: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .vendor-brand strong {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .vendor-brand span {
+  color: #71717a !important;
+}
+
+[data-theme="dark"] .vendor-nav-label {
+  color: #52525b !important;
+}
+
+[data-theme="dark"] .vendor-nav-link {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .vendor-nav-link:hover {
+  background: #141418 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .vendor-nav-link.active {
+  background: rgba(99, 102, 241, 0.15) !important;
+  color: #818cf8 !important;
+  border-left-color: #6366f1 !important;
+}
+
+[data-theme="dark"] .vendor-main {
+  background: #000000 !important;
+}
+
+[data-theme="dark"] .vendor-topbar {
+  background: #000000 !important;
+  border-bottom: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .vendor-topbar h1 {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .vendor-topbar-label {
+  color: #818cf8 !important;
+}
+
+[data-theme="dark"] .vendor-status {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .vendor-content {
+  background: transparent !important;
+}
+
+[data-theme="dark"] .vendor-dashboard-header h2 {
+  color: #ffffff !important;
+}
+
+/* Vendor Cards, Panels, Widgets & KPI Blocks */
+[data-theme="dark"] .vendor-card,
+[data-theme="dark"] .vendor-stat-card,
+[data-theme="dark"] .vendor-kpi-card,
+[data-theme="dark"] .vendor-inv-card,
+[data-theme="dark"] .order-kpi-card,
+[data-theme="dark"] .vendor-dashboard-card,
+[data-theme="dark"] .vendor-panel,
+[data-theme="dark"] .vendor-chart-card,
+[data-theme="dark"] .vendor-table-card,
+[data-theme="dark"] .vendor-overview-card,
+[data-theme="dark"] .vendor-store-status-card {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6) !important;
+}
+
+[data-theme="dark"] .vendor-kpi-card:hover,
+[data-theme="dark"] .vendor-inv-card:hover,
+[data-theme="dark"] .order-kpi-card:hover {
+  border-color: #24242c !important;
+  background: #121216 !important;
+}
+
+[data-theme="dark"] .vendor-stat-card h3,
+[data-theme="dark"] .vendor-stat-card .stat-value,
+[data-theme="dark"] .kpi-value,
+[data-theme="dark"] .inv-card-value,
+[data-theme="dark"] .stat-number,
+[data-theme="dark"] .metric-value {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .vendor-stat-card .stat-label,
+[data-theme="dark"] .kpi-label,
+[data-theme="dark"] .inv-card-label,
+[data-theme="dark"] .metric-label {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .kpi-sub {
+  color: #71717a !important;
+}
+
+/* Vendor Dashboard Low Stock List */
+[data-theme="dark"] .vendor-low-stock-item {
+  background: #050507 !important;
+  border: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .vendor-low-stock-details strong {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .vendor-stock-healthy-banner {
+  background: rgba(16, 185, 129, 0.12) !important;
+  border: 1px solid rgba(16, 185, 129, 0.25) !important;
+  color: #34d399 !important;
+}
+
+/* Vendor Toolbars & Search Inputs */
+[data-theme="dark"] .vendor-filters-toolbar,
+[data-theme="dark"] .vendor-orders-toolbar {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .vendor-search-wrap input,
+[data-theme="dark"] .vendor-orders-search input {
+  background: #050507 !important;
+  border: 1px solid #24242c !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .status-pill-btn,
+[data-theme="dark"] .orders-tab-btn {
+  background: #050507 !important;
+  border: 1px solid #24242c !important;
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .status-pill-btn:hover,
+[data-theme="dark"] .orders-tab-btn:hover {
+  background: #141418 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .status-pill-btn.active,
+[data-theme="dark"] .orders-tab-btn.active {
+  background: #141418 !important;
+  border-color: #6366f1 !important;
+  color: #818cf8 !important;
+}
+
+/* Vendor Tables */
+[data-theme="dark"] .vendor-table-container,
+[data-theme="dark"] .vendor-products-table,
+[data-theme="dark"] .vendor-recent-orders-table {
+  background: #0a0a0c !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .vendor-products-table thead tr,
+[data-theme="dark"] .vendor-recent-orders-table thead tr {
+  background: #050507 !important;
+  border-bottom: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .vendor-products-table th,
+[data-theme="dark"] .vendor-recent-orders-table th {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .vendor-products-table tbody tr,
+[data-theme="dark"] .vendor-recent-orders-table tbody tr {
+  border-bottom: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .vendor-product-name-block strong {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .vendor-desc-snippet {
+  color: #a1a1aa !important;
+}
+
+/* Vendor Order Cards */
+[data-theme="dark"] .vendor-order-card {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .vendor-order-card .order-card-header {
+  background: #08080a !important;
+  border-bottom: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .order-id-text {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .order-payment-pill {
+  background: #141418 !important;
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .order-placed-text {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .order-customer-strip {
+  background: #050507 !important;
+  border-bottom: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .order-customer-name {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .order-item-row {
+  border-bottom: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .order-item-title {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .order-footer-bar {
+  background: #08080a !important;
+  border-top: 1px solid #1c1c22 !important;
+}
+
+/* Vendor Analytics Page */
+[data-theme="dark"] .analytics-timeframe-picker {
+  background: #050507 !important;
+  border: 1px solid #24242c !important;
+}
+
+[data-theme="dark"] .analytics-timeframe-picker button {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .analytics-timeframe-picker button.active {
+  background: #141418 !important;
+  color: #818cf8 !important;
+}
+
+[data-theme="dark"] .analytics-kpi-card,
+[data-theme="dark"] .analytics-chart-card,
+[data-theme="dark"] .analytics-sub-card {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .chart-card-header h3,
+[data-theme="dark"] .sub-card-header h3 {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .chart-card-header p,
+[data-theme="dark"] .sub-card-header p {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .cat-name {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .cat-stock {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .cat-val {
+  color: #ffffff !important;
+}
+
+/* Vendor Settings Page */
+[data-theme="dark"] .vendor-settings-layout {
+  background: transparent !important;
+}
+
+[data-theme="dark"] .settings-section-card {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .settings-section-card h3 {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .settings-section-card p {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .vendor-settings-tabs {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .settings-tab-btn {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .settings-tab-btn:hover {
+  background: #141418 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .settings-tab-btn.active {
+  background: rgba(99, 102, 241, 0.15) !important;
+  color: #818cf8 !important;
+}
+
+[data-theme="dark"] .settings-section-card input,
+[data-theme="dark"] .settings-section-card textarea,
+[data-theme="dark"] .settings-section-card select {
+  background: #050507 !important;
+  border: 1px solid #24242c !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .settings-section-card label {
+  color: #cbd5e1 !important;
+}
+
+/* Vendor Profile Dropdown */
+[data-theme="dark"] .vendor-profile-menu {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.8) !important;
+}
+
+[data-theme="dark"] .vendor-profile-menu .menu-header {
+  border-bottom: 1px solid #1c1c22 !important;
+  color: #e5e7eb !important;
+}
+
+[data-theme="dark"] .vendor-profile-menu strong {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .vendor-profile-menu button {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .vendor-profile-menu button:hover {
+  background: #141418 !important;
+  color: #ffffff !important;
+}
+
+/* --------------------------------------------------------------------------
+   13. THEME TOGGLE BUTTON STYLES
+   -------------------------------------------------------------------------- */
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  border: 1.5px solid #e2e8f0;
+  background: #ffffff;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.theme-toggle-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
+
+[data-theme="dark"] .theme-toggle-btn {
+  background: #0a0a0c !important;
+  border-color: #24242c !important;
+  color: #fbbf24 !important;
+}
+
+[data-theme="dark"] .theme-toggle-btn:hover {
+  background: #141418 !important;
+  border-color: #3f3f46 !important;
+  color: #fcd34d !important;
+}
+
+/* --------------------------------------------------------------------------
+   14. VENDOR SIDEBAR COLLAPSE SYSTEM (72PX RAIL & EXPANDING MAIN)
+   -------------------------------------------------------------------------- */
+.vendor-brand .brand-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.vendor-sidebar-collapse-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid #374151;
+  background: transparent;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.vendor-sidebar-collapse-btn:hover {
+  background: #1f2937;
+  color: #ffffff;
+}
+
+.vendor-topbar-sidebar-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1.5px solid #e5e7eb;
+  background: #ffffff;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.vendor-topbar-sidebar-btn:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+[data-theme="dark"] .vendor-topbar-sidebar-btn {
+  background: #0a0a0c !important;
+  border-color: #1c1c22 !important;
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .vendor-topbar-sidebar-btn:hover {
+  background: #141418 !important;
+  color: #ffffff !important;
+  border-color: #24242c !important;
+}
+
+.vendor-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.vendor-footer-collapse-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid #374151;
+  background: transparent;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.vendor-footer-collapse-btn:hover {
+  background: #1f2937;
+  color: #ffffff;
+}
+
+[data-theme="dark"] .vendor-footer-collapse-btn {
+  border-color: #1c1c22 !important;
+  background: #0a0a0c !important;
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .vendor-footer-collapse-btn:hover {
+  background: #141418 !important;
+  color: #ffffff !important;
+  border-color: #24242c !important;
+}
+
+@media (min-width: 769px) {
+  .vendor-sidebar-collapse-btn {
+    display: inline-flex;
+  }
+  .vendor-topbar-sidebar-btn {
+    display: inline-flex;
+  }
+
+  .vendor-sidebar {
+    transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.25s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1), flex 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  .vendor-main {
+    transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  /* When collapsed: Sidebar narrows to 72px and Main expands to fill the entire remaining screen */
+  .vendor-app.sidebar-collapsed .vendor-sidebar {
+    width: 72px !important;
+    min-width: 72px !important;
+    max-width: 72px !important;
+    flex: 0 0 72px !important;
+  }
+
+  .vendor-app.sidebar-collapsed .vendor-main {
+    width: calc(100% - 72px) !important;
+    max-width: calc(100% - 72px) !important;
+    flex: 1 1 0% !important;
+  }
+
+  /* Cleanly hide all labels and text blocks without overlap */
+  .vendor-app.sidebar-collapsed .vendor-sidebar .brand-info,
+  .vendor-app.sidebar-collapsed .vendor-sidebar .vendor-nav-label,
+  .vendor-app.sidebar-collapsed .vendor-sidebar .vendor-nav-link span,
+  .vendor-app.sidebar-collapsed .vendor-sidebar .status-text-block,
+  .vendor-app.sidebar-collapsed .vendor-sidebar .toggle-status-btn,
+  .vendor-app.sidebar-collapsed .vendor-sidebar .vendor-user-details,
+  .vendor-app.sidebar-collapsed .vendor-sidebar .vendor-logout-button span,
+  .vendor-app.sidebar-collapsed .vendor-sidebar .vendor-sidebar-collapse-btn {
+    display: none !important;
+  }
+
+  .vendor-app.sidebar-collapsed .vendor-sidebar .vendor-brand {
+    height: 78px !important;
+    padding: 0 !important;
+    justify-content: center !important;
+    gap: 0 !important;
+  }
+
+  .vendor-app.sidebar-collapsed .vendor-sidebar .vendor-logo {
+    margin: 0 auto !important;
+    cursor: pointer;
+  }
+
+  .vendor-app.sidebar-collapsed .vendor-sidebar .vendor-store-status-card {
+    padding: 12px 0 !important;
+    margin: 8px 10px !important;
+    justify-content: center !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .vendor-app.sidebar-collapsed .vendor-sidebar .status-indicator-wrap {
+    justify-content: center !important;
+  }
+
+  .vendor-app.sidebar-collapsed .vendor-sidebar .vendor-nav-link {
+    justify-content: center !important;
+    padding: 12px 0 !important;
+  }
+
+  .vendor-app.sidebar-collapsed .vendor-sidebar .vendor-nav-icon,
+  .vendor-app.sidebar-collapsed .vendor-sidebar .vendor-nav-link svg {
+    margin: 0 !important;
+  }
+
+  .vendor-app.sidebar-collapsed .vendor-sidebar .vendor-sidebar-bottom {
+    padding: 14px 0 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .vendor-app.sidebar-collapsed .vendor-sidebar .vendor-user-card {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .vendor-app.sidebar-collapsed .vendor-sidebar .user-avatar,
+  .vendor-app.sidebar-collapsed .vendor-sidebar .user-avatar-medium {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    max-width: 36px !important;
+    max-height: 36px !important;
+    flex: 0 0 36px !important;
+    border-radius: 50% !important;
+    margin: 0 auto !important;
+    aspect-ratio: 1 / 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+  }
+
+  .vendor-app.sidebar-collapsed .vendor-sidebar .vendor-footer-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+  }
+
+  .vendor-app.sidebar-collapsed .vendor-sidebar .vendor-logout-button,
+  .vendor-app.sidebar-collapsed .vendor-sidebar .vendor-footer-collapse-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    border-radius: 8px !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+    border: 1px solid #1c1c22 !important;
+    background: #0a0a0c !important;
+    color: #a1a1aa !important;
+  }
+
+  .vendor-app.sidebar-collapsed .vendor-sidebar .vendor-logout-button:hover,
+  .vendor-app.sidebar-collapsed .vendor-sidebar .vendor-footer-collapse-btn:hover {
+    background: #141418 !important;
+    color: #ffffff !important;
+    border-color: #24242c !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   15. DECISION ASSISTANT CARD (.pda-) DARK MODE
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] .product-decision-assistant-card {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .pda-title {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .pda-item-pro {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .pda-satisfaction-pill {
+  background: rgba(34, 197, 94, 0.15) !important;
+  border-color: rgba(34, 197, 94, 0.3) !important;
+  color: #4ade80 !important;
+}
+
+[data-theme="dark"] .pda-icon-pill {
+  background: rgba(37, 99, 235, 0.15) !important;
+  border-color: rgba(37, 99, 235, 0.3) !important;
+  color: #93c5fd !important;
+}
+
+[data-theme="dark"] .pda-shield-icon {
+  color: #60a5fa !important;
+}
+
+[data-theme="dark"] .pda-check-bubble {
+  background: rgba(34, 197, 94, 0.2) !important;
+  color: #4ade80 !important;
+}
+
+[data-theme="dark"] .pda-item-watchout {
+  background: rgba(245, 158, 11, 0.12) !important;
+  border-color: rgba(245, 158, 11, 0.3) !important;
+}
+
+[data-theme="dark"] .pda-warn-bubble {
+  background: rgba(245, 158, 11, 0.2) !important;
+  color: #fbbf24 !important;
+}
+
+[data-theme="dark"] .pda-warn-text {
+  color: #fde68a !important;
+}
+
+[data-theme="dark"] .pda-darwin-box {
+  background: #0a0a0c !important;
+  border: 1px solid #2563eb !important;
+}
+
+[data-theme="dark"] .pda-darwin-title {
+  color: #93c5fd !important;
+}
+
+[data-theme="dark"] .pda-darwin-text {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .pda-darwin-match-badge {
+  background: rgba(34, 197, 94, 0.2) !important;
+  color: #4ade80 !important;
+}
+
+[data-theme="dark"] .pda-ask-darwin-btn {
+  background: #141418 !important;
+  border-color: #3b82f6 !important;
+  color: #93c5fd !important;
+}
+
+[data-theme="dark"] .pda-ask-darwin-btn:hover {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+/* --------------------------------------------------------------------------
+   16. SHOPPING PROFILE & DARWIN MEMORY MODAL (.sp-) DARK MODE
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] .sp-modal-overlay {
+  background: rgba(0, 0, 0, 0.85) !important;
+}
+
+[data-theme="dark"] .sp-modal-card {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9) !important;
+}
+
+[data-theme="dark"] .sp-modal-header {
+  border-bottom: 1px solid #1c1c22 !important;
+  background: #0a0a0c !important;
+}
+
+[data-theme="dark"] .sp-header-icon-box {
+  background: rgba(37, 99, 235, 0.2) !important;
+  color: #60a5fa !important;
+}
+
+[data-theme="dark"] .sp-modal-title {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .sp-modal-subtitle {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .sp-close-btn {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .sp-close-btn:hover {
+  background: #141418 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .sp-tabs-nav {
+  background: #050507 !important;
+  border-bottom: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .sp-tab-btn {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .sp-tab-btn:hover {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .sp-tab-btn.active {
+  color: #60a5fa !important;
+  border-bottom-color: #3b82f6 !important;
+  background: #0a0a0c !important;
+}
+
+[data-theme="dark"] .sp-field-label {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .sp-sub-label {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .sp-pill-btn {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .sp-pill-btn:hover,
+[data-theme="dark"] .sp-pill-btn.active {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .sp-chip-btn {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .sp-chip-btn:hover {
+  background: #141418 !important;
+  border-color: #2e2e38 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .sp-chip-btn.selected {
+  background: rgba(37, 99, 235, 0.2) !important;
+  border-color: #3b82f6 !important;
+  color: #93c5fd !important;
+}
+
+[data-theme="dark"] .sp-input {
+  background: #050507 !important;
+  border: 1px solid #24242c !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .sp-add-brand-btn {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .sp-memory-toggle-card {
+  background: #050507 !important;
+  border: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .sp-toggle-left h4 {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .sp-toggle-left p {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .sp-memories-title {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .sp-memory-item {
+  background: #050507 !important;
+  border: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .sp-memory-item:hover {
+  border-color: #24242c !important;
+}
+
+[data-theme="dark"] .sp-memory-text {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .sp-modal-footer {
+  background: #0a0a0c !important;
+  border-top: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .sp-cancel-btn {
+  border: 1px solid #24242c !important;
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .sp-cancel-btn:hover {
+  background: #141418 !important;
+  color: #ffffff !important;
+}
+
+/* --------------------------------------------------------------------------
+   17. PRODUCT SPECIFICATIONS SIDEPANEL (.ps-) DARK MODE
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] .ps-sidepanel-overlay {
+  background: rgba(0, 0, 0, 0.85) !important;
+}
+
+[data-theme="dark"] .ps-sidepanel-drawer {
+  background: #000000 !important;
+  border-left: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .ps-sidepanel-header {
+  background: #000000 !important;
+  border-bottom: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .ps-drawer-title {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .ps-drawer-subtitle {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .ps-close-btn {
+  background: #0a0a0c !important;
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .ps-close-btn:hover {
+  background: #141418 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .ps-section-title {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .ps-section-box {
+  border-bottom-color: #1c1c22 !important;
+}
+
+[data-theme="dark"] .ps-highlight-icon-box {
+  background: rgba(37, 99, 235, 0.2) !important;
+  border: 1px solid #2563eb !important;
+  color: #60a5fa !important;
+}
+
+[data-theme="dark"] .ps-highlight-text {
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .ps-tab-pill {
+  background: #050507 !important;
+  border: 1px solid #24242c !important;
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .ps-tab-pill:hover {
+  background: #141418 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .ps-tab-pill.active {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .ps-spec-category-heading {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .ps-spec-row {
+  border-bottom-color: #1c1c22 !important;
+}
+
+[data-theme="dark"] .ps-spec-label {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .ps-spec-val {
+  color: #ffffff !important;
+}
+
+/* --------------------------------------------------------------------------
+   18. CUSTOMER WIDE ORDER MODAL (.wide-order-modal-) DARK MODE
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] .wide-order-modal-backdrop {
+  background: rgba(0, 0, 0, 0.85) !important;
+}
+
+[data-theme="dark"] .wide-order-modal-card {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .wide-order-modal-header {
+  background: #0a0a0c !important;
+  border-bottom: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .wide-order-title {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .wide-order-placed-subtitle {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .wide-order-modal-close-btn {
+  background: #0a0a0c !important;
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .wide-order-modal-close-btn:hover {
+  background: #141418 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .wide-items-card {
+  background: #050507 !important;
+  border-color: #1c1c22 !important;
+}
+
+[data-theme="dark"] .wide-items-card-header {
+  background: #08080a !important;
+  border-bottom-color: #1c1c22 !important;
+}
+
+[data-theme="dark"] .wide-items-card-header h4 {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .wide-items-table thead tr {
+  background: #08080a !important;
+  border-bottom-color: #1c1c22 !important;
+}
+
+[data-theme="dark"] .wide-items-table th {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .wide-items-table td {
+  border-bottom-color: #1c1c22 !important;
+}
+
+[data-theme="dark"] .wide-item-title {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .wide-order-modal-footer {
+  background: #0a0a0c !important;
+  border-top: 1px solid #1c1c22 !important;
+}
+
+/* --------------------------------------------------------------------------
+   19. ORDER ACTION MODALS (.action-modal-) DARK MODE
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] .action-modal-overlay {
+  background: rgba(0, 0, 0, 0.85) !important;
+}
+
+[data-theme="dark"] .action-modal-container {
+  background: #0a0a0c !important;
+  border: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .action-modal-header {
+  border-bottom: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .action-modal-header-text h3 {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .action-modal-header-text p {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .action-modal-close-btn {
+  color: #a1a1aa !important;
+}
+
+[data-theme="dark"] .action-modal-close-btn:hover {
+  background: #141418 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .action-modal-label {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .action-modal-radio-item {
+  background: #050507 !important;
+  border: 1px solid #1c1c22 !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .action-modal-radio-item:hover {
+  border-color: #24242c !important;
+}
+
+[data-theme="dark"] .action-modal-radio-item.selected {
+  background: rgba(37, 99, 235, 0.15) !important;
+  border-color: #3b82f6 !important;
+  color: #93c5fd !important;
+}
+
+[data-theme="dark"] .action-modal-textarea {
+  background: #050507 !important;
+  border: 1px solid #24242c !important;
+  color: #ffffff !important;
+}
+
+/* --------------------------------------------------------------------------
+   20. PROMOTIONS & CATEGORY COLLECTIONS DARK OVERLAYS
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] .promo-card {
+  border: 1px solid #1c1c22 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7) !important;
+}
+
+[data-theme="dark"] .promo-card-title {
+  color: #ffffff !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8) !important;
+}
+
+[data-theme="dark"] .promo-card-tagline {
+  color: #f1f5f9 !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8) !important;
+}
+
+[data-theme="dark"] .promo-target-cat {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .promo-target-cat strong {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .collection-banner-card {
+  border: 1px solid #1c1c22 !important;
+}
+
+[data-theme="dark"] .collection-banner-title {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .collection-banner-desc {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .collection-banner-btn {
+  background: #0a0a0c !important;
+  color: #ffffff !important;
+  border: 1px solid #24242c !important;
+}
+
+[data-theme="dark"] .collection-banner-btn:hover {
+  background: #141418 !important;
+  color: #ffffff !important;
+}
+

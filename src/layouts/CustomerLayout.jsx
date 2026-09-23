@@ -40,11 +40,14 @@ import {
   Repeat,
   Users,
   Sparkles,
-  Gift
+  Gift,
+  Sun,
+  Moon
 } from "lucide-react";
 import VoiceSearchModal from "../components/voice/VoiceSearchModal";
 import VisualSearchModal from "../components/visual-search/VisualSearchModal";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import { getMyProfile, updateMyProfile, changeMyPassword } from "../services/customerService";
 import { getCart } from "../services/cartService";
 import { getWishlist } from "../services/wishlistService";
@@ -136,6 +139,7 @@ function CustomerLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const { logout } = useAuth();
+  const { theme, toggleTheme, syncThemeToDb, syncUserTheme } = useTheme();
 
   // Custom Breadcrumb for dynamic page titles (e.g. Product Name)
   const [customBreadcrumb, setCustomBreadcrumb] = useState(null);
@@ -392,6 +396,7 @@ function CustomerLayout() {
 
       if (customer) {
         setProfile(customer);
+        syncUserTheme(customer);
         try {
           localStorage.setItem("customer_profile", JSON.stringify(customer));
           localStorage.setItem("user", JSON.stringify(customer));
@@ -1150,6 +1155,20 @@ function CustomerLayout() {
               )}
             </button>
 
+            {/* Theme Toggle Button */}
+            <button
+              type="button"
+              className="theme-toggle-btn"
+              onClick={() => {
+                toggleTheme();
+                syncThemeToDb(theme === 'light' ? 'dark' : 'light');
+              }}
+              title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
+              aria-label="Toggle Dark Mode"
+            >
+              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+
             {/* User Dropdown */}
             <div className="account-user-menu-wrap">
               <button
@@ -1216,6 +1235,21 @@ function CustomerLayout() {
                     <span>Full Page Mode</span>
                     <span className={`account-dropdown-toggle-badge ${isFullPage ? "active" : ""}`}>
                       {isFullPage ? "ON" : "OFF"}
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    className="account-dropdown-item"
+                    onClick={() => {
+                      toggleTheme();
+                      syncThemeToDb(theme === 'light' ? 'dark' : 'light');
+                    }}
+                  >
+                    {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+                    <span>Dark Mode</span>
+                    <span className={`account-dropdown-toggle-badge ${theme === 'dark' ? "active" : ""}`}>
+                      {theme === 'dark' ? "ON" : "OFF"}
                     </span>
                   </button>
                   <button

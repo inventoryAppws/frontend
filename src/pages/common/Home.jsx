@@ -63,6 +63,10 @@ import {
 import InteractiveEarth from "../../components/InteractiveEarth";
 import "./Home.css";
 
+const ADMIN_PORTAL_URL = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:5174'
+  : 'https://inventoryadmin24.vercel.app';
+
 // Clean 3D Isometric Minimalist Banner Slides showcasing our 3 Apps & Signature Platform Features
 const BANNER_SLIDES = [
   {
@@ -252,7 +256,7 @@ const AI_TRINITY = [
       "Dynamic Marketing Campaign Builder"
     ],
     ctaText: "Open Titan Admin Console",
-    ctaLink: "https://inventoryadmin24.vercel.app",
+    ctaLink: ADMIN_PORTAL_URL,
     isExternal: true
   }
 ];
@@ -711,7 +715,7 @@ export default function Home() {
               <Store size={14} /> Vendor
             </Link>
             <a
-              href="https://inventoryadmin24.vercel.app"
+              href={ADMIN_PORTAL_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="apple-btn-pill-secondary"
@@ -757,7 +761,7 @@ export default function Home() {
             Explore Vendor Hub
           </Link>
           <a
-            href="https://inventoryadmin24.vercel.app"
+            href={ADMIN_PORTAL_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="apple-hero-cta-btn link-style"
@@ -3125,7 +3129,7 @@ export default function Home() {
             <h5>Explore Ecosystem</h5>
             <Link to="/customer/login">Shopper Portal</Link>
             <Link to="/vendor/login">Vendor Hub</Link>
-            <a href="https://inventoryadmin24.vercel.app" target="_blank" rel="noopener noreferrer">
+            <a href={ADMIN_PORTAL_URL} target="_blank" rel="noopener noreferrer">
               Admin Governance
             </a>
             <a href="#dual-showcase">Dual Experience</a>

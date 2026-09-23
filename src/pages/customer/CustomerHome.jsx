@@ -59,6 +59,8 @@ import { toast } from "../../components/Toast";
 import { getErrorMessage } from "../../utils/errorHandler";
 import ProductCard from "../../components/ProductCard";
 import ProductCarousel from "../../components/ProductCarousel";
+import ShopByOccasionSection from "../../components/occasion/ShopByOccasionSection";
+import ShoppingProfileModal from "../../components/profile/ShoppingProfileModal";
 import "../../styles/discovery.css";
 
 const QUICK_SHORTCUTS = [
@@ -186,6 +188,8 @@ function CustomerHome() {
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "All");
   const [selectedVendors, setSelectedVendors] = useState([]); // array of vendor names, e.g. ["vera", "jk"]
   const [sortBy, setSortBy] = useState("newest"); // "newest" | "price_asc" | "price_desc" | "rating_desc" | "name_asc"
+  const [selectedOccasion, setSelectedOccasion] = useState(searchParams.get("occasion") || null);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   // Advanced Filters (Applied)
   const [minPrice, setMinPrice] = useState("");
@@ -616,7 +620,8 @@ function CustomerHome() {
           minPrice: appliedMinPrice,
           maxPrice: appliedMaxPrice,
           availability,
-          minRating: minRating > 0 ? minRating : undefined
+          minRating: minRating > 0 ? minRating : undefined,
+          occasion: selectedOccasion && selectedOccasion !== 'all' ? selectedOccasion : undefined
         });
         const nextItems = data?.items || [];
         setProducts((current) => (append ? [...current, ...nextItems] : nextItems));
@@ -639,7 +644,8 @@ function CustomerHome() {
       appliedMinPrice,
       appliedMaxPrice,
       availability,
-      minRating
+      minRating,
+      selectedOccasion
     ]
   );
 
@@ -1213,6 +1219,82 @@ function CustomerHome() {
       {/* ========================================================= */}
       {!isNarrowingSearchOrFilter && (
         <>
+          {/* Personalized Customer Shopping Profile Bar */}
+          <div
+            className="personalized-profile-bar"
+            style={{
+              background: 'linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%)',
+              border: '1px solid #dbeafe',
+              borderRadius: '12px',
+              padding: '12px 18px',
+              margin: '18px 0',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '12px',
+              boxShadow: '0 2px 6px rgba(37, 99, 235, 0.05)'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div
+                style={{
+                  width: '34px',
+                  height: '34px',
+                  borderRadius: '8px',
+                  background: '#2563eb',
+                  color: '#ffffff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 2px 4px rgba(37, 99, 235, 0.3)'
+                }}
+              >
+                <Sparkles size={18} />
+              </div>
+              <div>
+                <span style={{ fontSize: '14px', fontWeight: 700, color: '#0f172a', display: 'block' }}>
+                  Personalized for {profile?.name || 'Customer'}
+                </span>
+                <span style={{ fontSize: '12px', color: '#64748b' }}>
+                  Budget: Up to ₹{(profile?.shoppingProfile?.budget?.max || 10000).toLocaleString('en-IN')} • Size: {profile?.shoppingProfile?.sizes?.footwear || 'UK 8'} • Darwin Memory Active
+                </span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setIsProfileModalOpen(true)}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                background: '#ffffff',
+                border: '1px solid #bfdbfe',
+                color: '#1d4ed8',
+                padding: '7px 14px',
+                borderRadius: '8px',
+                fontSize: '12.5px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                boxShadow: '0 1px 2px rgba(37, 99, 235, 0.08)'
+              }}
+            >
+              <SlidersHorizontal size={14} />
+              <span>Customize Profile & Memory</span>
+            </button>
+          </div>
+
+          {/* Shop by Occasion Complete Collections */}
+          <ShopByOccasionSection
+            onSelectOccasion={(occSlug) => {
+              setSelectedOccasion(occSlug);
+              scrollToCatalog();
+            }}
+            activeOccasion={selectedOccasion}
+            onAddToCart={handleAddToCart}
+          />
+
           {/* 4. ACTIVE PROMOTIONS & MARKETING CAMPAIGNS */}
           {promotions.length > 0 && (
             <section id="customer-featured-deals" className="customer-promotions-section" aria-label="Active Promotions">
@@ -2736,6 +2818,16 @@ function CustomerHome() {
         isOpen={Boolean(wishlistProductToSave)}
         onClose={() => setWishlistProductToSave(null)}
         onSelect={handleWishlistCollectionSelect}
+      />
+
+      {/* Customer Shopping Profile & Darwin Memory Modal */}
+      <ShoppingProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        onProfileSaved={(updated) => {
+          toast.success("Preferences updated! Refreshing personalized feed...");
+          loadProducts(1, false);
+        }}
       />
     </div>
   );

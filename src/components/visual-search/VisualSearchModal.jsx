@@ -31,6 +31,8 @@ export default function VisualSearchModal({ isOpen, onClose, onNavigateToProduct
   const [state, setState] = useState('idle');
   const [previewImage, setPreviewImage] = useState(null);
   const [detectedTag, setDetectedTag] = useState('Shoes');
+  const [colorDescription, setColorDescription] = useState('');
+  const [aiContext, setAiContext] = useState(null);
   const [results, setResults] = useState([]);
   const [filterTags, setFilterTags] = useState(['All', 'Shoes', 'Men', 'Sports', 'Casual']);
   const [activeFilter, setActiveFilter] = useState('All');
@@ -110,8 +112,11 @@ export default function VisualSearchModal({ isOpen, onClose, onNavigateToProduct
 
       setTimeout(() => {
         setDetectedTag(res.data.detectedItem || tag);
-        setFilterTags(res.data.tags || ['All', 'Shoes', 'Men', 'Sports', 'Casual']);
+        setColorDescription(res.data.colorDescription || '');
+        setFilterTags(res.data.tags || ['All', 'Shoes', 'Apparel', 'Trending']);
         setResults(res.data.products || []);
+        setAiContext(res.data.aiContext || null);
+        setActiveFilter('All');
         setState('results');
       }, 1400); // 1.4s scan animation
     } catch (err) {
@@ -130,7 +135,8 @@ export default function VisualSearchModal({ isOpen, onClose, onNavigateToProduct
     try {
       const res = await api.post('/visual-search/search', {
         detectedTag: detectedTag,
-        category: pill === 'All' ? 'all' : pill
+        category: pill === 'All' ? 'all' : pill,
+        aiContext: aiContext
       });
       setResults(res.data.products || []);
     } catch (err) {
@@ -251,6 +257,13 @@ export default function VisualSearchModal({ isOpen, onClose, onNavigateToProduct
                 <div className="vsm-vis-preview-info">
                   <span className="vsm-vis-preview-label">Similar products for</span>
                   <div className="vsm-vis-preview-tag">{detectedTag}</div>
+                  {colorDescription && (
+                    <div className="vsm-vis-color-badge">
+                      <span className="vsm-vis-color-dot" />
+                      <span className="vsm-vis-color-text">{colorDescription}</span>
+                      <span className="vsm-vis-color-sub">60–70% Concept &amp; Palette Match</span>
+                    </div>
+                  )}
                 </div>
                 <button
                   type="button"
@@ -292,7 +305,9 @@ export default function VisualSearchModal({ isOpen, onClose, onNavigateToProduct
                   >
                     <div className="vsm-vis-card-img-wrap">
                       <img src={p.image} alt={p.name} className="vsm-vis-card-img" />
-                      <span className="vsm-vis-card-match">{p.similarity || '94% Match'}</span>
+                      <span className={`vsm-vis-card-match ${p._score >= 88 ? 'high-match' : 'theme-match'}`}>
+                        {p.similarity || `${p._score || 68}% Match`}
+                      </span>
                     </div>
                     <h4 className="vsm-vis-card-title">{p.name}</h4>
                     <div className="vsm-vis-card-rating">

@@ -441,6 +441,29 @@ export default function ProductCard({
           </div>
         </div>
 
+        {/* Product Confidence / Decision Assistant Mini Pill */}
+        <div
+          className="adv-decision-peek"
+          title="Why customers choose this: Verified high ratings & positive buyer reviews"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '4px',
+            fontSize: '10.5px',
+            color: '#15803d',
+            background: '#f0fdf4',
+            border: '1px solid #bbf7d0',
+            padding: '2px 6px',
+            borderRadius: '4px',
+            margin: '2px 0 6px 0',
+            fontWeight: 600,
+            cursor: 'pointer'
+          }}
+        >
+          <Check size={11} strokeWidth={3} />
+          <span>{Math.min(99, Math.round(70 + (Number(ratingScore) - 3) * 14.5))}% Positive • Why Choose This</span>
+        </div>
+
         <div className="adv-myntra-price-row">
           <span className="adv-selling-price">Rs. {discountedPrice.toLocaleString("en-IN")}</span>
           <span className="adv-original-price">Rs. {Math.round(originalPrice).toLocaleString("en-IN")}</span>

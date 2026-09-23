@@ -330,8 +330,15 @@ export default function DarwinChatDrawer({
         toast.success('Address removed from your address book.');
       } else if (res.action?.type === 'open_settings') {
         setSubView('settings');
-      } else if (res.action?.type === 'open_history') {
-        setSubView('history');
+      } else if (res.action?.type === 'open_virtual_tryon') {
+        window.dispatchEvent(
+          new CustomEvent('open-virtual-tryon', {
+            detail: {
+              mode: res.action.mode || 'camera',
+              product: res.action.product || res.product
+            }
+          })
+        );
       } else if (res.action?.type === 'added_to_cart' || res.action?.success) {
         if (onCartUpdate) onCartUpdate();
       }

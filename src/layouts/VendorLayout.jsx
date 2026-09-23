@@ -18,10 +18,15 @@ import {
   RotateCcw,
   CreditCard,
   Headphones,
-  ShieldCheck
+  ShieldCheck,
+  Sun,
+  Moon,
+  PanelLeftClose,
+  PanelLeft
 } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import UserAvatar from "../components/UserAvatar";
 import NotificationSidepanel from "../components/NotificationSidepanel";
 import VendorAiDrawer from "../components/vendor/VendorAiDrawer";
@@ -37,8 +42,37 @@ import { toast } from "../components/Toast";
 
 function VendorLayout() {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme, syncThemeToDb, syncUserTheme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Desktop sidebar collapse (persisted)
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem('vendor_sidebar_collapsed') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const toggleSidebar = () => {
+    setIsSidebarCollapsed((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem('vendor_sidebar_collapsed', String(next));
+      } catch {}
+      return next;
+    });
+  };
+
+  // Safe one-time theme sync from vendor settings on initial load
+  const hasSyncedThemeRef = useRef(false);
+  useEffect(() => {
+    if (user && !hasSyncedThemeRef.current) {
+      hasSyncedThemeRef.current = true;
+      syncUserTheme(user);
+    }
+  }, [user, syncUserTheme]);
 
   // Mobile sidebar toggle
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -189,7 +223,7 @@ function VendorLayout() {
   };
 
   return (
-    <div className="vendor-app">
+    <div className={`vendor-app ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       {/* SIDEBAR */}
       <aside className={`vendor-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
         {/* BRAND */}
@@ -209,6 +243,16 @@ function VendorLayout() {
             onClick={() => setMobileMenuOpen(false)}
           >
             <X size={18} />
+          </button>
+
+          <button
+            type="button"
+            className="vendor-sidebar-collapse-btn"
+            onClick={toggleSidebar}
+            title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+            aria-label="Toggle Sidebar"
+          >
+            {isSidebarCollapsed ? <PanelLeft size={16} /> : <PanelLeftClose size={16} />}
           </button>
         </div>
 
@@ -335,7 +379,7 @@ function VendorLayout() {
 
         {/* BOTTOM USER PROFILE */}
         <div className="vendor-sidebar-bottom">
-          <div className="vendor-user-card" onClick={() => navigate("/vendor/settings")}>
+          <div className="vendor-user-card" onClick={() => navigate("/vendor/settings")} title={user?.name || "Vendor Merchant"}>
             <UserAvatar name={user?.name} size="medium" />
             <div className="vendor-user-details">
               <strong title={user?.name}>{user?.name || "Vendor Merchant"}</strong>
@@ -343,15 +387,26 @@ function VendorLayout() {
             </div>
           </div>
 
-          <button
-            type="button"
-            className="vendor-logout-button"
-            onClick={logout}
-            title="Sign out of vendor account"
-          >
-            <LogOut size={16} />
-            <span>Logout</span>
-          </button>
+          <div className="vendor-footer-actions">
+            <button
+              type="button"
+              className="vendor-footer-collapse-btn"
+              onClick={toggleSidebar}
+              title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+              aria-label="Toggle Sidebar"
+            >
+              {isSidebarCollapsed ? <PanelLeft size={16} /> : <PanelLeftClose size={16} />}
+            </button>
+            <button
+              type="button"
+              className="vendor-logout-button"
+              onClick={logout}
+              title="Sign out of vendor account"
+            >
+              <LogOut size={16} />
+              <span>Logout</span>
+            </button>
+          </div>
         </div>
       </aside>
 
@@ -377,6 +432,16 @@ function VendorLayout() {
               <Menu size={20} />
             </button>
 
+            <button
+              type="button"
+              className="vendor-topbar-sidebar-btn"
+              onClick={toggleSidebar}
+              title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+              aria-label="Toggle Sidebar"
+            >
+              {isSidebarCollapsed ? <PanelLeft size={18} /> : <PanelLeftClose size={18} />}
+            </button>
+
             <div>
               <span className="vendor-topbar-label">VENDOR ENTERPRISE SUITE</span>
               <h1>{getPageTitle()}</h1>
@@ -385,6 +450,20 @@ function VendorLayout() {
 
           {/* TOPBAR RIGHT ACTIONS */}
           <div className="vendor-topbar-right">
+            {/* Theme Toggle Button */}
+            <button
+              type="button"
+              className="theme-toggle-btn"
+              onClick={() => {
+                toggleTheme();
+                syncThemeToDb(theme === 'light' ? 'dark' : 'light');
+              }}
+              title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
+              aria-label="Toggle Dark Mode"
+            >
+              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+
             {/* Quick Action Button */}
             <button
               type="button"
@@ -470,6 +549,20 @@ function VendorLayout() {
                     </button>
 
                     <hr className="menu-divider" />
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        toggleTheme();
+                        syncThemeToDb(theme === "light" ? "dark" : "light");
+                      }}
+                    >
+                      {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
+                      <span>Dark Mode</span>
+                      <span className={`account-dropdown-toggle-badge ${theme === "dark" ? "active" : ""}`} style={{ marginLeft: "auto" }}>
+                        {theme === "dark" ? "ON" : "OFF"}
+                      </span>
+                    </button>
 
                     <button
                       type="button"

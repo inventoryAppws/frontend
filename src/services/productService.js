@@ -52,7 +52,8 @@ export async function getPublicProducts(
       minPrice: options.minPrice !== undefined && options.minPrice !== "" ? options.minPrice : undefined,
       maxPrice: options.maxPrice !== undefined && options.maxPrice !== "" ? options.maxPrice : undefined,
       availability: options.availability && options.availability !== "all" ? options.availability : undefined,
-      minRating: options.minRating !== undefined && options.minRating !== "" ? options.minRating : undefined
+      minRating: options.minRating !== undefined && options.minRating !== "" ? options.minRating : undefined,
+      occasion: options.occasion && options.occasion !== "all" ? options.occasion : undefined
     },
   });
 
@@ -166,3 +167,21 @@ export async function getProductHistory(productId) {
   const response = await api.get(`/products/${productId}/history`);
   return response.data;
 }
+
+// Occasions and Complete Collections
+export async function getOccasions() {
+  const response = await api.get("/products/occasions");
+  return response.data;
+}
+
+export async function getOccasionCollection(slug, page = 1, limit = 20) {
+  const response = await api.get(`/products/occasions/${slug}`, { params: { page, limit } });
+  return response.data;
+}
+
+// Product Confidence & Decision Assistant
+export async function getProductConfidence(productId) {
+  const response = await api.get(`/products/confidence/${productId}`);
+  return response.data;
+}
+

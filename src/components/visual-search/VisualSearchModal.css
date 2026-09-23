@@ -291,9 +291,43 @@
 }
 
 .vsm-vis-preview-tag {
-  font-size: 14px;
+  font-size: 14.5px;
   font-weight: 700;
   color: #0f172a;
+}
+
+.vsm-vis-color-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11.5px;
+}
+
+.vsm-vis-color-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #0f172a;
+  border: 1px solid #94a3b8;
+  flex-shrink: 0;
+}
+
+.vsm-vis-color-text {
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.vsm-vis-color-sub {
+  color: #64748b;
+  font-size: 10.5px;
+  font-weight: 500;
+  padding-left: 4px;
+  border-left: 1px solid #cbd5e1;
 }
 
 .vsm-vis-reupload-btn {
@@ -403,13 +437,24 @@
   position: absolute;
   top: 6px;
   left: 6px;
-  background: rgba(16, 185, 129, 0.9);
+  background: rgba(16, 185, 129, 0.92);
   color: #ffffff;
   font-size: 10px;
   font-weight: 700;
-  padding: 2px 6px;
+  padding: 2px 7px;
   border-radius: 9999px;
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.vsm-vis-card-match.high-match {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #ffffff;
+}
+
+.vsm-vis-card-match.theme-match {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  color: #ffffff;
 }
 
 .vsm-vis-card-title {

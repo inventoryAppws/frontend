@@ -762,9 +762,8 @@ function VendorProducts() {
                         <strong
                           title={p.name}
                           onClick={() => navigate(`/vendor/products/${p._id}`)}
-                          style={{ cursor: 'pointer', color: '#1e293b' }}
-                          onMouseEnter={(e) => (e.currentTarget.style.color = '#4f46e5')}
-                          onMouseLeave={(e) => (e.currentTarget.style.color = '#1e293b')}
+                          className="vendor-product-title-link"
+                          style={{ cursor: 'pointer' }}
                         >
                           {p.name}
                         </strong>
